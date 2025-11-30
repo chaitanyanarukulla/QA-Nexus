@@ -1,0 +1,578 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client-js"
+  engineType = "library"
+}
+
+datasource db {
+  provider = "sqlite"
+}
+
+model User {
+  id        String   @id @default(cuid())
+  email     String   @unique
+  name      String?
+  role      String   @default("TESTER")
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  testRuns  TestRun[]
+  jiraIntegration JiraIntegration?
+  comments  Comment[]
+  notifications Notification[]
+  activityLogs ActivityLog[]
+  reviewsCreated Review[] @relation("ReviewCreator")
+  reviewsAssigned Review[] @relation("ReviewAssignee")
+
+  // API Testing relations
+  apiCollections  ApiCollection[]
+  apiRequests     ApiRequest[]
+  apiExecutions   ApiExecution[]
+  environments    Environment[]
+  openApiSpecs    OpenApiSpec[]
+}
+
+model TestCase {
+  id          String   @id @default(cuid())
+  title       String
+  description String?
+  steps       String   // JSON stored as text for SQLite compatibility
+  expectedResult String?
+  priority    String   @default("MEDIUM")
+  status      String   @default("ACTIVE")
+  automationId String?
+  isAutomated Boolean  @default(false)
+  suiteId     String?
+  suite       TestSuite? @relation(fields: [suiteId], references: [id])
+  jiraStoryKey String?
+
+  // Requirements coverage tracking
+  coversRisks String?    // JSON array stored as text for SQLite compatibility
+  coversGaps  String?    // JSON array stored as text for SQLite compatibility
+  coversRequirements String? // JSON array stored as text for SQLite compatibility
+
+  // AI-powered insights
+  flakyScore     Float?   @default(0.0)  // 0-100 score indicating flakiness
+  failurePrediction Float? @default(0.0)  // 0-100 probability of failing
+  executionTime  Int?                     // Average execution time in ms
+  lastAnalyzedAt DateTime?
+
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  testResults TestResult[]
+  jiraIssues  JiraIssue[]
+  comments    Comment[]
+  reviews     Review[]
+  insights    AIInsight[]
+  apiRequests ApiRequest[]
+
+  @@index([status])
+  @@index([priority])
+  @@index([suiteId])
+  @@index([createdAt])
+  @@index([isAutomated])
+  @@index([status, isAutomated])   // Composite index for filtering active automated tests
+  @@index([suiteId, status])       // Composite index for suite filtering
+  @@index([flakyScore])
+  @@index([failurePrediction])
+}
+
+model TestRun {
+  id        String       @id @default(cuid())
+  title     String
+  status    String       @default("PENDING")
+  userId    String
+  user      User         @relation(fields: [userId], references: [id])
+  suiteId   String?
+  suite     TestSuite?   @relation(fields: [suiteId], references: [id])
+  results   TestResult[]
+  createdAt DateTime     @default(now())
+  updatedAt DateTime     @updatedAt
+
+  @@index([status])
+  @@index([userId])
+  @@index([createdAt])
+  @@index([suiteId])
+}
+
+model TestResult {
+  id         String   @id @default(cuid())
+  status     String   @default("PENDING")
+  notes      String?
+  evidence   String?  // URL to screenshot/video
+  testCaseId String
+  testCase   TestCase @relation(fields: [testCaseId], references: [id])
+  testRunId  String
+  testRun    TestRun  @relation(fields: [testRunId], references: [id])
+  defects    Defect[]
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+
+  @@index([status])
+  @@index([testCaseId])
+  @@index([testRunId])
+  @@index([createdAt])
+  @@index([testCaseId, status])  // Composite index for filtering failed tests by case
+  @@index([status, createdAt])   // Composite index for filtering by status and ordering by date
+}
+
+model Defect {
+  id          String   @id @default(cuid())
+  title       String
+  description String?
+  status      String   @default("OPEN")
+  priority    String   @default("MEDIUM")
+  jiraIssueId String?  // Link to external Jira issue
+  testResultId String?
+  testResult  TestResult? @relation(fields: [testResultId], references: [id])
+  jiraIssues  JiraIssue[]
+  comments    Comment[]
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  @@index([status])
+  @@index([priority])
+  @@index([createdAt])
+  @@index([status, priority])     // Composite index for dashboard queries
+  @@index([status, createdAt])    // Composite index for filtering by status and ordering
+}
+
+model JiraIntegration {
+  id           String   @id @default(cuid())
+  userId       String
+  user         User     @relation(fields: [userId], references: [id])
+  instanceUrl  String   // e.g., https://yourcompany.atlassian.net
+  email        String   // User's Jira email
+  apiToken     String   // Encrypted API token
+  isActive     Boolean  @default(true)
+  lastSyncAt   DateTime?
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+
+  @@unique([userId])
+}
+
+model AIProviderSettings {
+  id            String   @id @default(cuid())
+  provider      String   @default("OPENAI")
+  openaiApiKey  String?  // OpenAI API key (ChatGPT)
+  openaiModel   String   @default("gpt-4o-mini")
+  foundryUrl    String?  // Local Foundry URL (e.g., http://localhost:8000)
+  foundryModel  String   @default("llama2")
+  isActive      Boolean  @default(true)
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+}
+
+model JiraIssue {
+  id          String   @id @default(cuid())
+  jiraKey     String   @unique // e.g., PROJ-123
+  jiraId      String   // Jira's internal ID
+  summary     String
+  description String?
+  issueType   String   // Bug, Story, Task, etc.
+  status      String   // Open, In Progress, Done, etc.
+  priority    String?  // High, Medium, Low
+  assignee    String?
+  reporter    String?
+  projectKey  String
+  testCaseId  String?
+  testCase    TestCase? @relation(fields: [testCaseId], references: [id])
+  defectId    String?
+  defect      Defect?   @relation(fields: [defectId], references: [id])
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  syncedAt    DateTime @default(now())
+}
+
+model DocumentAnalysis {
+  id              String   @id @default(cuid())
+  sourceType      String   // JIRA_EPIC or CONFLUENCE_PAGE
+  sourceId        String   // Epic key or Page ID
+  sourceTitle     String
+  sourceContent   String   // Original document content
+
+  // Analysis results
+  risks           String   // JSON array stored as text for SQLite compatibility
+  gaps            String   // JSON array stored as text for SQLite compatibility
+  missedRequirements String  // JSON array stored as text for SQLite compatibility
+  recommendations String   // JSON array stored as text for SQLite compatibility
+  summary         String   // Overall analysis summary
+
+  // Metadata
+  analyzedAt      DateTime @default(now())
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+
+  // Link to generated test suite (if user proceeds to generate)
+  testSuiteId     String?  @unique
+  testSuite       TestSuite? @relation(fields: [testSuiteId], references: [id])
+
+  @@index([sourceType])
+  @@index([analyzedAt])
+}
+
+// Collaboration Models
+
+model Comment {
+  id          String   @id @default(cuid())
+  content     String
+  userId      String
+  user        User     @relation(fields: [userId], references: [id])
+
+  // Polymorphic relation - comment can be on test case, suite, or defect
+  testCaseId  String?
+  testCase    TestCase? @relation(fields: [testCaseId], references: [id], onDelete: Cascade)
+  testSuiteId String?
+  testSuite   TestSuite? @relation(fields: [testSuiteId], references: [id], onDelete: Cascade)
+  defectId    String?
+  defect      Defect?   @relation(fields: [defectId], references: [id], onDelete: Cascade)
+
+  // Threading support
+  parentId    String?
+  parent      Comment?  @relation("CommentThread", fields: [parentId], references: [id], onDelete: Cascade)
+  replies     Comment[] @relation("CommentThread")
+
+  // Mentions
+  mentions    String?   // JSON array stored as text for SQLite compatibility
+
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  @@index([testCaseId])
+  @@index([testSuiteId])
+  @@index([defectId])
+  @@index([userId])
+  @@index([parentId])
+  @@index([createdAt])
+}
+
+model Notification {
+  id          String   @id @default(cuid())
+  userId      String
+  user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  type        String   @default("MENTION")
+  title       String
+  message     String
+
+  // Link to related entity
+  entityType  String?  // "test_case", "test_suite", "defect", "comment", "review"
+  entityId    String?
+
+  isRead      Boolean  @default(false)
+  readAt      DateTime?
+
+  createdAt   DateTime @default(now())
+
+  @@index([userId])
+  @@index([isRead])
+  @@index([createdAt])
+  @@index([userId, isRead])
+}
+
+model Review {
+  id          String   @id @default(cuid())
+
+  // Review target (test case or suite)
+  testCaseId  String?
+  testCase    TestCase? @relation(fields: [testCaseId], references: [id], onDelete: Cascade)
+  testSuiteId String?
+  testSuite   TestSuite? @relation(fields: [testSuiteId], references: [id], onDelete: Cascade)
+
+  // Review participants
+  createdBy   String
+  creator     User     @relation("ReviewCreator", fields: [createdBy], references: [id])
+  assignedTo  String
+  assignee    User     @relation("ReviewAssignee", fields: [assignedTo], references: [id])
+
+  status      String   @default("PENDING")
+  decision    String?
+
+  comments    String?  // Review comments
+
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  completedAt DateTime?
+
+  @@index([testCaseId])
+  @@index([testSuiteId])
+  @@index([createdBy])
+  @@index([assignedTo])
+  @@index([status])
+}
+
+model ActivityLog {
+  id          String   @id @default(cuid())
+  userId      String
+  user        User     @relation(fields: [userId], references: [id])
+
+  action      String   // "created", "updated", "deleted", "commented", "reviewed"
+  entityType  String   // "test_case", "test_suite", "defect", "test_run"
+  entityId    String
+  entityTitle String?
+
+  // Change details
+  changes     String?  // JSON object stored as text for SQLite compatibility
+
+  createdAt   DateTime @default(now())
+
+  @@index([userId])
+  @@index([entityType])
+  @@index([entityId])
+  @@index([createdAt])
+  @@index([entityType, entityId])
+}
+
+// AI Insights Models
+
+model AIInsight {
+  id          String   @id @default(cuid())
+  type        String   @default("FLAKY_TEST")
+  severity    String   @default("MEDIUM")
+  title       String
+  description String
+  recommendation String?
+  confidence  Float    @default(0.0)  // 0-100 confidence score
+
+  // Related entity
+  testCaseId  String?
+  testCase    TestCase? @relation(fields: [testCaseId], references: [id], onDelete: Cascade)
+  testSuiteId String?
+  testSuite   TestSuite? @relation(fields: [testSuiteId], references: [id], onDelete: Cascade)
+
+  // Metadata
+  metadata    String?  // JSON object stored as text for SQLite compatibility
+  isResolved  Boolean  @default(false)
+  resolvedAt  DateTime?
+
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  @@index([type])
+  @@index([severity])
+  @@index([testCaseId])
+  @@index([testSuiteId])
+  @@index([isResolved])
+  @@index([createdAt])
+}
+
+model TestSuite {
+  id        String     @id @default(cuid())
+  title     String
+  description String?
+  jiraEpicKey String?
+  testCases TestCase[]
+  documentAnalysis DocumentAnalysis? // Reverse relation
+  comments  Comment[]
+  reviews   Review[]
+  testRuns  TestRun[]
+  insights  AIInsight[]
+  createdAt DateTime   @default(now())
+  updatedAt DateTime   @updatedAt
+}
+
+// API Testing Models
+
+model ApiCollection {
+  id          String   @id @default(cuid())
+  title       String
+  description String?
+
+  // Nested folder structure
+  parentId    String?
+  parent      ApiCollection? @relation("CollectionHierarchy", fields: [parentId], references: [id], onDelete: Cascade)
+  children    ApiCollection[] @relation("CollectionHierarchy")
+
+  // Requests in this collection
+  requests    ApiRequest[]
+
+  // OpenAPI spec that generated this collection
+  openApiSpec OpenApiSpec?
+
+  // Environment association
+  environmentId String?
+  environment Environment? @relation(fields: [environmentId], references: [id])
+
+  // Metadata
+  createdBy   String
+  user        User     @relation(fields: [createdBy], references: [id])
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  // Sharing & organization
+  isPublic    Boolean  @default(false)
+  tags        String?  // JSON array stored as text for SQLite compatibility
+
+  @@index([createdBy])
+  @@index([parentId])
+  @@index([environmentId])
+}
+
+model ApiRequest {
+  id            String   @id @default(cuid())
+  title         String
+  description   String?
+
+  // HTTP Configuration
+  method        String   @default("GET")
+  url           String      // Can contain {{variables}}
+  headers       String?  // JSON object stored as text for SQLite compatibility
+  queryParams   String?  // JSON object stored as text for SQLite compatibility
+  body          String?  // JSON request body stored as text
+  bodyType      String   @default("JSON")
+
+  // Authentication
+  authType      String   @default("NONE")
+  authConfig    String?  // JSON stored as text for SQLite compatibility
+
+  // Pre-request & Test Scripts
+  preRequestScript  String?  // JavaScript to run before request
+  testScript        String?  // Playwright test assertions
+
+  // Collection association
+  collectionId  String
+  collection    ApiCollection @relation(fields: [collectionId], references: [id], onDelete: Cascade)
+
+  // Environment
+  environmentId String?
+  environment   Environment? @relation(fields: [environmentId], references: [id])
+
+  // Execution history
+  executions    ApiExecution[]
+  assertions    ApiAssertion[]
+
+  // Metadata
+  createdBy     String
+  user          User     @relation(fields: [createdBy], references: [id])
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+
+  // Test Suite integration
+  testCaseId    String?
+  testCase      TestCase? @relation(fields: [testCaseId], references: [id])
+
+  // Ordering within collection
+  order         Int      @default(0)
+
+  @@index([collectionId])
+  @@index([createdBy])
+  @@index([testCaseId])
+  @@index([environmentId])
+}
+
+model ApiExecution {
+  id            String   @id @default(cuid())
+
+  // Request reference
+  requestId     String
+  request       ApiRequest @relation(fields: [requestId], references: [id], onDelete: Cascade)
+
+  // Execution details
+  status        String   @default("PASSED")
+  statusCode    Int?
+  responseTime  Int          // Milliseconds
+  responseBody  String?      // Actual response
+  responseHeaders String?     // JSON stored as text
+
+  // Error details
+  errorMessage  String?
+  stackTrace    String?
+
+  // Screenshots/artifacts
+  artifacts     String?  // JSON array stored as text
+
+  // Assertion results
+  assertionsPassed Int    @default(0)
+  assertionsFailed Int    @default(0)
+  assertionResults String?  // JSON array stored as text
+
+  // Environment used
+  environmentId String?
+  environment   Environment? @relation(fields: [environmentId], references: [id])
+
+  // Metadata
+  executedBy    String
+  user          User     @relation(fields: [executedBy], references: [id])
+  executedAt    DateTime @default(now())
+
+  @@index([requestId])
+  @@index([status])
+  @@index([executedAt])
+  @@index([environmentId])
+}
+
+model Environment {
+  id          String   @id @default(cuid())
+  name        String
+  description String?
+
+  // Variables (name-value pairs)
+  variables   String   // JSON stored as text
+
+  // Global auth config for this environment
+  authConfig  String?  // JSON stored as text
+
+  // Collections using this environment
+  collections ApiCollection[]
+  requests    ApiRequest[]
+  executions  ApiExecution[]
+
+  // Metadata
+  createdBy   String
+  user        User     @relation(fields: [createdBy], references: [id])
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  @@index([createdBy])
+}
+
+model OpenApiSpec {
+  id          String   @id @default(cuid())
+  title       String
+  version     String
+  description String?
+
+  // Spec content
+  specContent String   // Full OpenAPI spec as JSON stored as text
+  sourceUrl   String?  // Original URL if imported from URL
+
+  // Generated collection
+  collectionId String?  @unique
+  collection   ApiCollection? @relation(fields: [collectionId], references: [id])
+
+  // Metadata
+  importedBy  String
+  user        User     @relation(fields: [importedBy], references: [id])
+  importedAt  DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  @@index([importedBy])
+}
+
+model ApiAssertion {
+  id          String   @id @default(cuid())
+
+  // Request association
+  requestId   String
+  request     ApiRequest @relation(fields: [requestId], references: [id], onDelete: Cascade)
+
+  // Assertion details
+  type        String   @default("STATUS_CODE")
+  field       String?      // JSONPath or field name
+  operator    String   @default("EQUALS")
+  expectedValue String?
+
+  // Custom assertion code
+  customCode  String?      // For complex assertions
+
+  // Metadata
+  order       Int      @default(0)
+  enabled     Boolean  @default(true)
+
+  @@index([requestId])
+}
