@@ -564,6 +564,66 @@ test('Get user by ID', async ({ request }) => {
 
 5. Add to your test suite
 
+### Request Chaining (Extract & Reuse Response Data)
+
+Request chaining allows you to extract values from one API response and use them in subsequent requests - perfect for workflows like Login → Get Token → Use Token in authenticated requests.
+
+**How It Works:**
+
+1. Execute an API request that returns data you need
+2. Go to **Chaining** tab
+3. Click **Add Extraction Rule**
+4. Configure extraction rule:
+   - **Variable Name**: Name to reference the value (e.g., `authToken`)
+   - **JSON Path**: Path to the value in response (e.g., `data.user.token`)
+   - **Default Value** (optional): Fallback if extraction fails
+5. Execute the request to see extraction preview
+6. Use the extracted variable in other requests: `{{authToken}}`
+
+**Real-World Example: Login Flow**
+
+**Request 1: Login (POST /api/auth/login)**
+- Body: `{ "email": "user@example.com", "password": "secret" }`
+- Response: `{ "data": { "user": {...}, "token": "eyJhbG..." } }`
+- Chaining Tab:
+  - Variable Name: `authToken`
+  - JSON Path: `data.token`
+  - Preview: `"eyJhbG..."`
+
+**Request 2: Get User Profile (GET /api/user/profile)**
+- Headers:
+  - `Authorization`: `Bearer {{authToken}}`
+- The `{{authToken}}` will be automatically replaced with the extracted value
+
+**JSON Path Examples:**
+
+| Response Structure | JSON Path | Extracted Value |
+|--------------------|-----------|-----------------|
+| `{ "id": "123" }` | `id` | `"123"` |
+| `{ "data": { "user": { "email": "..." } } }` | `data.user.email` | Email value |
+| `{ "users": [{ "id": "1" }, { "id": "2" }] }` | `users[0].id` | `"1"` (first user ID) |
+| `{ "response": { "token": "abc..." } }` | `response.token` | Token value |
+
+**Where Variables Work:**
+- ✅ Request URLs: `https://api.example.com/users/{{userId}}`
+- ✅ Headers: `Authorization: Bearer {{authToken}}`
+- ✅ Query Parameters: `?api_key={{apiKey}}`
+- ✅ Request Body (JSON): `{ "token": "{{authToken}}" }`
+
+**Tips:**
+- Execute the request first to see a live preview of extracted values
+- Green indicator = Extraction successful
+- Red indicator = Path not found or invalid
+- Use descriptive variable names for clarity
+- Set default values for optional extractions
+- Disable rules temporarily with the toggle switch
+
+**Common Use Cases:**
+- Authentication: Extract auth tokens from login responses
+- Resource Creation: Extract newly created IDs for subsequent operations
+- Pagination: Extract next page tokens for paginated APIs
+- Session Management: Extract and maintain session identifiers
+
 ### Viewing Execution History
 
 1. Navigate to **API Testing** → **History**

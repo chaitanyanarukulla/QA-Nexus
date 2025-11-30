@@ -16,6 +16,7 @@ import { AuthConfig } from './auth-config'
 import { AssertionsBuilder } from './assertions-builder'
 import { PreRequestEditor } from './pre-request-editor'
 import { GraphQLQueryBuilder } from './graphql-query-builder'
+import { RequestChaining } from './request-chaining'
 
 interface RequestBuilderProps {
   requestId?: string;
@@ -56,6 +57,7 @@ export function RequestBuilder({ requestId, collectionId, userId, initialData, o
   const [authConfig, setAuthConfig] = useState(initialData?.authConfig || {})
   const [assertions, setAssertions] = useState(initialData?.assertions || [])
   const [preRequestScript, setPreRequestScript] = useState(initialData?.preRequestScript || '')
+  const [extractionRules, setExtractionRules] = useState<any[]>([])
 
   const [executing, setExecuting] = useState(false)
   const [saving, setSaving] = useState(false)
@@ -318,13 +320,14 @@ export function RequestBuilder({ requestId, collectionId, userId, initialData, o
 
           {/* Tabs for configuration */}
           <Tabs defaultValue="params">
-            <TabsList className="grid w-full grid-cols-6">
+            <TabsList className="grid w-full grid-cols-7">
               <TabsTrigger value="params">Query Params</TabsTrigger>
               <TabsTrigger value="headers">Headers</TabsTrigger>
               <TabsTrigger value="body">Body</TabsTrigger>
               <TabsTrigger value="auth">Auth</TabsTrigger>
               <TabsTrigger value="assertions">Assertions</TabsTrigger>
               <TabsTrigger value="pre-request">Pre-Request</TabsTrigger>
+              <TabsTrigger value="chaining">Chaining</TabsTrigger>
             </TabsList>
 
             <TabsContent value="params" className="space-y-2 mt-4">
@@ -435,6 +438,14 @@ export function RequestBuilder({ requestId, collectionId, userId, initialData, o
               <PreRequestEditor
                 script={preRequestScript}
                 onScriptChange={setPreRequestScript}
+              />
+            </TabsContent>
+
+            <TabsContent value="chaining" className="mt-4">
+              <RequestChaining
+                extractionRules={extractionRules}
+                onExtractionRulesChange={setExtractionRules}
+                responseBody={execution?.responseBody}
               />
             </TabsContent>
           </Tabs>
