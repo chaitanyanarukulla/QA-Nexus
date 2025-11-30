@@ -1,7 +1,21 @@
 'use server'
 
 import { prisma } from '@/lib/prisma'
-import type { NotificationType } from '@prisma/client'
+
+// Define notification types as string union since they're stored as strings in DB
+export type NotificationType =
+  | 'MENTION'
+  | 'COMMENT'
+  | 'COMMENT_REPLY'
+  | 'ASSIGNMENT'
+  | 'TEST_RUN_COMPLETE'
+  | 'TEST_FAILURE'
+  | 'DEFECT_CREATED'
+  | 'DEFECT_UPDATED'
+  | 'REVIEW_REQUEST'
+  | 'REVIEW_REQUESTED'
+  | 'REVIEW_COMPLETED'
+  | 'AI_INSIGHT'
 
 export async function createNotification({
   userId,

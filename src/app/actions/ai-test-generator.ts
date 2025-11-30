@@ -70,9 +70,9 @@ export async function generateRequestFromPrompt(prompt: string, collectionId: st
                 description: generated.description,
                 method: generated.method as any,
                 url: generated.url,
-                headers: generated.headers || {},
-                queryParams: generated.queryParams || {},
-                body: generated.body,
+                headers: JSON.stringify(generated.headers || {}),
+                queryParams: JSON.stringify(generated.queryParams || {}),
+                body: generated.body ? JSON.stringify(generated.body) : null,
                 bodyType: generated.body ? 'JSON' : 'NONE',
                 collectionId,
                 createdBy: userId

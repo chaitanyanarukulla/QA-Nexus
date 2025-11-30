@@ -7,7 +7,44 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [2.2.0] - 2025-11-30
 
-### Added - Phase 7: API Testing (Phase 3 Implementation - Advanced Request Features)
+### Added - Phase 7: API Testing (Phase 3 & 4 Implementation - Advanced Features)
+
+#### OpenAPI/Swagger Import (Phase 4 Feature) 🆕
+- **OpenAPIImportDialog Component** - Complete OpenAPI/Swagger specification import
+  - Dual input modes:
+    - **URL Import**: Import directly from remote specification URLs
+    - **JSON Content Import**: Paste specification content directly
+  - Real-time validation before import with detailed error messages
+  - Sample OpenAPI URL included (Swagger Petstore) for quick testing
+  - Option to create separate collections by OpenAPI tags
+  - Success notifications with import statistics (requests created, collections created)
+  - Info card explaining what data gets imported
+- **OpenAPI Parser Library** (`src/lib/openapi-parser.ts`)
+  - Full OpenAPI 3.x and Swagger 2.x support
+  - Parse from URL or JSON string using @apidevtools/swagger-parser
+  - Extract all HTTP methods, parameters, request bodies, and authentication
+  - Generate example request bodies from JSON schemas with $ref resolution
+  - Support for all parameter types (query, path, header)
+  - Authentication scheme mapping (Bearer Token, Basic Auth, API Key, OAuth2)
+  - Tag-based organization for automatic folder structure
+  - Comprehensive validation with detailed error reporting
+- **Server Actions for Import**
+  - `importOpenAPISpec()` - Import specification with optional tag-based collection separation
+  - `getOpenApiSpecs()` - Fetch all imported specifications
+  - `deleteOpenApiSpec()` - Remove imported specification
+- **Database Support**
+  - OpenApiSpec model already exists in schema (prepared in Phase 1)
+- **What Gets Imported**
+  - All API endpoints with their HTTP methods (GET, POST, PUT, DELETE, etc.)
+  - Request parameters (query, path, header parameters)
+  - Request bodies with example data generated from schemas
+  - Authentication schemes (Bearer Token, Basic Auth, API Key, OAuth2)
+  - Response schemas for future validation
+  - Organized by tags/folders for easy navigation
+- **Integration**
+  - Import button integrated into API Testing page
+  - Automatic refresh after successful import
+  - Full integration with existing request builder and execution pipeline
 
 #### Authentication Configuration
 - **AuthConfig Component** - Visual authentication configuration UI

@@ -1,8 +1,7 @@
 'use server'
 
 import { prisma } from '@/lib/prisma'
-import { analyzeAllTests, detectFlakyTests, predictTestFailures, detectSlowTests, generateAIRecommendations } from '@/lib/ai-insights'
-import type { InsightType, InsightSeverity } from '@prisma/client'
+import { analyzeAllTests, detectFlakyTests, predictTestFailures, detectSlowTests, generateAIRecommendations, type InsightType, type InsightSeverity } from '@/lib/ai-insights'
 
 export async function runInsightsAnalysis(testSuiteId?: string) {
   try {
@@ -13,7 +12,10 @@ export async function runInsightsAnalysis(testSuiteId?: string) {
       const aiRecs = await generateAIRecommendations(testSuiteId)
       for (const rec of aiRecs) {
         await prisma.aIInsight.create({
-          data: rec,
+          data: {
+            ...rec,
+            testSuiteId: rec.testSuiteId || undefined,
+          } as any,
         })
       }
     }
@@ -231,7 +233,7 @@ export async function getPrioritizedTests(suiteId?: string) {
       priorityScore += highInsights * 25
 
       // Higher priority based on test case priority
-      const priorityWeight = {
+      const priorityWeight: Record<string, number> = {
         CRITICAL: 40,
         HIGH: 30,
         MEDIUM: 20,

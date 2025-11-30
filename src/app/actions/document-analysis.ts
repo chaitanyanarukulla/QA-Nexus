@@ -57,10 +57,10 @@ ${idx + 1}. ${s.key}: ${s.fields.summary}
                 sourceId: epicKey,
                 sourceTitle: epic.fields.summary,
                 sourceContent: documentContent,
-                risks: analysis.risks,
-                gaps: analysis.gaps,
-                missedRequirements: analysis.missedRequirements,
-                recommendations: analysis.recommendations,
+                risks: JSON.stringify(analysis.risks),
+                gaps: JSON.stringify(analysis.gaps),
+                missedRequirements: JSON.stringify(analysis.missedRequirements),
+                recommendations: JSON.stringify(analysis.recommendations),
                 summary: analysis.summary,
             }
         })
@@ -121,10 +121,10 @@ ${cleanContent}
                 sourceId: pageId,
                 sourceTitle: page.title,
                 sourceContent: documentContent,
-                risks: analysis.risks,
-                gaps: analysis.gaps,
-                missedRequirements: analysis.missedRequirements,
-                recommendations: analysis.recommendations,
+                risks: JSON.stringify(analysis.risks),
+                gaps: JSON.stringify(analysis.gaps),
+                missedRequirements: JSON.stringify(analysis.missedRequirements),
+                recommendations: JSON.stringify(analysis.recommendations),
                 summary: analysis.summary,
             }
         })
@@ -212,10 +212,10 @@ export async function generateTestCasesFromAnalysis(analysisId: string) {
 
         // Reconstruct analysis result object
         const analysisResult: DocumentAnalysisResult = {
-            risks: analysis.risks as any,
-            gaps: analysis.gaps as any,
-            missedRequirements: analysis.missedRequirements as any,
-            recommendations: analysis.recommendations as any,
+            risks: JSON.parse(analysis.risks),
+            gaps: JSON.parse(analysis.gaps),
+            missedRequirements: JSON.parse(analysis.missedRequirements),
+            recommendations: JSON.parse(analysis.recommendations),
             summary: analysis.summary
         }
 
@@ -248,9 +248,9 @@ export async function generateTestCasesFromAnalysis(analysisId: string) {
                     suiteId: suite.id,
                     status: 'ACTIVE',
                     // Add requirements coverage tracking
-                    coversRisks: tc.coversRisks,
-                    coversGaps: tc.coversGaps,
-                    coversRequirements: tc.coversRequirements
+                    coversRisks: JSON.stringify(tc.coversRisks || []),
+                    coversGaps: JSON.stringify(tc.coversGaps || []),
+                    coversRequirements: JSON.stringify(tc.coversRequirements || [])
                 }
             })
         }

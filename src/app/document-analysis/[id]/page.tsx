@@ -37,7 +37,7 @@ export default async function AnalysisDetailPage({ params }: { params: Promise<{
             <AnalysisReport
                 analysisId={analysis.id}
                 analysis={analysisResult}
-                sourceType={analysis.sourceType}
+                sourceType={analysis.sourceType as 'JIRA_EPIC' | 'CONFLUENCE_PAGE'}
                 sourceTitle={analysis.sourceTitle}
                 sourceId={analysis.sourceId}
                 testSuiteId={analysis.testSuiteId}

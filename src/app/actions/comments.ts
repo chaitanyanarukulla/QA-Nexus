@@ -30,7 +30,7 @@ export async function createComment({
         testSuiteId,
         defectId,
         parentId,
-        mentions: mentions || [],
+        mentions: JSON.stringify(mentions || []),
       },
       include: {
         user: {

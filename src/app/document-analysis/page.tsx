@@ -33,10 +33,10 @@ export default async function DocumentAnalysisPage() {
             ) : (
                 <div className="grid gap-4">
                     {analyses.map((analysis) => {
-                        const risks = analysis.risks as any[]
-                        const gaps = analysis.gaps as any[]
-                        const missedReqs = analysis.missedRequirements as any[]
-                        const recommendations = analysis.recommendations as any[]
+                        const risks = JSON.parse(analysis.risks) as any[]
+                        const gaps = JSON.parse(analysis.gaps) as any[]
+                        const missedReqs = JSON.parse(analysis.missedRequirements) as any[]
+                        const recommendations = JSON.parse(analysis.recommendations) as any[]
 
                         return (
                             <Card key={analysis.id}>

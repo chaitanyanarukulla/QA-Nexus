@@ -46,6 +46,11 @@ export default async function TestCaseDetailPage({ params }: PageProps) {
   // Handle steps - ensure it's an array
   const steps = Array.isArray(testCase.steps) ? testCase.steps : []
 
+  // Parse coverage fields from JSON strings
+  const coversRisks: string[] = testCase.coversRisks ? JSON.parse(testCase.coversRisks) : []
+  const coversGaps: string[] = testCase.coversGaps ? JSON.parse(testCase.coversGaps) : []
+  const coversRequirements: string[] = testCase.coversRequirements ? JSON.parse(testCase.coversRequirements) : []
+
   const getPriorityColor = (priority: string) => {
     switch (priority) {
       case 'CRITICAL':
@@ -147,18 +152,18 @@ export default async function TestCaseDetailPage({ params }: PageProps) {
               )}
 
               {/* Coverage Information */}
-              {(testCase.coversRisks || testCase.coversGaps || testCase.coversRequirements) && (
+              {(coversRisks.length > 0 || coversGaps.length > 0 || coversRequirements.length > 0) && (
                 <div className="pt-4 border-t">
                   <p className="text-sm font-medium mb-3 flex items-center gap-2">
                     <Tag className="h-4 w-4" />
                     Coverage
                   </p>
                   <div className="space-y-3">
-                    {testCase.coversRisks && (testCase.coversRisks as string[]).length > 0 && (
+                    {coversRisks.length > 0 && (
                       <div>
                         <p className="text-xs font-medium text-muted-foreground mb-1">Risks Covered</p>
                         <div className="flex flex-wrap gap-2">
-                          {(testCase.coversRisks as string[]).map((risk, index) => (
+                          {coversRisks.map((risk, index) => (
                             <Badge key={index} variant="danger" className="text-xs">
                               <AlertCircle className="h-3 w-3 mr-1" />
                               {risk}
@@ -167,11 +172,11 @@ export default async function TestCaseDetailPage({ params }: PageProps) {
                         </div>
                       </div>
                     )}
-                    {testCase.coversGaps && (testCase.coversGaps as string[]).length > 0 && (
+                    {coversGaps.length > 0 && (
                       <div>
                         <p className="text-xs font-medium text-muted-foreground mb-1">Gaps Covered</p>
                         <div className="flex flex-wrap gap-2">
-                          {(testCase.coversGaps as string[]).map((gap, index) => (
+                          {coversGaps.map((gap, index) => (
                             <Badge key={index} variant="secondary" className="text-xs">
                               {gap}
                             </Badge>
@@ -179,11 +184,11 @@ export default async function TestCaseDetailPage({ params }: PageProps) {
                         </div>
                       </div>
                     )}
-                    {testCase.coversRequirements && (testCase.coversRequirements as string[]).length > 0 && (
+                    {coversRequirements.length > 0 && (
                       <div>
                         <p className="text-xs font-medium text-muted-foreground mb-1">Requirements Covered</p>
                         <div className="flex flex-wrap gap-2">
-                          {(testCase.coversRequirements as string[]).map((req, index) => (
+                          {coversRequirements.map((req, index) => (
                             <Badge key={index} variant="outline" className="text-xs">
                               {req}
                             </Badge>

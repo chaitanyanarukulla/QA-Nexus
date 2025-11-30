@@ -38,12 +38,16 @@ A comprehensive, intelligent QA platform that transforms requirements into test 
 QA Nexus now includes comprehensive API testing capabilities powered by Playwright:
 
 - **Visual Request Builder**: Intuitive UI for creating and executing API tests without writing code
+- **OpenAPI/Swagger Import**: Import entire API collections from OpenAPI 3.x or Swagger 2.x specifications
 - **Collections & Environments**: Organize API requests and manage multiple environments (Dev, Staging, Prod)
 - **Smart Assertions**: AI-powered assertion generation from API responses
+- **Authentication Support**: Bearer Token, Basic Auth, API Key, OAuth2, and AWS Signature
 - **Code Generation**: Convert visual API tests to executable Playwright code
+- **Collection Runner**: Execute all requests in a collection with batch progress tracking
 - **Execution History**: Track all API test runs with detailed metrics and timing
 - **Multi-Format Support**: JSON, form-data, x-www-form-urlencoded request bodies
-- **Environment Variables**: Dynamic variable substitution across requests
+- **Environment Variables**: Dynamic variable substitution across requests with `{{variableName}}` syntax
+- **Pre-Request Scripts**: JavaScript code execution before request for dynamic data setup
 
 ### Collaboration Features (Phase 5)
 - **Comments & Mentions**: Thread discussions on test cases, suites, and defects with @mentions

@@ -1,9 +1,12 @@
 'use server'
 
 import { prisma } from '@/lib/prisma'
-import type { ReviewStatus, ReviewDecision } from '@prisma/client'
 import { createNotification } from './notifications'
 import { logActivity } from './activity'
+
+// Define review types as string unions since they're stored as strings in DB
+export type ReviewStatus = 'PENDING' | 'IN_REVIEW' | 'COMPLETED' | 'APPROVED' | 'REJECTED' | 'CANCELLED'
+export type ReviewDecision = 'APPROVED' | 'REJECTED' | 'REQUEST_CHANGES' | 'NEEDS_CHANGES'
 
 export async function createReview({
   testCaseId,

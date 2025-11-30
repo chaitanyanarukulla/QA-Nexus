@@ -47,7 +47,7 @@ export async function POST(req: NextRequest) {
                             testCase = await prisma.testCase.create({
                                 data: {
                                     title: spec.title,
-                                    steps: [],
+                                    steps: JSON.stringify([]),
                                     isAutomated: true,
                                     automationId: spec.id,
                                     status: 'ACTIVE'

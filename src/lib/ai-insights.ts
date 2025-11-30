@@ -1,6 +1,9 @@
 import { prisma } from './prisma'
 import { chatCompletion } from './ai'
-import type { InsightType, InsightSeverity } from '@prisma/client'
+
+// Define insight types as they're stored as strings in the database
+export type InsightType = 'FLAKY_TEST' | 'HIGH_FAILURE_RISK' | 'SLOW_EXECUTION' | 'OPTIMIZATION_OPPORTUNITY'
+export type InsightSeverity = 'LOW' | 'MEDIUM' | 'HIGH' | 'CRITICAL'
 
 interface TestExecutionHistory {
   testCaseId: string
@@ -345,6 +348,7 @@ export async function analyzeAllTests() {
       await prisma.aIInsight.create({
         data: {
           ...insight,
+          metadata: JSON.stringify(insight.metadata),
           testSuiteId: (insight as any).testSuiteId,
         },
       })
@@ -356,7 +360,7 @@ export async function analyzeAllTests() {
           severity: insight.severity,
           description: insight.description,
           confidence: insight.confidence,
-          metadata: insight.metadata,
+          metadata: JSON.stringify(insight.metadata),
           updatedAt: new Date(),
         },
       })

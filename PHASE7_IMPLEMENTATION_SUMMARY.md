@@ -67,9 +67,29 @@ Phase 1 of the Playwright API Testing feature has been successfully implemented 
 - Automatic test file cleanup
 - Error handling with detailed stack traces
 
+#### 3. [openapi-parser.ts](src/lib/openapi-parser.ts) ⭐ NEW
+**Purpose:** Parses OpenAPI 3.x and Swagger 2.x specifications into API request configurations
+
+**Key Functions:**
+- `parseOpenAPISpec(source)` - Parse from URL or JSON string
+- `extractRequestsFromSpec(spec)` - Extract all API requests
+- `generateExampleFromSchema(schema, spec)` - Generate example data from JSON schemas
+- `groupRequestsByFolder(requests)` - Group requests by tags
+- `validateOpenAPIFormat(spec)` - Validate specification format
+
+**Features:**
+- OpenAPI 3.x and Swagger 2.x support
+- URL and JSON string parsing with @apidevtools/swagger-parser
+- Extract HTTP methods, parameters, request bodies, authentication
+- Generate example data from JSON schemas with $ref resolution
+- Support for all parameter types (query, path, header)
+- Authentication scheme mapping (Bearer, Basic, API Key, OAuth2)
+- Tag-based organization for folder structure
+- Comprehensive validation with detailed error messages
+
 ### Server Actions (✅ Complete)
 
-#### [api-testing.ts](src/app/actions/api-testing.ts) - 17 Server Actions
+#### [api-testing.ts](src/app/actions/api-testing.ts) - 20 Server Actions
 
 **Collections:**
 - `createCollection(data)` - Create new collection
@@ -92,6 +112,11 @@ Phase 1 of the Playwright API Testing feature has been successfully implemented 
 - `getEnvironments(userId)` - Fetch all environments
 - `updateEnvironment(id, data)` - Update environment
 - `deleteEnvironment(id)` - Remove environment
+
+**OpenAPI Import:** ⭐ NEW
+- `importOpenAPISpec(data)` - Import from URL or JSON with optional tag-based collection separation
+- `getOpenApiSpecs(userId)` - Fetch all imported specs
+- `deleteOpenApiSpec(id)` - Remove imported spec
 
 **Statistics:**
 - `getApiTestingStats(userId)` - Dashboard metrics
@@ -130,7 +155,23 @@ Phase 1 of the Playwright API Testing feature has been successfully implemented 
 - Empty state with helpful message
 - Scroll area for long lists
 
-#### 3. [API Testing Page](src/app/api-testing/page.tsx) + [Client](src/app/api-testing/client.tsx)
+#### 3. [OpenAPIImportDialog](src/components/api-testing/openapi-import-dialog.tsx) ⭐ NEW
+**Features:**
+- Dialog-based import interface
+- Dual input modes:
+  - **URL Tab**: Import from remote OpenAPI/Swagger URL
+  - **JSON Content Tab**: Paste specification directly
+- Real-time validation with detailed error messages
+- Sample OpenAPI URL (Swagger Petstore) for quick testing
+- **Create separate collections by tag** option with Switch component
+- Loading states during import
+- Success notifications with import statistics (requests created, collections created)
+- Error handling with user-friendly messages
+- Info card explaining what gets imported
+- Validation errors displayed with AlertCircle icon
+- Supports OpenAPI 3.x and Swagger 2.x formats
+
+#### 4. [API Testing Page](src/app/api-testing/page.tsx) + [Client](src/app/api-testing/client.tsx)
 **Features:**
 - Full-height layout
 - Server-side data fetching
@@ -157,25 +198,34 @@ Phase 1 of the Playwright API Testing feature has been successfully implemented 
 - **Body Configuration**: JSON, Form Data, URL Encoded, Raw, Binary
 - **Variable Substitution**: Use `{{variableName}}` in URLs and headers
 
-### 2. Real-time Execution
+### 2. OpenAPI/Swagger Import ⭐ NEW
+- **Quick Bulk Import**: Import entire API collections from OpenAPI 3.x or Swagger 2.x specifications
+- **Dual Input Methods**: Import from URL or paste JSON content directly
+- **Smart Organization**: Automatically organize endpoints by tags into separate collections
+- **Pre-filled Configurations**: All requests come with methods, URLs, parameters, bodies, and auth pre-configured
+- **Example Data Generation**: Automatically generates example request bodies from JSON schemas
+- **Validation**: Real-time validation with detailed error messages before import
+- **Sample Spec**: Includes Swagger Petstore URL for quick testing
+
+### 3. Real-time Execution
 - **Playwright-Powered**: Uses Playwright's APIRequestContext
 - **Fast Execution**: Typical requests complete in <1 second
 - **Detailed Results**: Status code, response time, body, headers
 - **Error Handling**: Clear error messages with stack traces
 
-### 3. Code Generation
+### 4. Code Generation
 - **Production-Ready**: Generated code follows Playwright best practices
 - **Copy to Clipboard**: One-click code copying
 - **Fully Executable**: Run generated code directly with `npx playwright test`
 - **TypeScript**: Full type safety in generated code
 
-### 4. Collections Management
+### 5. Collections Management
 - **Hierarchical Structure**: Organize requests into folders (ready for nesting)
 - **Quick Actions**: Execute or delete from sidebar
 - **Request Count**: See how many requests in each collection
 - **Search Ready**: Architecture supports search (Phase 2)
 
-### 5. Execution History
+### 6. Execution History
 - **Complete Audit Trail**: Every execution is recorded
 - **Performance Tracking**: Response time trends over time
 - **User Attribution**: Track who executed each test

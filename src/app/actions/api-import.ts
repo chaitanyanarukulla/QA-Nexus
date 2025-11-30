@@ -83,9 +83,9 @@ export async function importOpenApiSpec(
                             description: op.description,
                             method: method.toUpperCase() as any,
                             url: path, // Note: Base URL handling might be needed later
-                            headers,
-                            queryParams,
-                            body,
+                            headers: JSON.stringify(headers),
+                            queryParams: JSON.stringify(queryParams),
+                            body: body ? JSON.stringify(body) : null,
                             bodyType: bodyType as any,
                             collectionId: collection.id,
                             createdBy: userId,

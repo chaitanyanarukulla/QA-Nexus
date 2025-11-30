@@ -331,6 +331,77 @@ Create and execute API tests through a visual interface, powered by Playwright.
      - **URL Encoded**: Form data
 4. Click **Save**
 
+### Importing OpenAPI/Swagger Specifications
+
+Quickly import entire API collections from OpenAPI 3.x or Swagger 2.x specifications.
+
+**Method 1: Import from URL**
+
+1. Navigate to **API Testing**
+2. Click **Import OpenAPI/Swagger**
+3. Select **URL** tab
+4. Enter the specification URL:
+   - Example: `https://petstore3.swagger.io/api/v3/openapi.json`
+5. Click **Validate** to verify the specification
+6. (Optional) Enable **Create separate collections by tag**
+   - Groups endpoints into multiple collections based on OpenAPI tags
+   - Example: "Users", "Orders", "Products"
+7. Click **Import Specification**
+8. Wait for import to complete
+9. View imported requests in your collections
+
+**Method 2: Import from JSON Content**
+
+1. Navigate to **API Testing**
+2. Click **Import OpenAPI/Swagger**
+3. Select **JSON Content** tab
+4. Paste your OpenAPI/Swagger JSON specification
+5. Click **Validate** to check format
+6. (Optional) Enable **Create separate collections by tag**
+7. Click **Import Specification**
+
+**What Gets Imported**:
+- ✅ All API endpoints with their HTTP methods (GET, POST, PUT, DELETE, etc.)
+- ✅ Request parameters (query, path, header parameters)
+- ✅ Request bodies with example data generated from schemas
+- ✅ Authentication schemes (Bearer Token, Basic Auth, API Key, OAuth2)
+- ✅ Response schemas for validation
+- ✅ Organized by tags/folders for easy navigation
+
+**Example: Importing Swagger Petstore**
+
+1. Click **Import OpenAPI/Swagger**
+2. Select **URL** tab
+3. Click the sample URL: `https://petstore3.swagger.io/api/v3/openapi.json`
+4. Click **Validate** - shows "Valid OpenAPI specification!"
+5. Enable **Create separate collections by tag** to organize by "pet", "store", "user"
+6. Click **Import Specification**
+7. Success message shows: "Created 20 API requests in 3 collection(s)"
+8. Three new collections appear:
+   - **pet** - Contains /pet endpoints (addPet, updatePet, findByStatus, etc.)
+   - **store** - Contains /store endpoints (placeOrder, getInventory, etc.)
+   - **user** - Contains /user endpoints (createUser, loginUser, etc.)
+9. Each request is pre-configured with:
+   - Correct HTTP method
+   - Full URL with path parameters
+   - Example request bodies (JSON)
+   - Required headers
+   - Authentication (if specified in OpenAPI)
+
+**Validation Errors**
+
+If validation fails, you'll see specific error messages:
+- **"Not a valid OpenAPI/Swagger specification"** - Missing required fields
+- **"No paths defined"** - Specification has no API endpoints
+- **"Invalid JSON format"** - Syntax error in JSON
+- **"Invalid URL format"** - URL is malformed
+
+**Tips**:
+- Use **Validate** before importing to catch errors early
+- Enable **Create separate collections by tag** for large APIs with many endpoints
+- Review imported requests and adjust example values as needed
+- Variables like `{userId}` in paths are replaced with example values
+
 ### Setting Up Environments
 
 1. Navigate to **API Testing** → **Environments**

@@ -95,12 +95,12 @@ export async function createApiRequest(data: {
         description: data.description,
         method: data.method as any,
         url: data.url,
-        headers: data.headers || {},
-        queryParams: data.queryParams || {},
-        body: data.body,
+        headers: JSON.stringify(data.headers || {}),
+        queryParams: JSON.stringify(data.queryParams || {}),
+        body: data.body ? JSON.stringify(data.body) : null,
         bodyType: (data.bodyType as any) || 'JSON',
         authType: (data.authType as any) || 'NONE',
-        authConfig: data.authConfig || {},
+        authConfig: JSON.stringify(data.authConfig || {}),
         testScript: data.assertions && data.assertions.length > 0 ? JSON.stringify(data.assertions) : undefined,
         preRequestScript: data.preRequestScript || '',
         collectionId: data.collectionId,
@@ -145,12 +145,12 @@ export async function updateApiRequest(id: string, data: {
         ...(data.description !== undefined && { description: data.description }),
         ...(data.method && { method: data.method as any }),
         ...(data.url && { url: data.url }),
-        ...(data.headers && { headers: data.headers }),
-        ...(data.queryParams && { queryParams: data.queryParams }),
-        ...(data.body !== undefined && { body: data.body }),
+        ...(data.headers && { headers: JSON.stringify(data.headers) }),
+        ...(data.queryParams && { queryParams: JSON.stringify(data.queryParams) }),
+        ...(data.body !== undefined && { body: data.body ? JSON.stringify(data.body) : null }),
         ...(data.bodyType && { bodyType: data.bodyType as any }),
         ...(data.authType && { authType: data.authType as any }),
-        ...(data.authConfig !== undefined && { authConfig: data.authConfig }),
+        ...(data.authConfig !== undefined && { authConfig: JSON.stringify(data.authConfig) }),
         ...(data.assertions !== undefined && { testScript: data.assertions && data.assertions.length > 0 ? JSON.stringify(data.assertions) : undefined }),
         ...(data.preRequestScript !== undefined && { preRequestScript: data.preRequestScript }),
       },
@@ -375,7 +375,7 @@ export async function createEnvironment(data: {
       data: {
         name: data.name,
         description: data.description,
-        variables: data.variables,
+        variables: JSON.stringify(data.variables),
         createdBy: data.userId,
       }
     });
@@ -411,7 +411,7 @@ export async function updateEnvironment(id: string, data: {
       data: {
         ...(data.name && { name: data.name }),
         ...(data.description !== undefined && { description: data.description }),
-        ...(data.variables && { variables: data.variables }),
+        ...(data.variables && { variables: JSON.stringify(data.variables) }),
       }
     });
 
@@ -474,6 +474,152 @@ export async function getApiTestingStats(userId?: string) {
         avgResponseTime: avgResponseTime._avg.responseTime || 0
       }
     };
+  } catch (error: any) {
+    return { success: false, error: error.message };
+  }
+}
+
+// ==================== OpenAPI Import ====================
+
+import { parseOpenAPISpec, groupRequestsByFolder } from '@/lib/openapi-parser';
+
+export async function importOpenAPISpec(data: {
+  source: string; // URL or JSON string
+  userId: string;
+  createSeparateCollections?: boolean;
+}) {
+  try {
+    // Parse the OpenAPI spec
+    const parseResult = await parseOpenAPISpec(data.source);
+
+    if (!parseResult.success || !parseResult.spec || !parseResult.requests) {
+      return { success: false, error: parseResult.error || 'Failed to parse OpenAPI specification' };
+    }
+
+    const { spec, requests } = parseResult;
+
+    // Save OpenAPI spec to database
+    const openApiSpec = await prisma.openApiSpec.create({
+      data: {
+        title: spec.info.title,
+        version: spec.info.version,
+        description: spec.info.description,
+        specContent: JSON.stringify(spec),
+        sourceUrl: data.source.startsWith('http') ? data.source : undefined,
+        importedBy: data.userId,
+      },
+    });
+
+    // Group requests by folder/tag if requested
+    const groupedRequests = data.createSeparateCollections
+      ? groupRequestsByFolder(requests)
+      : new Map([['All Requests', requests]]);
+
+    const collections: any[] = [];
+    let totalRequestsCreated = 0;
+
+    // Create collections and requests
+    for (const [folderName, folderRequests] of groupedRequests.entries()) {
+      // Create collection
+      const collection = await prisma.apiCollection.create({
+        data: {
+          title: data.createSeparateCollections ? `${spec.info.title} - ${folderName}` : spec.info.title,
+          description: data.createSeparateCollections
+            ? `${folderName} endpoints from ${spec.info.title}`
+            : spec.info.description,
+          createdBy: data.userId,
+        },
+      });
+
+      // Create API requests
+      for (let i = 0; i < folderRequests.length; i++) {
+        const req = folderRequests[i];
+        await prisma.apiRequest.create({
+          data: {
+            title: req.title,
+            description: req.description,
+            method: req.method as any,
+            url: req.url,
+            headers: JSON.stringify(req.headers || {}),
+            queryParams: JSON.stringify(req.queryParams || {}),
+            body: req.body ? JSON.stringify(req.body) : null,
+            bodyType: (req.bodyType as any) || 'NONE',
+            authType: (req.authType as any) || 'NONE',
+            authConfig: JSON.stringify(req.authConfig || {}),
+            collectionId: collection.id,
+            createdBy: data.userId,
+            order: i,
+          },
+        });
+        totalRequestsCreated++;
+      }
+
+      collections.push(collection);
+    }
+
+    // Link the first collection to the OpenAPI spec
+    if (collections.length > 0) {
+      await prisma.openApiSpec.update({
+        where: { id: openApiSpec.id },
+        data: { collectionId: collections[0].id },
+      });
+    }
+
+    revalidatePath('/api-testing');
+
+    return {
+      success: true,
+      openApiSpecId: openApiSpec.id,
+      collections: collections.map((c) => ({ id: c.id, title: c.title })),
+      totalRequests: totalRequestsCreated,
+      message: `Successfully imported ${totalRequestsCreated} API requests from ${spec.info.title}`,
+    };
+  } catch (error: any) {
+    console.error('OpenAPI import error:', error);
+    return { success: false, error: error.message || 'Failed to import OpenAPI specification' };
+  }
+}
+
+export async function getOpenApiSpecs(userId?: string) {
+  try {
+    const specs = await prisma.openApiSpec.findMany({
+      where: userId ? { importedBy: userId } : undefined,
+      include: {
+        collection: {
+          include: {
+            _count: {
+              select: { requests: true },
+            },
+          },
+        },
+        user: {
+          select: { id: true, name: true, email: true },
+        },
+      },
+      orderBy: { importedAt: 'desc' },
+    });
+
+    return { success: true, specs };
+  } catch (error: any) {
+    return { success: false, error: error.message };
+  }
+}
+
+export async function deleteOpenApiSpec(id: string) {
+  try {
+    // Get the spec to find linked collection
+    const spec = await prisma.openApiSpec.findUnique({
+      where: { id },
+      include: { collection: true },
+    });
+
+    // Delete the spec (collection will remain but unlinked)
+    await prisma.openApiSpec.delete({
+      where: { id },
+    });
+
+    revalidatePath('/api-testing');
+    return { success: true };
   } catch (error: any) {
     return { success: false, error: error.message };
   }

@@ -1,14 +1,20 @@
 import { PrismaClient } from '@prisma/client';
-import { Priority, Status, RunStatus, ResultStatus, DefectStatus } from '@prisma/client';
 
 // @ts-ignore
 const prisma = new PrismaClient({});
 
 /**
  * Database Helpers for Playwright Tests
- * 
+ *
  * Provides utilities for seeding and cleaning test data
  */
+
+// Define types as they're stored as strings in the database
+type Priority = 'CRITICAL' | 'HIGH' | 'MEDIUM' | 'LOW'
+type Status = 'DRAFT' | 'ACTIVE' | 'DEPRECATED'
+type RunStatus = 'PENDING' | 'IN_PROGRESS' | 'COMPLETED' | 'FAILED'
+type ResultStatus = 'PASS' | 'FAIL' | 'SKIP' | 'BLOCKED'
+type DefectStatus = 'OPEN' | 'IN_PROGRESS' | 'RESOLVED' | 'CLOSED'
 
 /**
  * Clean all test data from the database
@@ -73,7 +79,7 @@ export async function createTestCase(data?: {
         data: {
             title: data?.title || `Test Case ${Date.now()}`,
             description: data?.description || 'Test case description',
-            steps: data?.steps || ['Step 1', 'Step 2'],
+            steps: JSON.stringify(data?.steps || ['Step 1', 'Step 2']),
             expectedResult: data?.expectedResult || 'Expected result',
             priority: data?.priority || 'MEDIUM',
             status: data?.status || 'ACTIVE',

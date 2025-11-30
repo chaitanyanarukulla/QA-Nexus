@@ -24,8 +24,7 @@ import {
 } from '@/components/ui/dialog'
 import { Avatar, AvatarFallback } from '@/components/ui/avatar'
 import { toast } from 'sonner'
-import { createReview, getReviews, updateReviewStatus } from '@/app/actions/reviews'
-import type { ReviewStatus, ReviewDecision } from '@prisma/client'
+import { createReview, getReviews, updateReviewStatus, type ReviewStatus, type ReviewDecision } from '@/app/actions/reviews'
 
 interface Review {
   id: string
@@ -85,7 +84,7 @@ export function ReviewPanel({ testCaseId, testSuiteId, currentUserId, users }: R
   const loadReviews = async () => {
     const result = await getReviews({ testCaseId, testSuiteId })
     if (result.success && result.reviews) {
-      setReviews(result.reviews)
+      setReviews(result.reviews as any)
     }
   }
 

@@ -1,10 +1,15 @@
-import { Priority, Status, RunStatus, ResultStatus, DefectStatus } from '@prisma/client';
-
 /**
  * Test Data Factory
- * 
+ *
  * Generates realistic test data for use in Playwright tests
  */
+
+// Define types as they're stored as strings in the database
+type Priority = 'CRITICAL' | 'HIGH' | 'MEDIUM' | 'LOW'
+type Status = 'DRAFT' | 'ACTIVE' | 'DEPRECATED'
+type RunStatus = 'PENDING' | 'IN_PROGRESS' | 'COMPLETED' | 'FAILED'
+type ResultStatus = 'PASS' | 'FAIL' | 'SKIP' | 'BLOCKED'
+type DefectStatus = 'OPEN' | 'IN_PROGRESS' | 'RESOLVED' | 'CLOSED'
 
 const testCaseTitles = [
     'Verify user login with valid credentials',

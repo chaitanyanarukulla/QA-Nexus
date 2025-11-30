@@ -3,6 +3,7 @@
 import { useState, useEffect } from 'react'
 import { CollectionsSidebar } from '@/components/api-testing/collections-sidebar'
 import { RequestBuilder } from '@/components/api-testing/request-builder'
+import { OpenAPIImportDialog } from '@/components/api-testing/openapi-import-dialog'
 import { getCollections, getApiRequest } from '@/app/actions/api-testing'
 
 interface Collection {
@@ -80,11 +81,14 @@ export function ApiTestingClient({ initialCollections, userId }: ApiTestingClien
           />
         ) : (
           <div className="flex items-center justify-center h-full text-center">
-            <div>
-              <h2 className="text-xl font-semibold mb-2">No Collection Selected</h2>
-              <p className="text-muted-foreground">
-                Create a collection to get started with API testing
-              </p>
+            <div className="space-y-4">
+              <div>
+                <h2 className="text-xl font-semibold mb-2">No Collection Selected</h2>
+                <p className="text-muted-foreground mb-4">
+                  Create a collection or import an OpenAPI specification to get started
+                </p>
+              </div>
+              <OpenAPIImportDialog userId={userId} onImportComplete={handleRefresh} />
             </div>
           </div>
         )}
