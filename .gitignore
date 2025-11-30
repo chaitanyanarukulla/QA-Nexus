@@ -44,3 +44,10 @@ next-env.d.ts
 test-results.json
 playwright-report/
 test-results/
+
+# SQLite
+*.db-journal
+dev.db
+
+# Temporary files
+temp_*.js
