@@ -58,16 +58,16 @@ export function Sidebar() {
       {/* Sidebar */}
       <aside
         className={cn(
-          'fixed left-0 top-0 h-screen bg-white dark:bg-neutral-900 border-r border-neutral-200 dark:border-neutral-800',
+          'fixed left-0 top-0 h-screen bg-gradient-to-b from-slate-50 to-white dark:from-slate-900 dark:to-slate-950 border-r border-slate-200 dark:border-slate-800',
           'transition-all duration-300 ease-in-out z-40',
-          'flex flex-col',
+          'flex flex-col shadow-xl',
           isCollapsed ? 'w-20' : 'w-64',
           'lg:translate-x-0',
           isMobileOpen ? 'translate-x-0' : '-translate-x-full lg:translate-x-0'
         )}
       >
         {/* Logo Section */}
-        <div className="flex h-20 items-center justify-between border-b border-neutral-200 dark:border-neutral-800 px-4">
+        <div className="flex h-20 items-center justify-between border-b border-slate-200 dark:border-slate-700 px-4 bg-gradient-to-r from-blue-50 to-indigo-50 dark:from-slate-800 dark:to-slate-900">
           {!isCollapsed && (
             <Link href="/" className="flex items-center space-x-2 flex-1">
               <img
@@ -89,7 +89,7 @@ export function Sidebar() {
         </div>
 
         {/* Navigation Items */}
-        <nav className="flex-1 overflow-y-auto px-3 py-6 space-y-2">
+        <nav className="flex-1 overflow-y-auto px-3 py-6 space-y-1.5">
           {navItems.map((item) => {
             const Icon = item.icon
             const isActive = pathname === item.href
@@ -99,27 +99,33 @@ export function Sidebar() {
                 href={item.href}
                 onClick={() => setIsMobileOpen(false)}
                 className={cn(
-                  'flex items-center gap-3 px-4 py-2.5 rounded-lg transition-smooth text-sm font-medium',
+                  'flex items-center gap-3 px-4 py-3 rounded-xl transition-all duration-200 text-sm font-medium relative overflow-hidden group',
                   isActive
-                    ? 'bg-primary-50 dark:bg-primary-900 text-primary-600 dark:text-primary-400'
-                    : 'text-neutral-600 dark:text-neutral-400 hover:bg-neutral-100 dark:hover:bg-neutral-800'
+                    ? 'bg-gradient-to-r from-blue-500 to-indigo-600 text-white shadow-lg shadow-blue-500/50 dark:shadow-blue-500/30'
+                    : 'text-slate-700 dark:text-slate-300 hover:bg-gradient-to-r hover:from-blue-50 hover:to-indigo-50 dark:hover:from-slate-800 dark:hover:to-slate-700 hover:shadow-md hover:scale-[1.02]'
                 )}
                 title={isCollapsed ? item.label : undefined}
               >
-                <Icon className="h-5 w-5 flex-shrink-0" />
+                <Icon className={cn(
+                  "h-5 w-5 flex-shrink-0 transition-transform group-hover:scale-110",
+                  isActive && "drop-shadow-sm"
+                )} />
                 {!isCollapsed && <span className="truncate">{item.label}</span>}
+                {isActive && !isCollapsed && (
+                  <div className="absolute right-2 w-1.5 h-8 bg-white/30 rounded-full"></div>
+                )}
               </Link>
             )
           })}
         </nav>
 
         {/* Collapse Button */}
-        <div className="border-t border-neutral-200 dark:border-neutral-800 p-3">
+        <div className="border-t border-slate-200 dark:border-slate-700 p-3 bg-gradient-to-r from-slate-50 to-white dark:from-slate-800 dark:to-slate-900">
           <Button
             onClick={toggleCollapse}
             variant="secondary"
             size="sm"
-            className="w-full transition-smooth justify-center lg:justify-start"
+            className="w-full transition-all duration-200 justify-center lg:justify-start bg-gradient-to-r from-slate-100 to-slate-200 dark:from-slate-700 dark:to-slate-600 hover:from-blue-100 hover:to-indigo-100 dark:hover:from-blue-900 dark:hover:to-indigo-900 border-0 shadow-sm hover:shadow-md"
           >
             {isCollapsed ? (
               <ChevronRight className="h-4 w-4" />
