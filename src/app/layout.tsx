@@ -18,6 +18,16 @@ const geistMono = Geist_Mono({
 export const metadata: Metadata = {
   title: "QA Nexus - Quality Assurance Management Platform",
   description: "AI-driven QA platform for test management, execution, and defect tracking",
+  icons: {
+    icon: [
+      { url: '/icon.png' },
+      { url: '/icon-16x16.png', sizes: '16x16', type: 'image/png' },
+      { url: '/icon-32x32.png', sizes: '32x32', type: 'image/png' },
+    ],
+    apple: [
+      { url: '/apple-icon.png' },
+    ],
+  },
 };
 
 import { AIChatWidget } from "@/components/ai/ai-chat-widget";

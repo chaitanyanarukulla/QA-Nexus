@@ -70,9 +70,11 @@ export function Sidebar() {
         <div className="flex h-16 items-center justify-between border-b border-neutral-200 dark:border-neutral-800 px-4">
           {!isCollapsed && (
             <Link href="/" className="flex items-center space-x-2 flex-1">
-              <div className="flex h-8 w-8 items-center justify-center rounded-md bg-primary text-primary-foreground flex-shrink-0">
-                <span className="text-lg font-bold">QA</span>
-              </div>
+              <img
+                src="/icon.png"
+                alt="QA Nexus"
+                className="h-8 w-8 flex-shrink-0"
+              />
               <span className="font-bold text-neutral-900 dark:text-neutral-50 truncate">
                 QA Nexus
               </span>
@@ -80,9 +82,11 @@ export function Sidebar() {
           )}
           {isCollapsed && (
             <Link href="/" className="flex items-center justify-center w-full">
-              <div className="flex h-8 w-8 items-center justify-center rounded-md bg-primary text-primary-foreground">
-                <span className="text-lg font-bold">QA</span>
-              </div>
+              <img
+                src="/icon.png"
+                alt="QA Nexus"
+                className="h-8 w-8"
+              />
             </Link>
           )}
         </div>

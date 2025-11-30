@@ -282,12 +282,23 @@ QA Nexus is an enterprise-grade QA management platform that bridges the gap betw
 
    **Troubleshooting Database Issues**: See [Troubleshooting](#troubleshooting) section below.
 
-5. **Start the development server**
+5. **Add branding assets (optional)**
+
+   Place your logo and favicon images in the `public/` directory:
+
+   - `public/icon.png` - App icon (used in sidebar and as favicon)
+   - `public/icon-16x16.png` - Favicon 16x16 size
+   - `public/icon-32x32.png` - Favicon 32x32 size
+   - `public/apple-icon.png` - Apple touch icon
+
+   **Note**: The app includes placeholder references. If you don't add these images, the app will show broken image icons until you add your branding assets.
+
+6. **Start the development server**
    ```bash
    npm run dev
    ```
 
-6. **Open your browser**
+7. **Open your browser**
    ```
    http://localhost:3000
    ```
