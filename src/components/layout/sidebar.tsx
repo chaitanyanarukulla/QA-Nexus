@@ -67,25 +67,22 @@ export function Sidebar() {
         )}
       >
         {/* Logo Section */}
-        <div className="flex h-16 items-center justify-between border-b border-neutral-200 dark:border-neutral-800 px-4">
+        <div className="flex h-20 items-center justify-between border-b border-neutral-200 dark:border-neutral-800 px-4">
           {!isCollapsed && (
             <Link href="/" className="flex items-center space-x-2 flex-1">
               <img
                 src="/icon.png"
                 alt="QA Nexus"
-                className="h-8 w-8 flex-shrink-0"
+                className="h-[72px] w-auto max-w-[310px] object-contain flex-shrink-0"
               />
-              <span className="font-bold text-neutral-900 dark:text-neutral-50 truncate">
-                QA Nexus
-              </span>
             </Link>
           )}
           {isCollapsed && (
             <Link href="/" className="flex items-center justify-center w-full">
               <img
-                src="/icon.png"
+                src="/favIcon.png"
                 alt="QA Nexus"
-                className="h-8 w-8"
+                className="h-8 w-8 object-contain"
               />
             </Link>
           )}
