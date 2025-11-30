@@ -15,6 +15,7 @@ import { executeApiRequest, createApiRequest, updateApiRequest } from '@/app/act
 import { AuthConfig } from './auth-config'
 import { AssertionsBuilder } from './assertions-builder'
 import { PreRequestEditor } from './pre-request-editor'
+import { GraphQLQueryBuilder } from './graphql-query-builder'
 
 interface RequestBuilderProps {
   requestId?: string;
@@ -48,6 +49,7 @@ export function RequestBuilder({ requestId, collectionId, userId, initialData, o
   )
   const [bodyType, setBodyType] = useState(initialData?.bodyType || 'JSON')
   const [body, setBody] = useState(initialData?.body ? JSON.stringify(initialData.body, null, 2) : '{}')
+  const [graphqlVariables, setGraphqlVariables] = useState('{}')
 
   // Phase 3: Authentication, Assertions, Pre-Request
   const [authType, setAuthType] = useState(initialData?.authType || 'NONE')
@@ -390,17 +392,25 @@ export function RequestBuilder({ requestId, collectionId, userId, initialData, o
                   <SelectItem value="FORM_DATA">Form Data</SelectItem>
                   <SelectItem value="FORM_URLENCODED">Form URL Encoded</SelectItem>
                   <SelectItem value="RAW">Raw</SelectItem>
+                  <SelectItem value="GRAPHQL">GraphQL</SelectItem>
                 </SelectContent>
               </Select>
 
-              {bodyType !== 'NONE' && (
+              {bodyType === 'GRAPHQL' ? (
+                <GraphQLQueryBuilder
+                  query={body}
+                  variables={graphqlVariables}
+                  onQueryChange={setBody}
+                  onVariablesChange={setGraphqlVariables}
+                />
+              ) : bodyType !== 'NONE' ? (
                 <Textarea
                   value={body}
                   onChange={(e) => setBody(e.target.value)}
                   placeholder={bodyType === 'JSON' ? '{\n  "key": "value"\n}' : 'Request body'}
                   className="font-mono text-sm min-h-[200px]"
                 />
-              )}
+              ) : null}
             </TabsContent>
 
             <TabsContent value="auth" className="mt-4">

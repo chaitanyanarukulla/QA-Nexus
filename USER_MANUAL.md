@@ -457,6 +457,93 @@ Assertions automatically validate API responses.
 4. Review and edit generated assertions
 5. Save
 
+### Testing GraphQL APIs
+
+QA Nexus includes a specialized GraphQL query builder for testing GraphQL APIs.
+
+**Setting Up GraphQL Request:**
+
+1. Create a new API request
+2. Set method to **POST** (GraphQL typically uses POST)
+3. Enter GraphQL endpoint URL (e.g., `https://api.example.com/graphql`)
+4. In **Body** tab, select **GraphQL** from dropdown
+5. The GraphQL query builder will appear with three tabs
+
+**Query Tab:**
+
+1. Write your GraphQL query, mutation, or subscription
+2. Use GraphQL syntax with proper field selection
+3. Example query:
+```graphql
+query GetUser($id: ID!) {
+  user(id: $id) {
+    id
+    name
+    email
+    posts {
+      id
+      title
+    }
+  }
+}
+```
+
+**Variables Tab:**
+
+1. Define query variables in JSON format
+2. Variables correspond to parameters in your query
+3. Example variables:
+```json
+{
+  "id": "123",
+  "filter": {
+    "status": "published"
+  }
+}
+```
+
+**Examples Tab:**
+
+The Examples tab provides ready-to-use templates:
+- **Query Example**: Fetch data (GET operation)
+- **Mutation Example**: Create/update data (POST/PUT operation)
+- **Subscription Example**: Real-time data streaming
+- Click any example to insert it into the query editor
+
+**GraphQL Tips:**
+- Use variables ($id, $input) for dynamic values
+- Request only the fields you need to minimize payload
+- Use fragments for reusable field selections
+- GraphQL requests are always POST with JSON body
+- The body contains: `{ "query": "...", "variables": {...} }`
+
+**Executing GraphQL Request:**
+
+1. Configure query and variables
+2. Click **Send**
+3. View response in standard response viewer
+4. Add assertions to validate response data
+5. Generate Playwright test code
+
+**Generated Code Example:**
+```typescript
+import { test, expect } from '@playwright/test'
+
+test('POST https://api.example.com/graphql', async ({ request }) => {
+  const response = await request.post(
+    'https://api.example.com/graphql',
+    {
+      data: {
+        "query": "query GetUser($id: ID!) { user(id: $id) { id name email } }",
+        "variables": { "id": "123" }
+      }
+    }
+  )
+
+  expect(response.ok()).toBeTruthy()
+})
+```
+
 ### Generating Playwright Code
 
 1. Open an API request

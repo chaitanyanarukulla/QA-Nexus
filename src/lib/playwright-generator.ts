@@ -10,6 +10,7 @@ export interface ApiRequestConfig {
   queryParams?: Record<string, string>;
   body?: any;
   bodyType?: string;
+  graphqlVariables?: any;
   authType?: string;
   authConfig?: any;
   assertions?: Assertion[];
@@ -213,6 +214,13 @@ export function generatePlaywrightTest(config: ApiRequestConfig): string {
   if (processedBody && method !== 'GET' && method !== 'HEAD') {
     if (bodyType === 'JSON') {
       requestOptions.push(`    data: ${JSON.stringify(processedBody, null, 6).replace(/\n/g, '\n    ')}`);
+    } else if (bodyType === 'GRAPHQL') {
+      // GraphQL requests send query and variables as JSON
+      const graphqlBody = {
+        query: processedBody,
+        variables: config.graphqlVariables || {}
+      };
+      requestOptions.push(`    data: ${JSON.stringify(graphqlBody, null, 6).replace(/\n/g, '\n    ')}`);
     } else if (bodyType === 'FORM_DATA') {
       requestOptions.push(`    multipart: ${JSON.stringify(processedBody, null, 6).replace(/\n/g, '\n    ')}`);
     } else if (bodyType === 'FORM_URLENCODED') {
