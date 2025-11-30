@@ -8,12 +8,13 @@ A comprehensive, intelligent QA platform that transforms requirements into test 
 ![TypeScript](https://img.shields.io/badge/TypeScript-strict-blue)
 ![Next.js](https://img.shields.io/badge/Next.js-16.0-black)
 ![React](https://img.shields.io/badge/React-19-blue)
-![Prisma](https://img.shields.io/badge/Prisma-7.0-2D3748)
+![Prisma](https://img.shields.io/badge/Prisma-5.22-2D3748)
 
 ---
 
 ## 📋 Table of Contents
 
+- [What's New in v3.0.0](#whats-new-in-v300)
 - [Overview](#overview)
 - [Key Features](#key-features)
 - [Tech Stack](#tech-stack)
@@ -26,7 +27,35 @@ A comprehensive, intelligent QA platform that transforms requirements into test 
 - [Database Schema](#database-schema)
 - [API Documentation](#api-documentation)
 - [Development](#development)
+- [Troubleshooting](#troubleshooting)
 - [Deployment](#deployment)
+
+---
+
+## 🎉 What's New in v3.0.0
+
+### API Testing Suite (Phase 7)
+QA Nexus now includes comprehensive API testing capabilities powered by Playwright:
+
+- **Visual Request Builder**: Intuitive UI for creating and executing API tests without writing code
+- **Collections & Environments**: Organize API requests and manage multiple environments (Dev, Staging, Prod)
+- **Smart Assertions**: AI-powered assertion generation from API responses
+- **Code Generation**: Convert visual API tests to executable Playwright code
+- **Execution History**: Track all API test runs with detailed metrics and timing
+- **Multi-Format Support**: JSON, form-data, x-www-form-urlencoded request bodies
+- **Environment Variables**: Dynamic variable substitution across requests
+
+### Collaboration Features (Phase 5)
+- **Comments & Mentions**: Thread discussions on test cases, suites, and defects with @mentions
+- **Notifications System**: Real-time alerts for mentions, reviews, and status changes
+- **Review Workflows**: Request and approve reviews with decision tracking
+- **Activity Timeline**: Visual history of all actions across the platform
+
+### Advanced AI Capabilities (Phase 6)
+- **Flaky Test Detection**: Automatically identify unreliable tests with flaky scores
+- **Predictive Analytics**: ML-based prediction of test failures before execution
+- **Performance Analysis**: Detect slow tests and get optimization recommendations
+- **AI Insights Dashboard**: Centralized view of all AI-powered recommendations
 
 ---
 
@@ -158,7 +187,7 @@ QA Nexus is an enterprise-grade QA management platform that bridges the gap betw
 ### Backend
 - **Runtime**: Node.js 18+
 - **API**: Next.js Server Actions
-- **Database**: SQLite (Prisma ORM v7.0.1)
+- **Database**: SQLite (Prisma ORM 5.22.0)
 - **Validation**: Zod
 - **AI Integration**:
   - OpenAI GPT-4 (ChatGPT)
@@ -226,10 +255,28 @@ QA Nexus is an enterprise-grade QA management platform that bridges the gap betw
 
 4. **Set up the database**
    ```bash
+   # Generate Prisma Client
    npx prisma generate
-   npx prisma migrate dev
+
+   # Apply all migrations (creates database tables)
+   npx prisma migrate deploy
+
+   # Or create a new migration if schema changed
+   # npx prisma migrate dev --name init
+
+   # Seed database with demo data (optional)
    npm run db:seed
    ```
+
+   **Database Migrations**: The project includes 14 migrations covering all features:
+   - User management and roles
+   - Test management (TestCase, TestSuite, TestRun, TestResult)
+   - Defect tracking with Jira integration
+   - AI features (DocumentAnalysis, AIInsight, AIProviderSettings)
+   - API Testing (ApiCollection, ApiRequest, ApiExecution, Environment)
+   - Collaboration (Comment, Notification, Review, ActivityLog)
+
+   **Troubleshooting Database Issues**: See [Troubleshooting](#troubleshooting) section below.
 
 5. **Start the development server**
    ```bash
@@ -794,6 +841,119 @@ Authorization: Bearer YOUR_API_KEY
 
 ---
 
+## 🔧 Troubleshooting
+
+### Common Issues
+
+#### 1. Prisma Module Resolution Error
+**Error**: `Cannot find module '.prisma/client/default'`
+
+**Solution**:
+```bash
+# Clear Next.js cache
+rm -rf .next
+
+# Regenerate Prisma Client
+npx prisma generate
+
+# Restart dev server
+npm run dev
+```
+
+#### 2. Database Migration Issues
+**Error**: `The table 'main.User' does not exist in the current database`
+
+**Solution**:
+```bash
+# Apply all migrations
+npx prisma migrate deploy
+
+# Or reset database (WARNING: deletes all data)
+npx prisma migrate reset
+```
+
+#### 3. Port Already in Use
+**Error**: `Port 3000 is in use`
+
+**Solution**:
+```bash
+# Kill process on port 3000
+pkill -f "next dev"
+
+# Or use a different port
+PORT=3001 npm run dev
+```
+
+#### 4. Lock File Issues
+**Error**: `Unable to acquire lock at .next/dev/lock`
+
+**Solution**:
+```bash
+# Remove lock file
+rm -f .next/dev/lock
+
+# Restart dev server
+npm run dev
+```
+
+#### 5. AI Provider Not Working
+**Error**: API requests failing or no AI responses
+
+**Solution**:
+```bash
+# Verify environment variables are set
+cat .env | grep AI_PROVIDER
+cat .env | grep OPENAI_API_KEY
+
+# Check Settings page (http://localhost:3000/settings)
+# Ensure AI provider is configured correctly
+```
+
+#### 6. Jira Integration Failing
+**Error**: Jira API requests returning 401 or 403
+
+**Solution**:
+1. Verify Jira credentials in `.env`:
+   ```env
+   JIRA_BASE_URL=https://your-domain.atlassian.net
+   JIRA_EMAIL=your-email@company.com
+   JIRA_API_TOKEN=your_api_token_here
+   ```
+2. Generate new API token: https://id.atlassian.com/manage-profile/security/api-tokens
+3. Restart dev server after updating `.env`
+
+### Database Schema Changes
+
+If you modify `prisma/schema.prisma`:
+
+```bash
+# Create a new migration
+npx prisma migrate dev --name your_migration_name
+
+# Generate updated Prisma Client
+npx prisma generate
+
+# View database in GUI
+npx prisma studio
+```
+
+### Performance Issues
+
+If the app feels slow:
+
+1. **Check database size**: SQLite performance degrades with large datasets
+2. **Clear old test runs**: Delete completed test runs to reduce database size
+3. **Optimize queries**: Use Prisma Studio to inspect slow queries
+4. **Consider PostgreSQL**: For production, migrate to PostgreSQL for better performance
+
+### Getting Help
+
+- **GitHub Issues**: https://github.com/your-org/qa-nexus/issues
+- **Documentation**: Check PHASE summaries and implementation guides
+- **Logs**: Check browser console and terminal output for detailed errors
+
+---
+
 ## 💻 Development
 
 ### Available Scripts
@@ -891,25 +1051,43 @@ QA Nexus includes a GitHub Actions workflow for automated testing:
 
 ### Completed Features ✅
 
-- Core test management (cases, suites, runs)
-- Defect tracking with Jira integration
-- AI-powered requirements analysis
+- **Phase 1**: Core test management (cases, suites, runs)
+- **Phase 2**: Defect tracking with Jira integration
+- **Phase 3**: AI-powered requirements analysis and traceability
+- **Phase 4**: UI/UX Polish with modern design system
+- **Phase 5**: Collaboration features (comments, notifications, reviews, @mentions, activity timeline)
+- **Phase 6**: Advanced AI capabilities (flaky test detection, predictive analytics, AI insights dashboard)
+- **Phase 7**: API Testing suite with Playwright integration
+  - Visual request builder
+  - Collections and environments
+  - AI-powered assertions
+  - Code generation
+  - Execution history and metrics
 - Automatic test case generation with coverage tagging
 - Requirements traceability matrix
 - Playwright test automation generation
 - Advanced analytics dashboard
 - Jira Epic and Confluence integration
 - CI/CD GitHub Actions workflow
-- **Phase 5 - Collaboration**: Comments, notifications, reviews, @mentions, activity timeline
-- **Phase 6 - Advanced AI**: Flaky test detection, predictive analytics, AI insights dashboard
 
 ### Upcoming Features 🚀
+
+- **Phase 8**: Performance Testing Integration
+  - Load testing with k6
+  - Performance metrics tracking
+  - Benchmark comparisons
 
 - **Phase 9**: Enterprise Features
   - Multi-tenant architecture
   - RBAC (Role-Based Access Control)
-  - SSO integration
+  - SSO integration (OAuth, SAML)
   - Advanced reporting (PDF/Excel export)
+  - Audit logs and compliance
+
+- **Phase 10**: Mobile Testing
+  - Appium integration
+  - Mobile device farm support
+  - Screenshot comparison
 
 ---
 
