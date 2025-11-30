@@ -1,6 +1,7 @@
 'use client'
 
 import { useState, useEffect } from 'react'
+import { Network } from 'lucide-react'
 import { CollectionsSidebar } from '@/components/api-testing/collections-sidebar'
 import { RequestBuilder } from '@/components/api-testing/request-builder'
 import { OpenAPIImportDialog } from '@/components/api-testing/openapi-import-dialog'
@@ -55,7 +56,7 @@ export function ApiTestingClient({ initialCollections, userId }: ApiTestingClien
   }
 
   return (
-    <div className="flex flex-1 overflow-hidden">
+    <div className="flex flex-1 overflow-hidden rounded-2xl border-2 border-slate-200 dark:border-slate-700 shadow-xl bg-white dark:bg-slate-900">
       <CollectionsSidebar
         collections={collections}
         selectedRequestId={selectedRequestId}
@@ -64,31 +65,40 @@ export function ApiTestingClient({ initialCollections, userId }: ApiTestingClien
         onRefresh={handleRefresh}
       />
 
-      <div className="flex-1 overflow-auto p-6">
+      <div className="flex-1 overflow-auto bg-gradient-to-br from-slate-50/50 to-blue-50/30 dark:from-slate-900 dark:to-slate-950">
         {selectedRequestId && selectedRequest ? (
-          <RequestBuilder
-            requestId={selectedRequestId}
-            collectionId={selectedRequest.collectionId}
-            userId={userId}
-            initialData={selectedRequest}
-            onSave={handleRefresh}
-          />
+          <div className="p-6">
+            <RequestBuilder
+              requestId={selectedRequestId}
+              collectionId={selectedRequest.collectionId}
+              userId={userId}
+              initialData={selectedRequest}
+              onSave={handleRefresh}
+            />
+          </div>
         ) : selectedCollectionId ? (
-          <RequestBuilder
-            collectionId={selectedCollectionId}
-            userId={userId}
-            onSave={handleRefresh}
-          />
+          <div className="p-6">
+            <RequestBuilder
+              collectionId={selectedCollectionId}
+              userId={userId}
+              onSave={handleRefresh}
+            />
+          </div>
         ) : (
-          <div className="flex items-center justify-center h-full text-center">
-            <div className="space-y-4">
-              <div>
-                <h2 className="text-xl font-semibold mb-2">No Collection Selected</h2>
-                <p className="text-muted-foreground mb-4">
-                  Create a collection or import an OpenAPI specification to get started
+          <div className="flex items-center justify-center h-full text-center p-6">
+            <div className="space-y-6 max-w-md">
+              <div className="p-6 rounded-2xl bg-gradient-to-br from-blue-100 to-indigo-100 dark:from-blue-900/30 dark:to-indigo-900/30 border-2 border-blue-200 dark:border-blue-800">
+                <div className="flex justify-center mb-4">
+                  <div className="p-4 rounded-full bg-gradient-to-br from-blue-500 to-indigo-600 shadow-lg">
+                    <Network className="h-12 w-12 text-white" />
+                  </div>
+                </div>
+                <h2 className="text-2xl font-bold mb-2 text-neutral-900 dark:text-neutral-100">No Collection Selected</h2>
+                <p className="text-neutral-600 dark:text-neutral-400 mb-6">
+                  Create a collection or import an OpenAPI specification to start testing your APIs
                 </p>
+                <OpenAPIImportDialog userId={userId} onImportComplete={handleRefresh} />
               </div>
-              <OpenAPIImportDialog userId={userId} onImportComplete={handleRefresh} />
             </div>
           </div>
         )}

@@ -22,7 +22,7 @@ export default async function Home() {
         {/* Header Section */}
         <div className="relative overflow-hidden rounded-2xl bg-gradient-to-br from-blue-500 via-indigo-600 to-purple-700 p-8 shadow-2xl">
           <div className="absolute inset-0 bg-grid-white/10 [mask-image:linear-gradient(0deg,transparent,black)]" />
-          <div className="relative flex justify-between items-center">
+          <div className="relative">
             <div>
               <div className="flex items-center gap-3 mb-2">
                 <Zap className="h-10 w-10 text-yellow-300 drop-shadow-lg" />
@@ -33,13 +33,6 @@ export default async function Home() {
               <p className="text-blue-100 mt-2 text-lg">
                 Real-time insights into your quality assurance metrics and test execution trends
               </p>
-            </div>
-            <div className="flex gap-2">
-              <Link href="/test-runs">
-                <Button size="lg" className="bg-white text-indigo-600 hover:bg-blue-50 shadow-xl font-semibold">
-                  <Play className="mr-2 h-4 w-4" /> New Test Run
-                </Button>
-              </Link>
             </div>
           </div>
         </div>
@@ -84,8 +77,8 @@ export default async function Home() {
         </div>
 
         {/* Trend Chart */}
-        <Card className="border-2 border-blue-100 dark:border-blue-900 shadow-lg hover:shadow-xl transition-shadow bg-gradient-to-br from-white to-blue-50/30 dark:from-slate-900 dark:to-blue-950/20">
-          <CardHeader className="border-b border-blue-100 dark:border-blue-900/50 bg-gradient-to-r from-blue-50 to-indigo-50 dark:from-blue-950 dark:to-indigo-950">
+        <Card className="border-2 border-blue-100 dark:border-blue-900 shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-[1.03] bg-gradient-to-br from-white to-blue-50/30 dark:from-slate-900 dark:to-blue-950/20">
+          <CardHeader className="border-b border-blue-100 dark:border-blue-900/50 bg-gradient-to-r from-blue-50 to-indigo-50 dark:from-blue-950 dark:to-indigo-950 px-6 py-4 rounded-t-xl">
             <CardTitle className="flex items-center gap-2 text-blue-900 dark:text-blue-100">
               <TrendingUp className="h-5 w-5 text-blue-600 dark:text-blue-400" />
               Test Execution Trend (Last 7 Days)
@@ -127,8 +120,8 @@ export default async function Home() {
         <div className="grid gap-4 md:grid-cols-1 lg:grid-cols-3">
 
           {/* Test Suite Coverage */}
-          <Card className="border-2 border-purple-100 dark:border-purple-900 shadow-lg hover:shadow-xl transition-shadow bg-gradient-to-br from-white to-purple-50/30 dark:from-slate-900 dark:to-purple-950/20">
-            <CardHeader className="border-b border-purple-100 dark:border-purple-900/50 bg-gradient-to-r from-purple-50 to-pink-50 dark:from-purple-950 dark:to-pink-950">
+          <Card className="border-2 border-purple-100 dark:border-purple-900 shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-[1.03] bg-gradient-to-br from-white to-purple-50/30 dark:from-slate-900 dark:to-purple-950/20">
+            <CardHeader className="border-b border-purple-100 dark:border-purple-900/50 bg-gradient-to-r from-purple-50 to-pink-50 dark:from-purple-950 dark:to-pink-950 px-6 py-4 rounded-t-xl">
               <CardTitle className="flex items-center gap-2 text-purple-900 dark:text-purple-100">
                 <Folder className="h-5 w-5 text-purple-600 dark:text-purple-400" />
                 Suite Coverage
@@ -165,8 +158,8 @@ export default async function Home() {
           </Card>
 
           {/* Recent Activity */}
-          <Card className="col-span-2 border-2 border-emerald-100 dark:border-emerald-900 shadow-lg hover:shadow-xl transition-shadow bg-gradient-to-br from-white to-emerald-50/30 dark:from-slate-900 dark:to-emerald-950/20">
-            <CardHeader className="border-b border-emerald-100 dark:border-emerald-900/50 bg-gradient-to-r from-emerald-50 to-teal-50 dark:from-emerald-950 dark:to-teal-950">
+          <Card className="col-span-2 border-2 border-emerald-100 dark:border-emerald-900 shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-[1.03] bg-gradient-to-br from-white to-emerald-50/30 dark:from-slate-900 dark:to-emerald-950/20">
+            <CardHeader className="border-b border-emerald-100 dark:border-emerald-900/50 bg-gradient-to-r from-emerald-50 to-teal-50 dark:from-emerald-950 dark:to-teal-950 px-6 py-4 rounded-t-xl">
               <CardTitle className="flex items-center gap-2 text-emerald-900 dark:text-emerald-100">
                 <Activity className="h-5 w-5 text-emerald-600 dark:text-emerald-400" />
                 Recent Activity

@@ -17,19 +17,19 @@ interface MetricCardProps {
 }
 
 const bgColors = {
-  primary: 'bg-primary-50 border-primary-200 dark:bg-primary-900 dark:border-primary-800',
-  success: 'bg-success-50 border-success-200 dark:bg-success-900 dark:border-success-800',
-  warning: 'bg-warning-50 border-warning-200 dark:bg-warning-900 dark:border-warning-800',
-  danger: 'bg-danger-50 border-danger-200 dark:bg-danger-900 dark:border-danger-800',
-  info: 'bg-info-50 border-info-200 dark:bg-info-900 dark:border-info-800',
+  primary: 'bg-gradient-to-br from-blue-500 to-indigo-600 border-blue-400 dark:from-blue-100 dark:to-indigo-100 dark:border-blue-300 shadow-lg',
+  success: 'bg-gradient-to-br from-green-500 to-emerald-600 border-green-400 dark:from-green-100 dark:to-emerald-100 dark:border-green-300 shadow-lg',
+  warning: 'bg-gradient-to-br from-amber-500 to-orange-600 border-amber-400 dark:from-amber-100 dark:to-orange-100 dark:border-amber-300 shadow-lg',
+  danger: 'bg-gradient-to-br from-red-500 to-rose-600 border-red-400 dark:from-red-100 dark:to-rose-100 dark:border-red-300 shadow-lg',
+  info: 'bg-gradient-to-br from-cyan-500 to-blue-600 border-cyan-400 dark:from-cyan-100 dark:to-blue-100 dark:border-cyan-300 shadow-lg',
 }
 
 const iconColors = {
-  primary: 'bg-primary-100 text-primary-600 dark:bg-primary-800 dark:text-primary-400',
-  success: 'bg-success-100 text-success-600 dark:bg-success-800 dark:text-success-400',
-  warning: 'bg-warning-100 text-warning-600 dark:bg-warning-800 dark:text-warning-400',
-  danger: 'bg-danger-100 text-danger-600 dark:bg-danger-800 dark:text-danger-400',
-  info: 'bg-info-100 text-info-600 dark:bg-info-800 dark:text-info-400',
+  primary: 'bg-blue-600 text-white dark:bg-blue-700 dark:text-blue-100 shadow-md',
+  success: 'bg-green-600 text-white dark:bg-green-700 dark:text-green-100 shadow-md',
+  warning: 'bg-amber-600 text-white dark:bg-amber-700 dark:text-amber-100 shadow-md',
+  danger: 'bg-red-600 text-white dark:bg-red-700 dark:text-red-100 shadow-md',
+  info: 'bg-cyan-600 text-white dark:bg-cyan-700 dark:text-cyan-100 shadow-md',
 }
 
 export function MetricCard({
@@ -50,17 +50,17 @@ export function MetricCard({
       interactive={!!onClick}
       onClick={onClick}
       className={cn(
-        'p-6',
-        onClick && 'cursor-pointer hover-shadow-lift',
+        'p-6 transition-all duration-300 hover:scale-[1.03] hover:shadow-2xl',
+        onClick && 'cursor-pointer',
         bgColors[background],
         className
       )}
     >
       <div className="flex items-start justify-between">
         <div className="flex-1">
-          <p className="text-sm font-medium text-neutral-600 dark:text-neutral-400">{title}</p>
+          <p className="text-sm font-medium text-white/90 dark:text-neutral-700">{title}</p>
           <div className="mt-2 flex items-baseline gap-2">
-            <p className="text-3xl font-bold text-neutral-900 dark:text-neutral-100">{value}</p>
+            <p className="text-3xl font-bold text-white dark:text-neutral-900">{value}</p>
             {change && (
               <Badge
                 variant={change.trend === 'up' ? 'success' : 'danger'}
@@ -71,7 +71,7 @@ export function MetricCard({
             )}
           </div>
           {subtext && (
-            <p className="text-xs text-neutral-500 dark:text-neutral-400 mt-1">{subtext}</p>
+            <p className="text-xs text-white/80 dark:text-neutral-600 mt-1">{subtext}</p>
           )}
         </div>
         {icon && (
