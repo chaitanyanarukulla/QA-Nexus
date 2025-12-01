@@ -181,8 +181,10 @@ export function CommentsSection({ testCaseId, testSuiteId, defectId, currentUser
           />
           <div className="flex justify-end">
             <Button onClick={handleAddComment} disabled={loading || !newComment.trim()}>
-              <Send className="h-4 w-4 mr-2" />
-              Comment
+              <div className="flex flex-row items-center gap-2">
+                <Send className="h-4 w-4" />
+                <span>Comment</span>
+              </div>
             </Button>
           </div>
         </div>
@@ -233,8 +235,10 @@ export function CommentsSection({ testCaseId, testSuiteId, defectId, currentUser
                           variant="ghost"
                           onClick={() => setReplyTo(comment.id)}
                         >
-                          <Reply className="h-3 w-3 mr-1" />
-                          Reply
+                          <div className="flex flex-row items-center gap-2">
+                            <Reply className="h-3 w-3" />
+                            <span>Reply</span>
+                          </div>
                         </Button>
                         {comment.userId === currentUserId && (
                           <>
@@ -243,16 +247,20 @@ export function CommentsSection({ testCaseId, testSuiteId, defectId, currentUser
                               variant="ghost"
                               onClick={() => startEdit(comment)}
                             >
-                              <Edit2 className="h-3 w-3 mr-1" />
-                              Edit
+                              <div className="flex flex-row items-center gap-2">
+                                <Edit2 className="h-3 w-3" />
+                                <span>Edit</span>
+                              </div>
                             </Button>
                             <Button
                               size="sm"
                               variant="ghost"
                               onClick={() => handleDelete(comment.id)}
                             >
-                              <Trash2 className="h-3 w-3 mr-1" />
-                              Delete
+                              <div className="flex flex-row items-center gap-2">
+                                <Trash2 className="h-3 w-3" />
+                                <span>Delete</span>
+                              </div>
                             </Button>
                           </>
                         )}
@@ -277,8 +285,10 @@ export function CommentsSection({ testCaseId, testSuiteId, defectId, currentUser
                       onClick={() => handleReply(comment.id)}
                       disabled={loading || !replyContent.trim()}
                     >
-                      <Send className="h-3 w-3 mr-1" />
-                      Reply
+                      <div className="flex flex-row items-center gap-2">
+                        <Send className="h-3 w-3" />
+                        <span>Reply</span>
+                      </div>
                     </Button>
                     <Button
                       size="sm"
@@ -322,8 +332,10 @@ export function CommentsSection({ testCaseId, testSuiteId, defectId, currentUser
                               className="h-6 text-xs"
                               onClick={() => handleDelete(reply.id)}
                             >
-                              <Trash2 className="h-3 w-3 mr-1" />
-                              Delete
+                              <div className="flex flex-row items-center gap-2">
+                                <Trash2 className="h-3 w-3" />
+                                <span>Delete</span>
+                              </div>
                             </Button>
                           </div>
                         )}

@@ -208,15 +208,15 @@ export function SuiteExecution({ testCases, suiteId, suiteTitle }: SuiteExecutio
                         )}
                         <Button onClick={handleStartExecution} disabled={isCreatingRun || testCases.length === 0} size="lg">
                             {isCreatingRun ? (
-                                <>
-                                    <Loader2 className="w-5 h-5 mr-2 animate-spin" />
-                                    Creating Test Run...
-                                </>
+                                <div className="flex flex-row items-center gap-2">
+                                    <Loader2 className="w-5 h-5 animate-spin" />
+                                    <span>Creating Test Run...</span>
+                                </div>
                             ) : (
-                                <>
-                                    <PlayCircle className="w-5 h-5 mr-2" />
-                                    {completedCount === 0 ? 'Start Execution' : 'Create New Test Run'}
-                                </>
+                                <div className="flex flex-row items-center gap-2">
+                                    <PlayCircle className="w-5 h-5" />
+                                    <span>{completedCount === 0 ? 'Start Execution' : 'Create New Test Run'}</span>
+                                </div>
                             )}
                         </Button>
                     </div>

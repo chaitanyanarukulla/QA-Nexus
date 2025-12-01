@@ -507,3 +507,58 @@ Important: Return ONLY the JSON object, no markdown formatting.`
         throw new Error('Failed to generate API request')
     }
 }
+
+/**
+ * Generate realistic mock/test data for API requests
+ */
+export async function generateMockData(
+    description: string,
+    schema?: string
+): Promise<any> {
+    const aiPrompt = `Generate realistic test/mock data for the following:
+
+Description: ${description}
+${schema ? `\nExpected Schema:\n${schema}` : ''}
+
+Generate valid, realistic data that:
+1. Matches common data patterns (emails, phone numbers, dates, etc.)
+2. Includes diverse test cases (edge cases, various lengths, special characters where appropriate)
+3. Is immediately usable in API testing
+
+Return ONLY valid JSON (object or array), no markdown formatting, no explanations.
+
+Examples:
+- For "user data": Return object with name, email, age, etc.
+- For "product list": Return array of product objects
+- For "payment info": Return object with card details, amount, etc.`
+
+    try {
+        const content = await chatCompletion([
+            {
+                role: 'system',
+                content: 'You are a data generation expert. Generate realistic, valid test data in JSON format.',
+            },
+            {
+                role: 'user',
+                content: aiPrompt,
+            },
+        ], { temperature: 0.8, maxTokens: 1500 })
+
+        if (!content) {
+            throw new Error('No content generated')
+        }
+
+        let cleanContent = content.trim()
+        if (cleanContent.startsWith('```json')) {
+            cleanContent = cleanContent.replace(/^```json\n/, '').replace(/\n```$/, '')
+        } else if (cleanContent.startsWith('```')) {
+            cleanContent = cleanContent.replace(/^```\n/, '').replace(/\n```$/, '')
+        }
+
+        const mockData = JSON.parse(cleanContent)
+        return mockData
+    } catch (error) {
+        console.error('Error generating mock data:', error)
+        throw new Error('Failed to generate mock data')
+    }
+}

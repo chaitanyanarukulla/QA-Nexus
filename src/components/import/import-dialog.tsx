@@ -121,9 +121,11 @@ export function ImportDialog() {
     return (
         <Dialog open={open} onOpenChange={setOpen}>
             <DialogTrigger asChild>
-                <Button variant="outline" className="gap-2">
-                    <Layers className="h-4 w-4" />
-                    Import Content
+                <Button variant="outline">
+                    <div className="flex flex-row items-center gap-2">
+                        <Layers className="h-4 w-4" />
+                        <span>Import Content</span>
+                    </div>
                 </Button>
             </DialogTrigger>
             <DialogContent className="sm:max-w-[600px]">

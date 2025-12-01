@@ -178,15 +178,15 @@ export function AutomationGenerator({ suiteId, suiteTitle }: AutomationGenerator
                         size="lg"
                     >
                         {loading ? (
-                            <>
-                                <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                                Generating Playwright Tests...
-                            </>
+                            <div className="flex flex-row items-center gap-2">
+                                <Loader2 className="h-4 w-4 animate-spin" />
+                                <span>Generating Playwright Tests...</span>
+                            </div>
                         ) : (
-                            <>
-                                <Code className="mr-2 h-4 w-4" />
-                                Generate Automated Tests
-                            </>
+                            <div className="flex flex-row items-center gap-2">
+                                <Code className="h-4 w-4" />
+                                <span>Generate Automated Tests</span>
+                            </div>
                         )}
                     </Button>
 
@@ -212,8 +212,10 @@ export function AutomationGenerator({ suiteId, suiteTitle }: AutomationGenerator
                                     Copy Code
                                 </Button>
                                 <Button size="sm" onClick={handleDownload}>
-                                    <Download className="mr-2 h-4 w-4" />
-                                    Download
+                                    <div className="flex flex-row items-center gap-2">
+                                        <Download className="h-4 w-4" />
+                                        <span>Download</span>
+                                    </div>
                                 </Button>
                             </div>
                         </div>

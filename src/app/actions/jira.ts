@@ -117,13 +117,14 @@ Evidence:
 ${testResult.evidence || 'No evidence provided'}
     `.trim()
 
-        // Create the issue
+        // Create the issue (priority will be set to default in Jira)
         const jiraIssue = await client.createIssue({
             projectKey: data.projectKey,
             summary: `[Test Failure] ${testResult.testCase.title}`,
             description,
             issueType: data.issueType || 'Bug',
-            priority: testResult.testCase.priority,
+            // Note: priority is omitted as it may cause validation errors
+            // Jira will use the project's default priority
         })
 
         if (!jiraIssue) {
@@ -170,11 +171,15 @@ ${testResult.evidence || 'No evidence provided'}
 /**
  * Sync Jira issues
  */
-export async function syncJiraIssues(userId: string, projectKey?: string) {
+export async function syncJiraIssues(userId: string, projectKey: string) {
     try {
         const integration = await getJiraIntegration(userId)
         if (!integration || !integration.isActive) {
             return { success: false, error: 'Jira integration not configured' }
+        }
+
+        if (!projectKey) {
+            return { success: false, error: 'Project key is required' }
         }
 
         const client = createJiraClient({
@@ -183,10 +188,8 @@ export async function syncJiraIssues(userId: string, projectKey?: string) {
             apiToken: integration.apiToken,
         })
 
-        // Build JQL query
-        const jql = projectKey
-            ? `project = ${projectKey} ORDER BY updated DESC`
-            : `ORDER BY updated DESC`
+        // Build JQL query with project restriction
+        const jql = `project = ${projectKey} ORDER BY updated DESC`
 
         const issues = await client.searchIssues(jql, 100)
 

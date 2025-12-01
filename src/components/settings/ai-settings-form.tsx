@@ -217,8 +217,14 @@ export function AISettingsForm() {
 
                     <div className="flex gap-3">
                         <Button type="submit" disabled={loading}>
-                            {loading && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
-                            Save Settings
+                            {loading ? (
+                                <div className="flex flex-row items-center gap-2">
+                                    <Loader2 className="h-4 w-4 animate-spin" />
+                                    <span>Save Settings</span>
+                                </div>
+                            ) : (
+                                'Save Settings'
+                            )}
                         </Button>
                         <Button
                             type="button"
@@ -226,8 +232,14 @@ export function AISettingsForm() {
                             onClick={handleTest}
                             disabled={testing || !((provider === 'OPENAI' && openaiApiKey) || (provider === 'FOUNDRY' && foundryUrl))}
                         >
-                            {testing && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
-                            Test Connection
+                            {testing ? (
+                                <div className="flex flex-row items-center gap-2">
+                                    <Loader2 className="h-4 w-4 animate-spin" />
+                                    <span>Test Connection</span>
+                                </div>
+                            ) : (
+                                'Test Connection'
+                            )}
                         </Button>
                     </div>
                 </form>

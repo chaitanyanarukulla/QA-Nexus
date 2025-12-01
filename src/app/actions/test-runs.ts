@@ -75,9 +75,88 @@ export async function updateTestResult(data: {
         },
     })
 
+    // Auto-update test run status based on all results
+    await updateTestRunStatusBasedOnResults(result.testRunId)
+
     revalidatePath('/test-runs')
     revalidatePath(`/test-runs/${result.testRunId}`)
     return result
+}
+
+/**
+ * Automatically update test run status based on all test results
+ */
+async function updateTestRunStatusBasedOnResults(testRunId: string) {
+    const testRun = await prisma.testRun.findUnique({
+        where: { id: testRunId },
+        include: { results: true }
+    })
+
+    if (!testRun) return
+
+    // Don't auto-update if paused
+    if (testRun.status === RunStatus.PAUSED) return
+
+    const allResults = testRun.results
+    const pendingCount = allResults.filter(r => r.status === ResultStatus.PENDING).length
+    const failedCount = allResults.filter(r => r.status === ResultStatus.FAIL).length
+    const blockedCount = allResults.filter(r => r.status === ResultStatus.BLOCKED).length
+
+    let newStatus: RunStatus
+
+    if (pendingCount === allResults.length) {
+        newStatus = RunStatus.PENDING
+    } else if (pendingCount > 0) {
+        newStatus = RunStatus.IN_PROGRESS
+    } else if (failedCount > 0 || blockedCount > 0) {
+        newStatus = RunStatus.FAILED
+    } else {
+        newStatus = RunStatus.COMPLETED
+    }
+
+    if (testRun.status !== newStatus) {
+        await prisma.testRun.update({
+            where: { id: testRunId },
+            data: { status: newStatus }
+        })
+    }
+}
+
+/**
+ * Pause a test run execution
+ */
+export async function pauseTestRun(testRunId: string) {
+    const testRun = await prisma.testRun.update({
+        where: { id: testRunId },
+        data: { status: RunStatus.PAUSED }
+    })
+    revalidatePath('/test-runs')
+    revalidatePath(`/test-runs/${testRunId}`)
+    return testRun
+}
+
+/**
+ * Resume a paused test run
+ */
+export async function resumeTestRun(testRunId: string) {
+    const testRun = await prisma.testRun.findUnique({
+        where: { id: testRunId },
+        include: { results: true }
+    })
+
+    if (!testRun) throw new Error('Test run not found')
+
+    const pendingCount = testRun.results.filter(r => r.status === ResultStatus.PENDING).length
+    const newStatus = pendingCount > 0 ? RunStatus.IN_PROGRESS : RunStatus.COMPLETED
+
+    const updated = await prisma.testRun.update({
+        where: { id: testRunId },
+        data: { status: newStatus }
+    })
+
+    revalidatePath('/test-runs')
+    revalidatePath(`/test-runs/${testRunId}`)
+    return updated
 }
 
 export async function updateTestRunStatus(testRunId: string, status: RunStatus) {

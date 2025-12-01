@@ -15,6 +15,7 @@ interface CollectionRunnerProps {
   collectionName: string;
   requestCount: number;
   userId: string;
+  environmentId?: string | null;
   onComplete: () => void;
 }
 
@@ -23,6 +24,7 @@ export function CollectionRunner({
   collectionName,
   requestCount,
   userId,
+  environmentId,
   onComplete
 }: CollectionRunnerProps) {
   const [open, setOpen] = useState(false)
@@ -35,7 +37,7 @@ export function CollectionRunner({
 
     toast.info(`Running ${requestCount} requests...`)
 
-    const result = await executeCollection(collectionId, userId)
+    const result = await executeCollection(collectionId, userId, environmentId || undefined)
 
     if (result.success && result.summary) {
       setResults(result)
@@ -87,8 +89,10 @@ export function CollectionRunner({
         }}
         disabled={requestCount === 0}
       >
-        <Play className="h-4 w-4 mr-1" />
-        Run Collection
+        <div className="flex flex-row items-center gap-2">
+          <Play className="h-4 w-4" />
+          <span>Run Collection</span>
+        </div>
       </Button>
 
       <Dialog open={open} onOpenChange={setOpen}>
@@ -171,8 +175,10 @@ export function CollectionRunner({
             <div className="flex justify-end gap-2">
               {results && !running && (
                 <Button onClick={handleRun} variant="outline">
-                  <Play className="h-4 w-4 mr-2" />
-                  Run Again
+                  <div className="flex flex-row items-center gap-2">
+                    <Play className="h-4 w-4" />
+                    <span>Run Again</span>
+                  </div>
                 </Button>
               )}
               <Button onClick={() => setOpen(false)} variant="outline">

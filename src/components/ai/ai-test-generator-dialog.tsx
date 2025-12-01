@@ -122,9 +122,11 @@ export function AITestGeneratorDialog() {
     return (
         <Dialog open={open} onOpenChange={setOpen}>
             <DialogTrigger asChild>
-                <Button variant="outline" className="gap-2">
-                    <Sparkles className="h-4 w-4" />
-                    AI Generate
+                <Button variant="outline">
+                    <div className="flex flex-row items-center gap-2">
+                        <Sparkles className="h-4 w-4" />
+                        <span>AI Generate</span>
+                    </div>
                 </Button>
             </DialogTrigger>
             <DialogContent className="sm:max-w-[700px] max-h-[90vh] overflow-y-auto">
@@ -202,15 +204,15 @@ export function AITestGeneratorDialog() {
                             </Button>
                             <Button onClick={handleGenerate} disabled={loading || !requirement.trim()}>
                                 {loading ? (
-                                    <>
-                                        <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                                        Generating...
-                                    </>
+                                    <div className="flex flex-row items-center gap-2">
+                                        <Loader2 className="h-4 w-4 animate-spin" />
+                                        <span>Generating...</span>
+                                    </div>
                                 ) : (
-                                    <>
-                                        <Sparkles className="mr-2 h-4 w-4" />
-                                        Generate
-                                    </>
+                                    <div className="flex flex-row items-center gap-2">
+                                        <Sparkles className="h-4 w-4" />
+                                        <span>Generate</span>
+                                    </div>
                                 )}
                             </Button>
                         </DialogFooter>

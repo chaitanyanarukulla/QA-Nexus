@@ -194,3 +194,98 @@ export async function getAnalyticsData() {
         return { success: false, error: 'Failed to fetch analytics data' }
     }
 }
+
+export async function getRecentActivity(limit: number = 20) {
+    try {
+        // Fetch recent activity logs
+        const activities = await prisma.activityLog.findMany({
+            take: limit,
+            orderBy: {
+                createdAt: 'desc'
+            },
+            include: {
+                user: {
+                    select: {
+                        name: true,
+                        email: true
+                    }
+                }
+            }
+        })
+
+        return {
+            success: true,
+            activities: activities.map(activity => ({
+                id: activity.id,
+                action: activity.action,
+                entityType: activity.entityType,
+                entityId: activity.entityId,
+                entityTitle: activity.entityTitle,
+                userName: activity.user.name || activity.user.email,
+                createdAt: activity.createdAt,
+                changes: activity.changes ? JSON.parse(activity.changes) : null
+            }))
+        }
+    } catch (error) {
+        console.error('Failed to fetch recent activity:', error)
+        return { success: false, error: 'Failed to fetch recent activity' }
+    }
+}
+
+export async function getAIInsightsSummary() {
+    try {
+        // Fetch top AI insights (flaky tests, high failure risk)
+        const insights = await prisma.aIInsight.findMany({
+            where: {
+                isResolved: false
+            },
+            orderBy: [
+                { severity: 'desc' },
+                { confidence: 'desc' }
+            ],
+            take: 10,
+            include: {
+                testCase: {
+                    select: {
+                        id: true,
+                        title: true,
+                        priority: true
+                    }
+                }
+            }
+        })
+
+        const criticalCount = insights.filter(i => i.severity === 'CRITICAL').length
+        const highCount = insights.filter(i => i.severity === 'HIGH').length
+        const flakyTestsCount = insights.filter(i => i.type === 'FLAKY_TEST').length
+        const highRiskCount = insights.filter(i => i.type === 'HIGH_FAILURE_RISK').length
+
+        return {
+            success: true,
+            summary: {
+                total: insights.length,
+                critical: criticalCount,
+                high: highCount,
+                flakyTests: flakyTestsCount,
+                highRisk: highRiskCount
+            },
+            topInsights: insights.map(insight => ({
+                id: insight.id,
+                type: insight.type,
+                severity: insight.severity,
+                title: insight.title,
+                description: insight.description,
+                testCase: insight.testCase ? {
+                    id: insight.testCase.id,
+                    title: insight.testCase.title,
+                    priority: insight.testCase.priority
+                } : null,
+                confidence: insight.confidence,
+                createdAt: insight.createdAt
+            }))
+        }
+    } catch (error) {
+        console.error('Failed to fetch AI insights:', error)
+        return { success: false, error: 'Failed to fetch AI insights' }
+    }
+}

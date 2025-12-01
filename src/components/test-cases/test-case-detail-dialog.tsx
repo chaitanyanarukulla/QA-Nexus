@@ -201,16 +201,20 @@ export function TestCaseDetailDialog({ testCase, open, onOpenChange }: TestCaseD
 
                 <DialogFooter className="flex justify-between sm:justify-between items-center w-full gap-2">
                     <Button variant="outline" size="sm" onClick={handleDelete} className="text-destructive hover:bg-destructive/10 hover:text-destructive">
-                        <Trash2 className="mr-2 h-4 w-4" />
-                        Delete
+                        <div className="flex flex-row items-center gap-2">
+                            <Trash2 className="h-4 w-4" />
+                            <span>Delete</span>
+                        </div>
                     </Button>
                     <div className="flex gap-2">
                         <Button variant="outline" onClick={() => onOpenChange(false)}>
                             Close
                         </Button>
-                        <Button onClick={handleQuickRun} disabled={running} className="gap-2">
-                            <Play className="h-4 w-4" />
-                            {running ? 'Starting...' : 'Run Test'}
+                        <Button onClick={handleQuickRun} disabled={running}>
+                            <div className="flex flex-row items-center gap-2">
+                                <Play className="h-4 w-4" />
+                                <span>{running ? 'Starting...' : 'Run Test'}</span>
+                            </div>
                         </Button>
                     </div>
                 </DialogFooter>

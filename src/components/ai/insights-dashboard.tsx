@@ -189,8 +189,10 @@ export function InsightsDashboard({ testCaseId, testSuiteId }: InsightsDashboard
               </CardDescription>
             </div>
             <Button onClick={handleAnalyze} disabled={analyzing}>
-              <RefreshCw className={`h-4 w-4 mr-2 ${analyzing ? 'animate-spin' : ''}`} />
-              {analyzing ? 'Analyzing...' : 'Run Analysis'}
+              <div className="flex flex-row items-center gap-2">
+                <RefreshCw className={`h-4 w-4 ${analyzing ? 'animate-spin' : ''}`} />
+                <span>{analyzing ? 'Analyzing...' : 'Run Analysis'}</span>
+              </div>
             </Button>
           </div>
         </CardHeader>

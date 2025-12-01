@@ -93,9 +93,11 @@ export function OpenAPIImportDialog({ userId, onImportComplete }: OpenAPIImportD
   return (
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>
-        <Button variant="outline" className="gap-2">
-          <Upload className="h-4 w-4" />
-          Import OpenAPI/Swagger
+        <Button variant="outline">
+          <div className="flex flex-row items-center gap-2">
+            <Upload className="h-4 w-4" />
+            <span>Import OpenAPI/Swagger</span>
+          </div>
         </Button>
       </DialogTrigger>
       <DialogContent className="max-w-3xl max-h-[90vh] overflow-y-auto">
@@ -228,17 +230,17 @@ export function OpenAPIImportDialog({ userId, onImportComplete }: OpenAPIImportD
             <Button variant="outline" onClick={handleValidate} disabled={!source.trim() || loading}>
               Validate
             </Button>
-            <Button onClick={handleImport} disabled={!source.trim() || loading} className="flex-1 gap-2">
+            <Button onClick={handleImport} disabled={!source.trim() || loading} className="flex-1">
               {loading ? (
-                <>
+                <div className="flex flex-row items-center gap-2">
                   <Loader2 className="h-4 w-4 animate-spin" />
-                  Importing...
-                </>
+                  <span>Importing...</span>
+                </div>
               ) : (
-                <>
+                <div className="flex flex-row items-center gap-2">
                   <Upload className="h-4 w-4" />
-                  Import Specification
-                </>
+                  <span>Import Specification</span>
+                </div>
               )}
             </Button>
           </div>

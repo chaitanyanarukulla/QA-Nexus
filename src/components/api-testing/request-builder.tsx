@@ -22,6 +22,7 @@ interface RequestBuilderProps {
   requestId?: string;
   collectionId: string;
   userId: string;
+  environmentId?: string | null;
   initialData?: {
     title: string;
     method: string;
@@ -38,7 +39,7 @@ interface RequestBuilderProps {
   onSave?: () => void;
 }
 
-export function RequestBuilder({ requestId, collectionId, userId, initialData, onSave }: RequestBuilderProps) {
+export function RequestBuilder({ requestId, collectionId, userId, environmentId, initialData, onSave }: RequestBuilderProps) {
   const [title, setTitle] = useState(initialData?.title || '')
   const [method, setMethod] = useState(initialData?.method || 'GET')
   const [url, setUrl] = useState(initialData?.url || '')
@@ -151,7 +152,7 @@ export function RequestBuilder({ requestId, collectionId, userId, initialData, o
       }
 
       // Execute the request
-      const result = await executeApiRequest(currentRequestId!, userId)
+      const result = await executeApiRequest(currentRequestId!, userId, environmentId || undefined)
 
       if (result.success) {
         setExecution(result.execution)
@@ -292,28 +293,28 @@ export function RequestBuilder({ requestId, collectionId, userId, initialData, o
             />
             <Button onClick={handleExecute} disabled={executing}>
               {executing ? (
-                <>
-                  <Loader2 className="h-4 w-4 mr-2 animate-spin" />
-                  Running
-                </>
+                <div className="flex flex-row items-center gap-2">
+                  <Loader2 className="h-4 w-4 animate-spin" />
+                  <span>Running</span>
+                </div>
               ) : (
-                <>
-                  <Play className="h-4 w-4 mr-2" />
-                  Send
-                </>
+                <div className="flex flex-row items-center gap-2">
+                  <Play className="h-4 w-4" />
+                  <span>Send</span>
+                </div>
               )}
             </Button>
             <Button onClick={handleSave} disabled={saving} variant="outline">
               {saving ? (
-                <>
-                  <Loader2 className="h-4 w-4 mr-2 animate-spin" />
-                  Saving
-                </>
+                <div className="flex flex-row items-center gap-2">
+                  <Loader2 className="h-4 w-4 animate-spin" />
+                  <span>Saving</span>
+                </div>
               ) : (
-                <>
-                  <Save className="h-4 w-4 mr-2" />
-                  Save
-                </>
+                <div className="flex flex-row items-center gap-2">
+                  <Save className="h-4 w-4" />
+                  <span>Save</span>
+                </div>
               )}
             </Button>
           </div>
@@ -510,8 +511,10 @@ export function RequestBuilder({ requestId, collectionId, userId, initialData, o
                       toast.success('Code copied to clipboard')
                     }}
                   >
-                    <Code className="h-4 w-4 mr-1" />
-                    Copy
+                    <div className="flex flex-row items-center gap-2">
+                      <Code className="h-4 w-4" />
+                      <span>Copy</span>
+                    </div>
                   </Button>
                 </div>
               </TabsContent>

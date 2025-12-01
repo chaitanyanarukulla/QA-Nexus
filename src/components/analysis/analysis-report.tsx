@@ -80,18 +80,20 @@ export function AnalysisReport({
                 </div>
                 {testSuiteId ? (
                     <Button onClick={() => router.push(`/test-suites`)}>
-                        <FileText className="mr-2 h-4 w-4" />
-                        View Test Suite
+                        <div className="flex flex-row items-center gap-2">
+                            <FileText className="h-4 w-4" />
+                            <span>View Test Suite</span>
+                        </div>
                     </Button>
                 ) : (
                     <Button onClick={handleGenerateTestCases} disabled={generating}>
                         {generating ? (
-                            <>
-                                <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                                Generating Test Cases...
-                            </>
+                            <div className="flex flex-row items-center gap-2">
+                                <Loader2 className="h-4 w-4 animate-spin" />
+                                <span>Generating Test Cases...</span>
+                            </div>
                         ) : (
-                            'Generate Test Cases'
+                            <span>Generate Test Cases</span>
                         )}
                     </Button>
                 )}

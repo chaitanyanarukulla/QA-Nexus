@@ -20,7 +20,9 @@ export type Status = typeof Status[keyof typeof Status]
 export const RunStatus = {
   PENDING: 'PENDING',
   IN_PROGRESS: 'IN_PROGRESS',
+  PAUSED: 'PAUSED',
   COMPLETED: 'COMPLETED',
+  FAILED: 'FAILED',
   ABORTED: 'ABORTED',
 } as const
 

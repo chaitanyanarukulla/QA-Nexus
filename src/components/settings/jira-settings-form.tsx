@@ -15,6 +15,7 @@ export function JiraSettingsForm({ userId = 'demo-user' }: { userId?: string }) 
     const [instanceUrl, setInstanceUrl] = useState('')
     const [email, setEmail] = useState('')
     const [apiToken, setApiToken] = useState('')
+    const [projectKey, setProjectKey] = useState('')
     const [lastSync, setLastSync] = useState<Date | null>(null)
     const [status, setStatus] = useState<{ type: 'success' | 'error' | null; message: string }>({ type: null, message: '' })
 
@@ -57,11 +58,16 @@ export function JiraSettingsForm({ userId = 'demo-user' }: { userId?: string }) 
     }
 
     async function handleSync() {
+        if (!projectKey.trim()) {
+            setStatus({ type: 'error', message: 'Please enter a project key before syncing' })
+            return
+        }
+
         setSyncing(true)
         setStatus({ type: null, message: '' })
 
         try {
-            const result = await syncJiraIssues(userId)
+            const result = await syncJiraIssues(userId, projectKey.trim())
 
             if (result.success) {
                 setStatus({ type: 'success', message: `Successfully synced ${result.syncedCount} issues from Jira!` })
@@ -124,6 +130,19 @@ export function JiraSettingsForm({ userId = 'demo-user' }: { userId?: string }) 
                         </p>
                     </div>
 
+                    <div className="space-y-2">
+                        <Label htmlFor="projectKey">Project Key (for sync)</Label>
+                        <Input
+                            id="projectKey"
+                            placeholder="e.g., QANEX, PROJ"
+                            value={projectKey}
+                            onChange={(e) => setProjectKey(e.target.value.toUpperCase())}
+                        />
+                        <p className="text-xs text-muted-foreground">
+                            Enter the Jira project key to sync issues from. Required for the Sync Now function.
+                        </p>
+                    </div>
+
                     {status.message && (
                         <Alert variant={status.type === 'error' ? 'destructive' : 'default'} className={status.type === 'success' ? 'border-green-500 text-green-600' : ''}>
                             {status.type === 'success' ? <CheckCircle className="h-4 w-4" /> : <AlertCircle className="h-4 w-4" />}
@@ -135,10 +154,10 @@ export function JiraSettingsForm({ userId = 'demo-user' }: { userId?: string }) 
                     <div className="flex justify-between items-center pt-4">
                         <Button type="submit" disabled={loading}>
                             {loading ? (
-                                <>
-                                    <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                                    Verifying & Saving...
-                                </>
+                                <div className="flex flex-row items-center gap-2">
+                                    <Loader2 className="h-4 w-4 animate-spin" />
+                                    <span>Verifying & Saving...</span>
+                                </div>
                             ) : (
                                 'Save Configuration'
                             )}
@@ -154,18 +173,18 @@ export function JiraSettingsForm({ userId = 'demo-user' }: { userId?: string }) 
                                 type="button"
                                 variant="outline"
                                 onClick={handleSync}
-                                disabled={syncing || !instanceUrl}
+                                disabled={syncing || !instanceUrl || !projectKey.trim()}
                             >
                                 {syncing ? (
-                                    <>
-                                        <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                                        Syncing...
-                                    </>
+                                    <div className="flex flex-row items-center gap-2">
+                                        <Loader2 className="h-4 w-4 animate-spin" />
+                                        <span>Syncing...</span>
+                                    </div>
                                 ) : (
-                                    <>
-                                        <RefreshCw className="mr-2 h-4 w-4" />
-                                        Sync Now
-                                    </>
+                                    <div className="flex flex-row items-center gap-2">
+                                        <RefreshCw className="h-4 w-4" />
+                                        <span>Sync Now</span>
+                                    </div>
                                 )}
                             </Button>
                         </div>

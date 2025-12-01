@@ -146,8 +146,10 @@ export function TestSuiteList({ testSuites }: TestSuiteListProps) {
                                                 onClick={(e) => handleRunSuite(e, suite.id)}
                                                 disabled={isRunning || total === 0}
                                             >
-                                                <Play className="w-3 h-3 mr-1" />
-                                                {isRunning ? 'Starting...' : 'Run'}
+                                                <div className="flex flex-row items-center gap-2">
+                                                    <Play className="w-3 h-3" />
+                                                    <span>{isRunning ? 'Starting...' : 'Run'}</span>
+                                                </div>
                                             </Button>
                                         </div>
                                     </div>

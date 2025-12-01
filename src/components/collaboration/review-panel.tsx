@@ -196,8 +196,10 @@ export function ReviewPanel({ testCaseId, testSuiteId, currentUserId, users }: R
           <Dialog open={open} onOpenChange={setOpen}>
             <DialogTrigger asChild>
               <Button size="sm">
-                <UserPlus className="h-4 w-4 mr-2" />
-                Request Review
+                <div className="flex flex-row items-center gap-2">
+                  <UserPlus className="h-4 w-4" />
+                  <span>Request Review</span>
+                </div>
               </Button>
             </DialogTrigger>
             <DialogContent>

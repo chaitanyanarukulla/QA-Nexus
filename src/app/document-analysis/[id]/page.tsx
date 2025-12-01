@@ -16,20 +16,28 @@ export default async function AnalysisDetailPage({ params }: { params: Promise<{
 
     const { analysis } = result
     const analysisResult: DocumentAnalysisResult = {
-        risks: analysis.risks as any,
-        gaps: analysis.gaps as any,
-        missedRequirements: analysis.missedRequirements as any,
-        recommendations: analysis.recommendations as any,
+        risks: typeof analysis.risks === 'string' ? JSON.parse(analysis.risks) : analysis.risks,
+        gaps: typeof analysis.gaps === 'string' ? JSON.parse(analysis.gaps) : analysis.gaps,
+        missedRequirements: typeof analysis.missedRequirements === 'string' ? JSON.parse(analysis.missedRequirements) : analysis.missedRequirements,
+        recommendations: typeof analysis.recommendations === 'string' ? JSON.parse(analysis.recommendations) : analysis.recommendations,
         summary: analysis.summary,
     }
 
     // Fetch test cases if suite exists
     let testCases: any[] = []
     if (analysis.testSuiteId) {
-        testCases = await prisma.testCase.findMany({
+        const rawTestCases = await prisma.testCase.findMany({
             where: { suiteId: analysis.testSuiteId },
             orderBy: { createdAt: 'asc' }
         })
+
+        // Parse JSON strings for coverage tracking fields
+        testCases = rawTestCases.map(tc => ({
+            ...tc,
+            coversRisks: tc.coversRisks ? (typeof tc.coversRisks === 'string' ? JSON.parse(tc.coversRisks) : tc.coversRisks) : [],
+            coversGaps: tc.coversGaps ? (typeof tc.coversGaps === 'string' ? JSON.parse(tc.coversGaps) : tc.coversGaps) : [],
+            coversRequirements: tc.coversRequirements ? (typeof tc.coversRequirements === 'string' ? JSON.parse(tc.coversRequirements) : tc.coversRequirements) : []
+        }))
     }
 
     return (

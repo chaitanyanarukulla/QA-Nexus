@@ -1105,7 +1105,6 @@ Configure system-wide settings and integrations.
 - Check this user manual first
 - Review README.md for technical issues
 - Check GitHub issues for known problems
-- Contact support team
 
 ### Reporting Issues
 1. Check if issue is already reported

@@ -1,3 +1,4 @@
+import { ClerkProvider } from '@clerk/nextjs'
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
@@ -39,23 +40,25 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en">
-      <body
-        className={`${geistSans.variable} ${geistMono.variable} antialiased bg-gradient-to-br from-slate-50 via-blue-50/20 to-indigo-50/30 dark:from-slate-950 dark:via-slate-900 dark:to-slate-950`}
-        suppressHydrationWarning
-      >
-        <Sidebar />
-        <div className="flex flex-col min-h-screen lg:ml-64">
-          <Header />
-          <main className="flex-1 p-6">
-            <div className="max-w-7xl mx-auto">
-              {children}
-            </div>
-          </main>
-        </div>
-        <AIChatWidget />
-        <Toaster />
-      </body>
-    </html>
+    <ClerkProvider>
+      <html lang="en">
+        <body
+          className={`${geistSans.variable} ${geistMono.variable} antialiased bg-gradient-to-br from-slate-50 via-blue-50/20 to-indigo-50/30 dark:from-slate-950 dark:via-slate-900 dark:to-slate-950`}
+          suppressHydrationWarning
+        >
+          <Sidebar />
+          <div className="flex flex-col min-h-screen lg:ml-64">
+            <Header />
+            <main className="flex-1 p-6">
+              <div className="max-w-7xl mx-auto">
+                {children}
+              </div>
+            </main>
+          </div>
+          <AIChatWidget />
+          <Toaster />
+        </body>
+      </html>
+    </ClerkProvider>
   );
 }

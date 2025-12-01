@@ -61,15 +61,15 @@ export function DarkModeToggle() {
           size="sm"
         >
           {isDark ? (
-            <>
-              <Moon className="h-4 w-4 mr-2" />
-              Dark
-            </>
+            <div className="flex flex-row items-center gap-2">
+              <Moon className="h-4 w-4" />
+              <span>Dark</span>
+            </div>
           ) : (
-            <>
-              <Sun className="h-4 w-4 mr-2" />
-              Light
-            </>
+            <div className="flex flex-row items-center gap-2">
+              <Sun className="h-4 w-4" />
+              <span>Light</span>
+            </div>
           )}
         </Button>
       </CardContent>

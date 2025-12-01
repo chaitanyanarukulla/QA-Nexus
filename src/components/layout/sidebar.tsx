@@ -3,7 +3,7 @@
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
 import { useState } from 'react'
-import { ChevronLeft, ChevronRight, FileText, Folder, Play, Bug, Home, Settings, BarChart2, FileSearch, Sparkles, Network, Menu, X } from 'lucide-react'
+import { ChevronLeft, ChevronRight, FileText, Folder, Play, Bug, Home, Settings, BarChart2, FileSearch, Sparkles, Network, Menu, X, Link2 } from 'lucide-react'
 import { cn } from '@/lib/utils'
 import { Button } from '@/components/ui/button'
 
@@ -16,6 +16,7 @@ const navItems = [
   { href: '/defects', label: 'Defects', icon: Bug },
   { href: '/document-analysis', label: 'Analysis', icon: FileSearch },
   { href: '/analytics', label: 'Analytics', icon: BarChart2 },
+  { href: '/traceability', label: 'Traceability', icon: Link2 },
   { href: '/ai-insights', label: 'AI Insights', icon: Sparkles },
   { href: '/settings', label: 'Settings', icon: Settings },
 ]

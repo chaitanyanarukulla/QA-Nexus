@@ -186,34 +186,43 @@ export function CollectionsSidebar({
     <div className="w-80 border-r bg-muted/30 flex flex-col h-full">
       {/* Header */}
       <div className="p-4 border-b bg-background">
-        <div className="flex items-center justify-between mb-3">
-          <h2 className="font-semibold">Collections</h2>
-          <Button
-            size="sm"
-            onClick={() => setCreatingCollection(true)}
-            variant="outline"
-          >
-            <Plus className="h-4 w-4 mr-1" />
-            New
-          </Button>
-          <Button
-            size="sm"
-            onClick={() => setImportingCollection(true)}
-            variant="outline"
-            className="ml-2"
-          >
-            <Upload className="h-4 w-4 mr-1" />
-            Import
-          </Button>
-          <Button
-            size="sm"
-            onClick={() => setGeneratingRequest(true)}
-            variant="outline"
-            className="ml-2"
-          >
-            <Sparkles className="h-4 w-4 mr-1" />
-            Generate
-          </Button>
+        <div className="mb-3">
+          <h2 className="font-semibold mb-3">Collections</h2>
+          <div className="flex flex-col gap-2">
+            <Button
+              size="sm"
+              onClick={() => setCreatingCollection(true)}
+              variant="outline"
+              fullWidth
+            >
+              <div className="flex flex-row items-center gap-2">
+                <Plus className="h-4 w-4" />
+                <span>New</span>
+              </div>
+            </Button>
+            <Button
+              size="sm"
+              onClick={() => setImportingCollection(true)}
+              variant="outline"
+              fullWidth
+            >
+              <div className="flex flex-row items-center gap-2">
+                <Upload className="h-4 w-4" />
+                <span>Import</span>
+              </div>
+            </Button>
+            <Button
+              size="sm"
+              onClick={() => setGeneratingRequest(true)}
+              variant="outline"
+              fullWidth
+            >
+              <div className="flex flex-row items-center gap-2">
+                <Sparkles className="h-4 w-4" />
+                <span>Generate</span>
+              </div>
+            </Button>
+          </div>
         </div>
 
         {creatingCollection && (

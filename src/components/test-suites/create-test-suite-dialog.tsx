@@ -45,8 +45,10 @@ export function CreateTestSuiteDialog() {
         <Dialog open={open} onOpenChange={setOpen}>
             <DialogTrigger asChild>
                 <Button>
-                    <Plus className="mr-2 h-4 w-4" />
-                    New Test Suite
+                    <div className="flex flex-row items-center gap-2">
+                        <Plus className="h-4 w-4" />
+                        <span>New Test Suite</span>
+                    </div>
                 </Button>
             </DialogTrigger>
             <DialogContent className="sm:max-w-[425px]">

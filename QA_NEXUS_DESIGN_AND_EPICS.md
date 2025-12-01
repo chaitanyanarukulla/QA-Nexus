@@ -46,6 +46,19 @@ graph TD
 - **AI Integration**: OpenAI SDK (compatible with OpenAI & Local LLMs)
 - **Validation**: Zod schemas
 
+### 2.3 Project Structure
+The project is organized as follows:
+- **`src/app`**: Next.js App Router pages and layouts.
+- **`src/app/actions`**: Server Actions containing business logic and database interactions.
+- **`src/app/api`**: API Routes for external integrations.
+- **`src/lib`**: Core utilities and services:
+    - `ai.ts`: AI service adapter (OpenAI/Foundry).
+    - `jira.ts`: Jira integration client.
+    - `playwright-executor.ts`: Test execution engine.
+    - `playwright-generator.ts`: Code generation logic.
+- **`src/components`**: Reusable UI components.
+- **`prisma`**: Database schema and migrations.
+
 ## 3. Data Model (Core Entities)
 
 ### 3.1 Primary Entities
@@ -102,6 +115,10 @@ Use these Epics to organize your Jira backlog. Each User Story represents a test
 4.  **Monitor AI Insights**
     *   *As a Lead, I want to see flaky tests and failure predictions so that I can prioritize maintenance.*
     *   **Acceptance Criteria**: Dashboard widget listing top 5 risky/flaky tests.
+5.  **Release Readiness Score**
+    *   *As a Manager, I want a single score to determine if we are ready to ship.*
+    *   **Acceptance Criteria**: "Quality Score" (0-100) calculated from Pass Rate, Automation Coverage, and Defect Resolution Rate.
+    *   **Implementation**: Calculated in `getAnalyticsData` in `src/app/actions/analytics.ts`.
 
 ## 🧪 Epic 2: Test Case Management
 **Description**: Comprehensive management of manual test cases, including creation, editing, organization, and versioning.
@@ -171,10 +188,12 @@ Use these Epics to organize your Jira backlog. Each User Story represents a test
 ### User Stories
 1.  **Analyze Requirements Text**
     *   *As a QA Lead, I want to paste requirements or select a Jira Epic to analyze for risks and gaps.*
-    *   **Acceptance Criteria**: AI returns list of Risks, Gaps, and Missed Requirements.
+    *   **Acceptance Criteria**: AI returns list of Risks (Severity, Impact), Gaps (Category, Suggestion), and Missed Requirements.
+    *   **Implementation**: Uses `analyzeDocument` from `src/lib/ai.ts`.
 2.  **Generate Test Cases from Analysis**
     *   *As a Tester, I want to generate a full test suite based on the AI analysis.*
-    *   **Acceptance Criteria**: "Generate Tests" button creates Test Cases in DB linked to the analysis.
+    *   **Acceptance Criteria**: "Generate Tests" button creates Test Cases in DB linked to the analysis. Supports edge cases and negative scenarios options.
+    *   **Implementation**: Uses `generateTestCases` from `src/lib/ai.ts`.
 3.  **Traceability Matrix**
     *   *As a Manager, I want to see which test cases cover which requirements/risks.*
     *   **Acceptance Criteria**: Visual matrix showing relationships between Requirements and Test Cases.
@@ -185,16 +204,34 @@ Use these Epics to organize your Jira backlog. Each User Story represents a test
 ### User Stories
 1.  **Visual Request Builder**
     *   *As a Tester, I want a UI to create HTTP requests (GET, POST, etc.) without writing code.*
-    *   **Acceptance Criteria**: Inputs for URL, Method, Headers, Body, Params; "Send" button works.
+    *   **Acceptance Criteria**: Inputs for URL, Method, Headers, Body, Params; "Send" button works. Supports variable substitution (e.g., `{{baseUrl}}`).
 2.  **Import OpenAPI Spec**
     *   *As a Developer, I want to import a Swagger/OpenAPI JSON file to automatically create test collections.*
     *   **Acceptance Criteria**: Upload dialog; parses spec; creates Collections and Requests in DB.
 3.  **AI Request Generation**
     *   *As a Tester, I want to describe a request in English and have AI build it for me.*
     *   **Acceptance Criteria**: "Generate" dialog; input prompt; populates Request Builder fields.
+    *   **Implementation**: Uses `generateApiRequest` from `src/lib/ai.ts`.
 4.  **AI Assertion Generation**
     *   *As a Tester, I want AI to analyze a response and suggest validation assertions.*
     *   **Acceptance Criteria**: "Generate Assertions" button; adds checks for status code, schema, and data.
+    *   **Implementation**: Uses `generateApiAssertions` from `src/lib/ai.ts`.
+5.  **Playwright Code Export**
+    *   *As an Automation Engineer, I want to export my API tests as executable Playwright code.*
+    *   **Acceptance Criteria**: "Export Code" button; generates valid `test('...', async ({ request }) => { ... })` code block.
+    *   **Implementation**: Uses `generatePlaywrightTest` from `src/lib/playwright-generator.ts`.
+6.  **Performance Testing**
+    *   *As a Tester, I want to run load tests on my API endpoints to check for bottlenecks.*
+    *   **Acceptance Criteria**: "Run Load Test" option; configurable users/duration; reports latency and error rates.
+7.  **CI/CD Export**
+    *   *As a DevOps Engineer, I want to export test collections as CI-ready scripts (GitHub Actions/GitLab CI).*
+    *   **Acceptance Criteria**: Export dialog with CI provider selection; generates YAML configuration.
+8.  **GraphQL Support**
+    *   *As a Developer, I want to test GraphQL endpoints with query/mutation support.*
+    *   **Acceptance Criteria**: GraphQL body editor with syntax highlighting; supports variables and schema fetching.
+9.  **Request Chaining**
+    *   *As a Tester, I want to use values from one request (e.g., auth token) in subsequent requests.*
+    *   **Acceptance Criteria**: UI to extract response fields into variables; variables usable in next request headers/body.
 
 ## 🤝 Epic 8: Collaboration
 **Description**: Features enabling team communication and review processes.
@@ -220,3 +257,95 @@ Use these Epics to organize your Jira backlog. Each User Story represents a test
 2.  **Configure Jira Connection**
     *   *As an Admin, I want to set up the Jira URL and API Token.*
     *   **Acceptance Criteria**: Connection test button; secure storage of tokens.
+
+## 🔮 Epic 10: AI Insights & Analytics
+**Description**: Advanced AI features for predictive quality analysis and natural language data querying.
+
+### User Stories
+1.  **Flaky Test Detection**
+    *   *As a Lead, I want to identify tests that frequently toggle between pass/fail.*
+    *   **Acceptance Criteria**: System analyzes execution history; assigns "Flaky Score" (0-100); alerts user.
+2.  **Failure Prediction**
+    *   *As a Tester, I want to know which tests are likely to fail in the next run.*
+    *   **Acceptance Criteria**: AI model predicts failure probability based on code changes and history.
+3.  **Chat with Data (QA Assistant)**
+    *   *As a Manager, I want to ask questions like "How many critical bugs were found last week?" and get an answer.*
+    *   **Acceptance Criteria**: Chat interface; AI queries database context (`testCases`, `defects`, `testRuns`) and returns natural language answer.
+    *   **Implementation**: Uses `answerQuestion` from `src/lib/ai.ts`.
+
+## 🤖 Epic 11: Automation Engine
+**Description**: The core engine for generating, executing, and reporting on automated tests.
+
+### User Stories
+1.  **Execute Playwright Tests**
+    *   *As a System, I need to execute generated Playwright scripts in a controlled environment.*
+    *   **Acceptance Criteria**: `executePlaywrightTest` function runs `npx playwright test`; captures stdout/stderr.
+2.  **Parse Execution Results**
+    *   *As a System, I need to parse JSON results from Playwright into database records.*
+    *   **Acceptance Criteria**: Maps Playwright JSON report to `TestResult` and `ApiExecution` models.
+3.  **Parallel Execution**
+    *   *As a User, I want to run multiple tests simultaneously to save time.*
+    *   **Acceptance Criteria**: Support for `Promise.all` execution of test batches.
+
+---
+
+# Part 3: API Reference
+
+The application exposes APIs through two primary mechanisms: **Server Actions** (for internal frontend usage) and **API Routes** (for external integrations and specific HTTP-based features).
+
+## 1. Server Actions (Internal API)
+
+These actions are located in `src/app/actions` and are directly callable by React Client Components.
+
+### 🤖 AI Services
+| Action | Description |
+| :--- | :--- |
+| `generateAndSaveTestCases` | Generates test cases from requirements and optionally saves them. |
+| `generateAssertionsForRequest` | Analyzes an API response and suggests validation assertions. |
+| `generateRequestFromPrompt` | Converts a natural language prompt into a structured API request. |
+| `runInsightsAnalysis` | Triggers a full analysis of test history to detect flakes and risks. |
+| `getTestHealthScore` | Calculates a 0-100 health score for a specific test case. |
+| `getPrioritizedTests` | Returns a list of tests sorted by risk and importance. |
+
+### 🧪 API Testing Platform
+| Action | Description |
+| :--- | :--- |
+| `createCollection` / `getCollections` | Manages test collections. |
+| `createApiRequest` / `updateApiRequest` | CRUD operations for API request definitions. |
+| `executeApiRequest` | Executes a single request via Playwright and stores results. |
+| `executeCollection` | Runs all requests in a collection sequentially. |
+| `importOpenAPISpec` | Parses a Swagger/OpenAPI file and generates collections/requests. |
+| `getApiTestingStats` | Returns dashboard metrics for API testing. |
+
+### 🔗 Traceability & Requirements
+| Action | Description |
+| :--- | :--- |
+| `getTraceabilityMatrix` | Returns the full matrix linking Requirements → Suites → Tests. |
+| `getRequirementCoverage` | Calculates testing coverage stats for a specific document. |
+
+### ⚙️ Integrations & Webhooks
+| Action | Description |
+| :--- | :--- |
+| `registerJiraWebhook` | Registers the QA Nexus webhook with the connected Jira instance. |
+| `getWebhookSettings` | Retrieves secret and status for the Jira webhook. |
+| `getWebhookLogs` | Returns a history of received webhook events. |
+
+## 2. API Routes (External API)
+
+These endpoints are available at `/api/...` and handle standard HTTP requests.
+
+| Endpoint | Method | Description |
+| :--- | :--- | :--- |
+| `/api/ai/generate-assertions` | `POST` | Generates assertions from a provided response body. |
+| `/api/ai/generate-mock-data` | `POST` | Generates realistic mock data based on a schema. |
+| `/api/ai/generate-request` | `POST` | Generates an API request structure from a text prompt. |
+| `/api/export/cicd` | `GET` | Exports test suites in a format suitable for CI/CD pipelines. |
+| `/api/webhooks/jira` | `POST` | Receives and processes events from Jira (Issue Created/Updated). |
+
+## 3. External Integrations
+
+The application consumes the following external APIs via `src/lib`:
+
+- **OpenAI API**: Used for all AI generation and analysis tasks.
+- **Jira Cloud REST API v3**: Used for syncing issues, epics, and comments.
+- **Playwright**: Used as an internal service for executing HTTP requests and browser tests.

@@ -9,12 +9,14 @@ generator client {
 }
 
 datasource db {
-  provider = "sqlite"
+  provider = "postgresql"
   url      = env("DATABASE_URL")
+  directUrl = env("DIRECT_URL")
 }
 
 model User {
   id        String   @id @default(cuid())
+  clerkId   String?  @unique // Link to Clerk User
   email     String   @unique
   name      String?
   role      String   @default("TESTER")
@@ -40,7 +42,7 @@ model TestCase {
   id          String   @id @default(cuid())
   title       String
   description String?
-  steps       String   // JSON stored as text for SQLite compatibility
+  steps       Json     // Structured steps
   expectedResult String?
   priority    String   @default("MEDIUM")
   status      String   @default("ACTIVE")
@@ -51,9 +53,9 @@ model TestCase {
   jiraStoryKey String?
 
   // Requirements coverage tracking
-  coversRisks String?    // JSON array stored as text for SQLite compatibility
-  coversGaps  String?    // JSON array stored as text for SQLite compatibility
-  coversRequirements String? // JSON array stored as text for SQLite compatibility
+  coversRisks Json?    // Array of risks
+  coversGaps  Json?    // Array of gaps
+  coversRequirements Json? // Array of requirements
 
   // AI-powered insights
   flakyScore     Float?   @default(0.0)  // 0-100 score indicating flakiness
@@ -197,10 +199,10 @@ model DocumentAnalysis {
   sourceContent   String   // Original document content
 
   // Analysis results
-  risks           String   // JSON array stored as text for SQLite compatibility
-  gaps            String   // JSON array stored as text for SQLite compatibility
-  missedRequirements String  // JSON array stored as text for SQLite compatibility
-  recommendations String   // JSON array stored as text for SQLite compatibility
+  risks           Json     // Array of risks
+  gaps            Json     // Array of gaps
+  missedRequirements Json  // Array of missed requirements
+  recommendations Json     // Array of recommendations
   summary         String   // Overall analysis summary
 
   // Metadata
@@ -238,7 +240,7 @@ model Comment {
   replies     Comment[] @relation("CommentThread")
 
   // Mentions
-  mentions    String?   // JSON array stored as text for SQLite compatibility
+  mentions    Json?   // Array of mentions
 
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
@@ -317,7 +319,7 @@ model ActivityLog {
   entityTitle String?
 
   // Change details
-  changes     String?  // JSON object stored as text for SQLite compatibility
+  changes     Json?  // Object of changes
 
   createdAt   DateTime @default(now())
 
@@ -346,7 +348,7 @@ model AIInsight {
   testSuite   TestSuite? @relation(fields: [testSuiteId], references: [id], onDelete: Cascade)
 
   // Metadata
-  metadata    String?  // JSON object stored as text for SQLite compatibility
+  metadata    Json?  // Object of metadata
   isResolved  Boolean  @default(false)
   resolvedAt  DateTime?
 
@@ -406,7 +408,7 @@ model ApiCollection {
 
   // Sharing & organization
   isPublic    Boolean  @default(false)
-  tags        String?  // JSON array stored as text for SQLite compatibility
+  tags        Json?    // Array of tags
 
   @@index([createdBy])
   @@index([parentId])
@@ -421,14 +423,14 @@ model ApiRequest {
   // HTTP Configuration
   method        String   @default("GET")
   url           String      // Can contain {{variables}}
-  headers       String?  // JSON object stored as text for SQLite compatibility
-  queryParams   String?  // JSON object stored as text for SQLite compatibility
-  body          String?  // JSON request body stored as text
+  headers       Json?    // Object of headers
+  queryParams   Json?    // Object of params
+  body          String?  // JSON request body stored as text (keep as string for flexibility?) -> No, let's use Json if it's JSON
   bodyType      String   @default("JSON")
 
   // Authentication
   authType      String   @default("NONE")
-  authConfig    String?  // JSON stored as text for SQLite compatibility
+  authConfig    Json?    // Object of auth config
 
   // Pre-request & Test Scripts
   preRequestScript  String?  // JavaScript to run before request
@@ -476,20 +478,20 @@ model ApiExecution {
   status        String   @default("PASSED")
   statusCode    Int?
   responseTime  Int          // Milliseconds
-  responseBody  String?      // Actual response
-  responseHeaders String?     // JSON stored as text
+  responseBody  String?      // Actual response (keep as string as it might not be JSON)
+  responseHeaders Json?      // Object of headers
 
   // Error details
   errorMessage  String?
   stackTrace    String?
 
   // Screenshots/artifacts
-  artifacts     String?  // JSON array stored as text
+  artifacts     Json?    // Array of artifacts
 
   // Assertion results
   assertionsPassed Int    @default(0)
   assertionsFailed Int    @default(0)
-  assertionResults String?  // JSON array stored as text
+  assertionResults Json?  // Array of results
 
   // Environment used
   environmentId String?
@@ -512,10 +514,10 @@ model Environment {
   description String?
 
   // Variables (name-value pairs)
-  variables   String   // JSON stored as text
+  variables   Json     // Object of variables
 
   // Global auth config for this environment
-  authConfig  String?  // JSON stored as text
+  authConfig  Json?    // Object of auth config
 
   // Collections using this environment
   collections ApiCollection[]
@@ -538,7 +540,7 @@ model OpenApiSpec {
   description String?
 
   // Spec content
-  specContent String   // Full OpenAPI spec as JSON stored as text
+  specContent Json     // Full OpenAPI spec as JSON
   sourceUrl   String?  // Original URL if imported from URL
 
   // Generated collection
@@ -575,4 +577,34 @@ model ApiAssertion {
   enabled     Boolean  @default(true)
 
   @@index([requestId])
+}
+
+// Settings for application configuration
+model Settings {
+  id        String   @id @default(cuid())
+  key       String   @unique
+  value     String
+  category  String   @default("general")
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([category])
+}
+
+// Webhook event logs for audit and debugging
+model WebhookLog {
+  id           String   @id @default(cuid())
+  source       String   // e.g., 'jira', 'github'
+  eventType    String   // e.g., 'issue_updated', 'issue_created'
+  entityType   String   // e.g., 'defect', 'test_case'
+  entityId     String
+  payload      Json     // Object of payload
+  status       String   @default("SUCCESS") // SUCCESS, ERROR, SKIPPED
+  errorMessage String?
+  processedAt  DateTime @default(now())
+
+  @@index([source])
+  @@index([eventType])
+  @@index([entityType])
+  @@index([processedAt])
 }

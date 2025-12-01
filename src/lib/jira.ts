@@ -140,11 +140,6 @@ export class JiraClient {
                     issuetype: {
                         name: data.issueType,
                     },
-                    ...(data.priority && {
-                        priority: {
-                            name: data.priority,
-                        },
-                    }),
                 },
             }
 
@@ -255,6 +250,86 @@ export class JiraClient {
             console.error('Failed to get issue types:', error)
             return []
         }
+    }
+
+    /**
+     * Get all webhooks
+     */
+    async getWebhooks(): Promise<JiraWebhook[]> {
+        try {
+            const response = await this.client.get('/webhook')
+            return response.data || []
+        } catch (error: any) {
+            console.error('Failed to get webhooks:', error.message)
+            return []
+        }
+    }
+
+    /**
+     * Register a new webhook
+     */
+    async registerWebhook(data: CreateWebhookData): Promise<JiraWebhook | null> {
+        try {
+            const payload = {
+                name: data.name,
+                url: data.url,
+                events: data.events,
+                filters: data.filters || {},
+                excludeBody: false,
+            }
+
+            const response = await this.client.post('/webhook', payload)
+            return response.data
+        } catch (error: any) {
+            console.error('Failed to register webhook:', error.response?.data || error.message)
+            throw new Error(error.response?.data?.errorMessages?.[0] || 'Failed to register webhook')
+        }
+    }
+
+    /**
+     * Delete a webhook
+     */
+    async deleteWebhook(webhookId: string): Promise<boolean> {
+        try {
+            await this.client.delete(`/webhook/${webhookId}`)
+            return true
+        } catch (error: any) {
+            console.error('Failed to delete webhook:', error.message)
+            return false
+        }
+    }
+
+    /**
+     * Refresh a webhook (extend expiration)
+     */
+    async refreshWebhook(webhookId: string): Promise<boolean> {
+        try {
+            await this.client.put(`/webhook/${webhookId}/refresh`)
+            return true
+        } catch (error: any) {
+            console.error('Failed to refresh webhook:', error.message)
+            return false
+        }
+    }
+}
+
+export interface JiraWebhook {
+    id: string
+    name: string
+    url: string
+    events: string[]
+    expirationDate?: string
+    filters?: {
+        'issue-related-events-section'?: string
+    }
+}
+
+export interface CreateWebhookData {
+    name: string
+    url: string
+    events: string[]
+    filters?: {
+        'issue-related-events-section'?: string
     }
 }
 
