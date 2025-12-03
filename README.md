@@ -34,7 +34,7 @@ A comprehensive, intelligent QA platform that transforms requirements into test 
 
 ## 🎉 What's New in v3.0.0
 
-### API Testing Suite (Phase 7)
+### API Testing Suite 
 QA Nexus now includes comprehensive API testing capabilities powered by Playwright:
 
 - **Visual Request Builder**: Intuitive UI for creating and executing API tests without writing code
@@ -49,13 +49,13 @@ QA Nexus now includes comprehensive API testing capabilities powered by Playwrig
 - **Environment Variables**: Dynamic variable substitution across requests with `{{variableName}}` syntax
 - **Pre-Request Scripts**: JavaScript code execution before request for dynamic data setup
 
-### Collaboration Features (Phase 5)
+### Collaboration Features 
 - **Comments & Mentions**: Thread discussions on test cases, suites, and defects with @mentions
 - **Notifications System**: Real-time alerts for mentions, reviews, and status changes
 - **Review Workflows**: Request and approve reviews with decision tracking
 - **Activity Timeline**: Visual history of all actions across the platform
 
-### Advanced AI Capabilities (Phase 6)
+### Advanced AI Capabilities 
 - **Flaky Test Detection**: Automatically identify unreliable tests with flaky scores
 - **Predictive Analytics**: ML-based prediction of test failures before execution
 - **Performance Analysis**: Detect slow tests and get optimization recommendations
@@ -1210,4 +1210,4 @@ For support, email support@qanexus.com or open an issue.
 
 **Built with ❤️ using Next.js 16, React 19, Prisma, and AI**
 
-**Made by**: QA Engineers, for QA Engineers
+**Made by**: Chai.Narukulla, for QA Engineers
