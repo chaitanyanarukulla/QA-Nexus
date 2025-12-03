@@ -33,7 +33,7 @@ export default defineConfig({
     /* Shared settings for all the projects below */
     use: {
         /* Base URL to use in actions like `await page.goto('/')` */
-        baseURL: process.env.PLAYWRIGHT_BASE_URL || 'http://localhost:3000',
+        baseURL: process.env.PLAYWRIGHT_BASE_URL || 'http://localhost:3002',
 
         /* Collect trace when retrying the failed test */
         trace: 'retain-on-failure',
@@ -94,12 +94,14 @@ export default defineConfig({
     ],
 
     /* Run your local dev server before starting the tests */
-    webServer: {
-        command: 'npm run dev',
-        url: 'http://localhost:3000',
-        reuseExistingServer: !process.env.CI,
-        stdout: 'ignore',
-        stderr: 'pipe',
-        timeout: 120000,
-    },
+    /* Run your local dev server before starting the tests */
+    /* Run your local dev server before starting the tests */
+    // webServer: {
+    //     command: 'npm run dev -- -p 3002',
+    //     url: 'http://localhost:3002',
+    //     reuseExistingServer: !process.env.CI,
+    //     stdout: 'ignore',
+    //     stderr: 'pipe',
+    //     timeout: 120000,
+    // },
 });

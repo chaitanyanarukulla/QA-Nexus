@@ -18,6 +18,7 @@ test.describe('API Testing Platform', () => {
         await loginAsUser(page, 'TESTER');
         apiPage = new ApiTestingPage(page);
         await apiPage.navigate();
+        await apiPage.createCollection('Default Collection');
     });
 
     test('should create and execute a manual request', async ({ page }) => {
@@ -81,5 +82,29 @@ test.describe('API Testing Platform', () => {
         // Note: The exact assertions depend on AI, but we expect some to appear
         await expect(page.locator('.space-y-2 .border').first()).toBeVisible();
         await expect(page.getByText('Status Code')).toBeVisible();
+    });
+
+    test('should save request to collection', async ({ page }) => {
+        const requestTitle = `Saved Request ${Date.now()}`;
+        await apiPage.createRequest('GET', 'https://jsonplaceholder.typicode.com/users', requestTitle);
+
+        // Save
+        await apiPage.saveBtn.click();
+
+        // Verify it appears in the list (assuming default collection or first one is selected)
+        // Note: This might need a collection to exist. The beforeEach creates a user but not necessarily a collection.
+        // However, the app might create a default one or we might need to create one.
+        // For robustness, let's create a collection first if needed, but for now let's assume the "Save" flow handles it or we verify the button works.
+
+        // Actually, let's create a collection first to be safe
+        const collectionName = `Save Target ${Date.now()}`;
+        await apiPage.createCollection(collectionName);
+
+        // Now save
+        await apiPage.saveBtn.click();
+
+        // Verify toast or list update
+        await expect(page.getByText('Request saved')).toBeVisible();
+        await expect(page.getByText(requestTitle)).toBeVisible();
     });
 });

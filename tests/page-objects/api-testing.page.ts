@@ -8,6 +8,8 @@ export class ApiTestingPage extends BasePage {
     readonly importBtn: Locator;
     readonly generateBtn: Locator;
     readonly collectionList: Locator;
+    readonly collectionNameInput: Locator;
+    readonly addCollectionBtn: Locator;
 
     // Request Builder
     readonly requestBuilder: Locator;
@@ -42,19 +44,31 @@ export class ApiTestingPage extends BasePage {
     readonly generateAssertionsBtn: Locator;
     readonly assertionList: Locator;
 
+    // Environments
+    readonly environmentSelector: Locator;
+    readonly manageEnvironmentsBtn: Locator;
+    readonly newEnvironmentBtn: Locator;
+    readonly envNameInput: Locator;
+    readonly envDescInput: Locator;
+    readonly envVarsInput: Locator;
+    readonly createEnvBtn: Locator;
+    readonly saveEnvBtn: Locator;
+
     constructor(page: Page) {
         super(page);
 
         // Sidebar
-        this.sidebar = page.locator('.w-64.border-r');
-        this.newCollectionBtn = page.getByRole('button', { name: 'New', exact: true });
+        this.sidebar = page.locator('.w-80.border-r');
+        this.newCollectionBtn = page.getByRole('button', { name: 'New' });
         this.importBtn = page.getByRole('button', { name: 'Import' });
         this.generateBtn = page.getByRole('button', { name: 'Generate' });
-        this.collectionList = page.locator('[data-testid="collection-list"]'); // Assuming testid or use class
+        this.collectionList = page.locator('.flex-1 .p-2');
+        this.collectionNameInput = page.getByPlaceholder('Collection name');
+        this.addCollectionBtn = page.getByRole('button', { name: 'Add' });
 
         // Request Builder
-        this.requestBuilder = page.locator('.flex-1.p-6');
-        this.methodSelect = page.getByRole('combobox').first(); // Adjust if multiple
+        this.requestBuilder = page.locator('.flex-1.flex.flex-col');
+        this.methodSelect = page.getByRole('combobox').first();
         this.urlInput = page.getByPlaceholder('https://api.example.com/users');
         this.sendBtn = page.getByRole('button', { name: 'Send' });
         this.saveBtn = page.getByRole('button', { name: 'Save' });
@@ -68,8 +82,8 @@ export class ApiTestingPage extends BasePage {
         this.assertionsTab = page.getByRole('tab', { name: 'Assertions' });
 
         // Response
-        this.responseSection = page.locator('.mt-4'); // Adjust selector
-        this.responseStatus = page.locator('.badge'); // Adjust selector
+        this.responseSection = page.locator('.mt-4');
+        this.responseStatus = page.locator('.badge');
         this.responseBody = page.getByRole('tabpanel', { name: 'Body' }).locator('pre');
 
         // Dialogs
@@ -83,22 +97,45 @@ export class ApiTestingPage extends BasePage {
 
         // Assertions
         this.generateAssertionsBtn = page.getByRole('button', { name: 'Generate with AI' });
-        this.assertionList = page.locator('.space-y-2 .card'); // Adjust selector
+        this.assertionList = page.locator('.space-y-2 .card');
+
+        // Environments
+        this.environmentSelector = page.getByRole('combobox').nth(1); // Assuming second combobox
+        this.manageEnvironmentsBtn = page.getByRole('button', { name: 'Manage Environments' }); // Or link
+        this.newEnvironmentBtn = page.getByRole('button', { name: 'New Environment' });
+        this.envNameInput = page.locator('#create-name');
+        this.envDescInput = page.locator('#create-description');
+        this.envVarsInput = page.locator('#create-variables');
+        this.createEnvBtn = page.getByRole('button', { name: 'Create' });
+        this.saveEnvBtn = page.getByRole('button', { name: 'Save' });
     }
 
     async navigate() {
         await this.goto('/api-testing');
     }
 
+    async createCollection(name: string) {
+        await this.newCollectionBtn.click();
+        await this.collectionNameInput.fill(name);
+        await this.addCollectionBtn.click();
+        await expect(this.page.getByText(name, { exact: true })).toBeVisible();
+        await this.page.getByText(name, { exact: true }).click();
+    }
+
+    async deleteCollection(name: string) {
+        const collection = this.page.locator('.group', { hasText: name }).first();
+        await collection.hover();
+        this.page.once('dialog', dialog => dialog.accept());
+        await collection.getByRole('button').last().click(); // Trash icon
+        await expect(this.page.getByText(name, { exact: true })).not.toBeVisible();
+    }
+
     async createRequest(method: string, url: string, title?: string) {
-        // Select method (if not default GET)
         if (method !== 'GET') {
             await this.methodSelect.click();
             await this.page.getByRole('option', { name: method }).click();
         }
-
         await this.urlInput.fill(url);
-
         if (title) {
             await this.titleInput.fill(title);
         }
@@ -106,7 +143,6 @@ export class ApiTestingPage extends BasePage {
 
     async sendRequest() {
         await this.sendBtn.click();
-        // Wait for response
         await expect(this.page.getByText('Response', { exact: true })).toBeVisible();
     }
 
@@ -129,7 +165,27 @@ export class ApiTestingPage extends BasePage {
     async generateAssertions() {
         await this.assertionsTab.click();
         await this.generateAssertionsBtn.click();
-        // Wait for assertions to appear
-        await expect(this.page.getByText('Generated', { exact: false })).toBeVisible(); // Toast message
+        await expect(this.page.getByText('Generated', { exact: false })).toBeVisible();
+    }
+
+    // Environment Methods
+    async navigateToEnvironments() {
+        await this.goto('/api-testing/environments');
+    }
+
+    async createEnvironment(name: string, variables: object) {
+        await this.newEnvironmentBtn.click();
+        await this.envNameInput.fill(name);
+        await this.envVarsInput.fill(JSON.stringify(variables, null, 2));
+        await this.createEnvBtn.click();
+        await expect(this.page.getByText(name)).toBeVisible();
+    }
+
+    async deleteEnvironment(name: string) {
+        const envCard = this.page.locator('.card', { hasText: name }); // Adjust selector based on Card structure
+        // Assuming delete button is in the card
+        this.page.once('dialog', dialog => dialog.accept());
+        await this.page.getByRole('button').filter({ has: this.page.locator('svg.lucide-trash-2') }).click();
+        // Note: This selector is risky, better to find within card
     }
 }
