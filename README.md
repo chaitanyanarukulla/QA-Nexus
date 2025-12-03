@@ -1,7 +1,3 @@
-Here’s a **clean, professional, and GitHub-ready rewrite of your README** with tighter language, removed duplication, improved flow, and enterprise-grade tone—**without changing any functionality or technical claims**.
-
-You can paste this directly over your existing `README.md`.
-
 ---
 
 # 🎯 QA Nexus
