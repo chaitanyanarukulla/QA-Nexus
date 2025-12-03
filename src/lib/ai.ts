@@ -169,7 +169,8 @@ Important: Return ONLY the JSON array, no markdown formatting, no explanations.`
         return testCases
     } catch (error) {
         console.error('Error generating test cases:', error)
-        throw new Error('Failed to generate test cases. Please try again.')
+        const errorMessage = error instanceof Error ? error.message : 'Unknown error'
+        throw new Error(`Failed to generate test cases: ${errorMessage}`)
     }
 }
 
@@ -372,7 +373,8 @@ Important: Return ONLY the JSON object, no markdown formatting, no explanations.
         return analysis
     } catch (error) {
         console.error('Error analyzing document:', error)
-        throw new Error('Failed to analyze document. Please try again.')
+        const errorMessage = error instanceof Error ? error.message : 'Unknown error'
+        throw new Error(`Failed to analyze document: ${errorMessage}`)
     }
 }
 
@@ -445,7 +447,8 @@ Supported Operators: EQUALS, NOT_EQUALS, CONTAINS, NOT_CONTAINS, GREATER_THAN, L
         return assertions
     } catch (error) {
         console.error('Error generating assertions:', error)
-        throw new Error('Failed to generate assertions')
+        const errorMessage = error instanceof Error ? error.message : 'Unknown error'
+        throw new Error(`Failed to generate assertions: ${errorMessage}`)
     }
 }
 
@@ -504,7 +507,8 @@ Important: Return ONLY the JSON object, no markdown formatting.`
         return request
     } catch (error) {
         console.error('Error generating API request:', error)
-        throw new Error('Failed to generate API request')
+        const errorMessage = error instanceof Error ? error.message : 'Unknown error'
+        throw new Error(`Failed to generate API request: ${errorMessage}`)
     }
 }
 
@@ -559,6 +563,7 @@ Examples:
         return mockData
     } catch (error) {
         console.error('Error generating mock data:', error)
-        throw new Error('Failed to generate mock data')
+        const errorMessage = error instanceof Error ? error.message : 'Unknown error'
+        throw new Error(`Failed to generate mock data: ${errorMessage}`)
     }
 }

@@ -1,6 +1,7 @@
 import { Suspense } from 'react'
 import { prisma } from '@/lib/prisma'
 import { EnvironmentsClient } from './client'
+export const dynamic = 'force-dynamic'
 
 export const metadata = {
   title: 'Environments | API Testing | QA Nexus',

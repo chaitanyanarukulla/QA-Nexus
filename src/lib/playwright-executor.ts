@@ -50,7 +50,7 @@ export async function executePlaywrightTest(
       // File doesn't exist, that's fine
     }
 
-    const command = `npx playwright test ${testFile} --reporter=json --output=test-results.json`;
+    const command = `npx playwright test ${testFile} --config=playwright-api.config.ts --output=test-artifacts`;
 
     let stdout = '';
     let stderr = '';
@@ -60,6 +60,7 @@ export async function executePlaywrightTest(
       const result = await execAsync(command, {
         timeout: 60000, // 60 second timeout
         maxBuffer: 10 * 1024 * 1024, // 10MB buffer
+        env: { ...process.env, PLAYWRIGHT_JSON_OUTPUT_NAME: 'test-results.json' }
       });
       stdout = result.stdout;
       stderr = result.stderr;
@@ -130,7 +131,7 @@ export async function executePlaywrightTest(
 
     // Determine status
     const status = testRun.status === 'passed' ? 'PASSED' :
-                   testRun.status === 'failed' ? 'FAILED' : 'ERROR';
+      testRun.status === 'failed' ? 'FAILED' : 'ERROR';
 
     // Count assertions (approximation based on errors)
     const errors = testRun.errors || [];

@@ -1,4 +1,5 @@
 import { getTestCases } from '@/app/actions/test-cases'
+export const dynamic = 'force-dynamic'
 import { TestCaseList } from '@/components/test-cases/test-case-list'
 import { CreateTestCaseDialog } from '@/components/test-cases/create-test-case-dialog'
 import { AITestGeneratorDialog } from '@/components/ai/ai-test-generator-dialog'

@@ -35,11 +35,11 @@ export function CoverageMatrix({
     const coverageItems: CoverageItem[] = []
 
     // Process risks
-    risks.forEach(risk => {
-        const coveredBy = testCases.filter(tc => {
+    risks.forEach((risk: any) => {
+        const coveredBy = testCases.filter((tc: any) => {
             const covers = tc.coversRisks as string[] || []
             return covers.includes(risk.title)
-        }).map(tc => ({
+        }).map((tc: any) => ({
             id: tc.id,
             title: tc.title,
             priority: tc.priority
@@ -54,11 +54,11 @@ export function CoverageMatrix({
     })
 
     // Process gaps
-    gaps.forEach(gap => {
-        const coveredBy = testCases.filter(tc => {
+    gaps.forEach((gap: any) => {
+        const coveredBy = testCases.filter((tc: any) => {
             const covers = tc.coversGaps as string[] || []
             return covers.includes(gap.title)
-        }).map(tc => ({
+        }).map((tc: any) => ({
             id: tc.id,
             title: tc.title,
             priority: tc.priority
@@ -72,11 +72,11 @@ export function CoverageMatrix({
     })
 
     // Process missed requirements
-    missedRequirements.forEach(req => {
-        const coveredBy = testCases.filter(tc => {
+    missedRequirements.forEach((req: any) => {
+        const coveredBy = testCases.filter((tc: any) => {
             const covers = tc.coversRequirements as string[] || []
             return covers.includes(req.title)
-        }).map(tc => ({
+        }).map((tc: any) => ({
             id: tc.id,
             title: tc.title,
             priority: tc.priority

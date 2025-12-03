@@ -1,4 +1,5 @@
 import { getDefects } from '@/app/actions/defects'
+export const dynamic = 'force-dynamic'
 import { DefectList } from '@/components/defects/defect-list'
 import { CreateDefectDialog } from '@/components/defects/create-defect-dialog'
 import { PageHeader } from '@/components/common/page-header'

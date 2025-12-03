@@ -1,5 +1,6 @@
 import { getAnalyticsData, getRecentActivity, getAIInsightsSummary } from '@/app/actions/analytics'
 import { AnalyticsDashboardLazy } from '@/components/analytics/analytics-dashboard-lazy'
+export const dynamic = 'force-dynamic'
 import { RecentActivityFeed } from '@/components/analytics/recent-activity-feed'
 import { AIInsightsWidget } from '@/components/analytics/ai-insights-widget'
 import { Separator } from '@/components/ui/separator'

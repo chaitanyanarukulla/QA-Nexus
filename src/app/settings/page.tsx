@@ -4,6 +4,7 @@ import { DarkModeToggle } from '@/components/settings/dark-mode-toggle'
 import { WebhookSettingsForm } from '@/components/settings/webhook-settings-form'
 import { Separator } from '@/components/ui/separator'
 import { prisma } from '@/lib/prisma'
+export const dynamic = 'force-dynamic'
 
 export default async function SettingsPage() {
     // Get the first user (in a real app, you'd get from session/auth)

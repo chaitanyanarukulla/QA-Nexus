@@ -235,7 +235,7 @@ export function TestExecutionDialog({ open, onOpenChange, result }: TestExecutio
                                                                 <SelectValue placeholder="Select Project" />
                                                             </SelectTrigger>
                                                             <SelectContent>
-                                                                {jiraProjects.map(p => (
+                                                                {jiraProjects.map((p: any) => (
                                                                     <SelectItem key={p.key} value={p.key}>
                                                                         {p.name} ({p.key})
                                                                     </SelectItem>

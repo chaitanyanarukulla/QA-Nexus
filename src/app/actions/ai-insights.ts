@@ -181,7 +181,7 @@ export async function getTestHealthScore(testCaseId: string) {
     healthScore -= testCase.insights.length * 5
 
     // Deduct for recent failures
-    const recentFailures = testCase.testResults.filter(r => r.status === 'FAIL').length
+    const recentFailures = testCase.testResults.filter((r: any) => r.status === 'FAIL').length
     healthScore -= recentFailures * 3
 
     healthScore = Math.max(0, Math.min(100, healthScore))
@@ -217,7 +217,7 @@ export async function getPrioritizedTests(suiteId?: string) {
     })
 
     // Calculate priority score for each test
-    const prioritized = testCases.map(tc => {
+    const prioritized = testCases.map((tc: any) => {
       let priorityScore = 0
 
       // Higher priority for tests with high failure prediction
@@ -227,8 +227,8 @@ export async function getPrioritizedTests(suiteId?: string) {
       priorityScore += (tc.flakyScore || 0)
 
       // Higher priority for critical/high insights
-      const criticalInsights = tc.insights.filter(i => i.severity === 'CRITICAL').length
-      const highInsights = tc.insights.filter(i => i.severity === 'HIGH').length
+      const criticalInsights = tc.insights.filter((i: any) => i.severity === 'CRITICAL').length
+      const highInsights = tc.insights.filter((i: any) => i.severity === 'HIGH').length
       priorityScore += criticalInsights * 50
       priorityScore += highInsights * 25
 
@@ -248,7 +248,7 @@ export async function getPrioritizedTests(suiteId?: string) {
     })
 
     // Sort by priority score (highest first)
-    prioritized.sort((a, b) => b.priorityScore - a.priorityScore)
+    prioritized.sort((a: any, b: any) => b.priorityScore - a.priorityScore)
 
     return { success: true, tests: prioritized }
   } catch (error) {

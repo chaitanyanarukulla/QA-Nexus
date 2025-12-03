@@ -61,7 +61,80 @@ QA Nexus now includes comprehensive API testing capabilities powered by Playwrig
 - **Performance Analysis**: Detect slow tests and get optimization recommendations
 - **AI Insights Dashboard**: Centralized view of all AI-powered recommendations
 
+### UI & UX Improvements
+- **Dark Mode Support**: Fully integrated dark mode with persistent theme preference (System/Light/Dark)
+- **Enhanced Visuals**: Polished UI with consistent icon placement and improved empty states
+- **Responsive Design**: Optimized layouts for various screen sizes
+
 ---
+
+## QA Nexus
+
+QA Nexus is an enterprise-grade, AI-powered Quality Assurance platform.
+
+## 🚀 Deployment
+
+### Prerequisites
+- Docker & Docker Compose
+- Clerk Account (for Authentication)
+
+### Setup
+
+1.  **Environment Variables**
+    Copy `.env.example` to `.env` and fill in the values:
+    ```bash
+    cp .env.example .env
+    ```
+    - Get Clerk keys from [Clerk Dashboard](https://dashboard.clerk.com).
+    - `DATABASE_URL` is pre-configured for the Docker Postgres instance.
+
+2.  **Run with Docker**
+    ```bash
+    docker-compose up -d --build
+    ```
+    The app will be available at `http://localhost:3000`.
+
+3.  **Database Migration**
+    Once the container is running, apply the schema:
+    ```bash
+    npx prisma migrate dev --name init
+    ```
+
+### Local Development
+1.  Install dependencies: `npm install`
+2.  Start dev server: `npm run dev`
+
+## 🚀 Deployment
+
+### Prerequisites
+- Docker & Docker Compose
+- Clerk Account (for Authentication)
+
+### Setup
+
+1.  **Environment Variables**
+    Copy `.env.example` to `.env` and fill in the values:
+    ```bash
+    cp .env.example .env
+    ```
+    - Get Clerk keys from [Clerk Dashboard](https://dashboard.clerk.com).
+    - `DATABASE_URL` is pre-configured for the Docker Postgres instance.
+
+2.  **Run with Docker**
+    ```bash
+    docker-compose up -d --build
+    ```
+    The app will be available at `http://localhost:3000`.
+
+3.  **Database Migration**
+    Once the container is running, apply the schema:
+    ```bash
+    npx prisma migrate dev --name init
+    ```
+
+### Local Development
+1.  Install dependencies: `npm install`
+2.  Start dev server: `npm run dev`
 
 ## 🌟 Overview
 
@@ -235,23 +308,26 @@ QA Nexus is an enterprise-grade QA management platform that bridges the gap betw
    Create a `.env` file in the root directory:
 
    ```env
-   # Database
-   DATABASE_URL="file:./dev.db"
+   # Database (PostgreSQL)
+   # Ensure you have a running PostgreSQL instance (local or remote)
+   DATABASE_URL="postgresql://postgres:postgres@localhost:5432/qanexus?schema=public"
+   # DIRECT_URL="postgresql://postgres:postgres@localhost:5432/qanexus?schema=public" # Optional for connection pooling
 
-   # AI Provider (choose one)
-   # Option 1: OpenAI (recommended)
-   OPENAI_API_KEY=your_openai_api_key_here
-   AI_PROVIDER=openai
+   # Authentication (Clerk)
+   NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY=pk_test_...
+   CLERK_SECRET_KEY=sk_test_...
 
-   # Option 2: Foundry (local LLM)
-   # FOUNDRY_API_URL=http://localhost:8000
-   # AI_PROVIDER=foundry
-
-   # Optional: Jira/Confluence Integration
-   # JIRA_BASE_URL=https://your-company.atlassian.net
-   # JIRA_EMAIL=your-email@company.com
-   # JIRA_API_TOKEN=your_jira_api_token
+   # AI Keys
+   OPENAI_API_KEY=sk-...
+   
+   # App
+   NEXT_PUBLIC_APP_URL="http://localhost:3000"
    ```
+
+   **Prerequisites**:
+   - PostgreSQL 15+ (Local or Docker)
+   - Node.js 18+
+   - npm 9+
 
    **Getting API Keys**:
    - OpenAI: https://platform.openai.com/api-keys

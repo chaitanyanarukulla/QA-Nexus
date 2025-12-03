@@ -169,7 +169,7 @@ export function ReviewPanel({ testCaseId, testSuiteId, currentUserId, users }: R
 
   const getInitials = (name: string | null, email: string) => {
     if (name) {
-      return name.split(' ').map(n => n[0]).join('').toUpperCase()
+      return name.split(' ').map((n: any) => n[0]).join('').toUpperCase()
     }
     return email[0].toUpperCase()
   }
@@ -217,7 +217,7 @@ export function ReviewPanel({ testCaseId, testSuiteId, currentUserId, users }: R
                       <SelectValue placeholder="Select a reviewer" />
                     </SelectTrigger>
                     <SelectContent>
-                      {users.filter(u => u.id !== currentUserId).map((user) => (
+                      {users.filter((u: any) => u.id !== currentUserId).map((user) => (
                         <SelectItem key={user.id} value={user.id}>
                           {user.name || user.email}
                         </SelectItem>

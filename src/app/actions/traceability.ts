@@ -62,7 +62,7 @@ export async function getTraceabilityMatrix(): Promise<{ success: boolean; data?
             orderBy: { createdAt: 'desc' },
         })
 
-        const items: TraceabilityItem[] = documentAnalyses.map((doc) => {
+        const items: TraceabilityItem[] = documentAnalyses.map((doc: any) => {
             // Parse risks from JSON
             let risks: { description: string; severity: string }[] = []
             try {
@@ -87,7 +87,7 @@ export async function getTraceabilityMatrix(): Promise<{ success: boolean; data?
 
             if (doc.testSuite) {
                 const suite = doc.testSuite
-                const testCases = suite.testCases.map((tc) => {
+                const testCases = suite.testCases.map((tc: any) => {
                     totalTestCases++
                     const lastResult = tc.testResults[0]?.status
                     if (lastResult === 'PASS') passingTests++
@@ -130,9 +130,9 @@ export async function getTraceabilityMatrix(): Promise<{ success: boolean; data?
 
         // Calculate summary
         const totalRequirements = items.length
-        const coveredRequirements = items.filter((i) => i.coverage.totalTestCases > 0).length
+        const coveredRequirements = items.filter((i: any) => i.coverage.totalTestCases > 0).length
         const uncoveredRequirements = totalRequirements - coveredRequirements
-        const totalTestCases = items.reduce((sum, i) => sum + i.coverage.totalTestCases, 0)
+        const totalTestCases = items.reduce((sum: any, i: any) => sum + i.coverage.totalTestCases, 0)
         const overallCoverage = totalRequirements > 0
             ? Math.round((coveredRequirements / totalRequirements) * 100)
             : 0
@@ -185,16 +185,16 @@ export async function getRequirementCoverage(documentId: string) {
 
         const testCases = doc.testSuite?.testCases || []
         const totalTests = testCases.length
-        const passedTests = testCases.filter((tc) => tc.testResults[0]?.status === 'PASS').length
-        const failedTests = testCases.filter((tc) => tc.testResults[0]?.status === 'FAIL').length
+        const passedTests = testCases.filter((tc: any) => tc.testResults[0]?.status === 'PASS').length
+        const failedTests = testCases.filter((tc: any) => tc.testResults[0]?.status === 'FAIL').length
         const notRunTests = totalTests - passedTests - failedTests
 
         // Calculate trend (compare with older results)
         let trend = 0
         const recentPassRate = totalTests > 0 ? (passedTests / totalTests) * 100 : 0
-        const olderResults = testCases.flatMap((tc) => tc.testResults.slice(1, 5))
+        const olderResults = testCases.flatMap((tc: any) => tc.testResults.slice(1, 5))
         if (olderResults.length > 0) {
-            const olderPassCount = olderResults.filter((r) => r.status === 'PASS').length
+            const olderPassCount = olderResults.filter((r: any) => r.status === 'PASS').length
             const olderPassRate = (olderPassCount / olderResults.length) * 100
             trend = recentPassRate - olderPassRate
         }
@@ -246,7 +246,7 @@ export async function getTestCasesByRequirement(documentId: string) {
         }
 
         const suite = doc.testSuite
-        const testCases = suite?.testCases.map((tc) => ({
+        const testCases = suite?.testCases.map((tc: any) => ({
             id: tc.id,
             title: tc.title,
             priority: tc.priority,

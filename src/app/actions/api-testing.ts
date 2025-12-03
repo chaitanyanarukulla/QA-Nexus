@@ -95,12 +95,12 @@ export async function createApiRequest(data: {
         description: data.description,
         method: data.method as any,
         url: data.url,
-        headers: JSON.stringify(data.headers || {}),
-        queryParams: JSON.stringify(data.queryParams || {}),
+        headers: data.headers || {},
+        queryParams: data.queryParams || {},
         body: data.body ? JSON.stringify(data.body) : null,
         bodyType: (data.bodyType as any) || 'JSON',
         authType: (data.authType as any) || 'NONE',
-        authConfig: JSON.stringify(data.authConfig || {}),
+        authConfig: data.authConfig || {},
         testScript: data.assertions && data.assertions.length > 0 ? JSON.stringify(data.assertions) : undefined,
         preRequestScript: data.preRequestScript || '',
         collectionId: data.collectionId,
@@ -145,12 +145,12 @@ export async function updateApiRequest(id: string, data: {
         ...(data.description !== undefined && { description: data.description }),
         ...(data.method && { method: data.method as any }),
         ...(data.url && { url: data.url }),
-        ...(data.headers && { headers: JSON.stringify(data.headers) }),
-        ...(data.queryParams && { queryParams: JSON.stringify(data.queryParams) }),
+        ...(data.headers && { headers: data.headers }),
+        ...(data.queryParams && { queryParams: data.queryParams }),
         ...(data.body !== undefined && { body: data.body ? JSON.stringify(data.body) : null }),
         ...(data.bodyType && { bodyType: data.bodyType as any }),
         ...(data.authType && { authType: data.authType as any }),
-        ...(data.authConfig !== undefined && { authConfig: JSON.stringify(data.authConfig) }),
+        ...(data.authConfig !== undefined && { authConfig: data.authConfig }),
         ...(data.assertions !== undefined && { testScript: data.assertions && data.assertions.length > 0 ? JSON.stringify(data.assertions) : undefined }),
         ...(data.preRequestScript !== undefined && { preRequestScript: data.preRequestScript }),
       },
@@ -317,9 +317,9 @@ export async function executeCollection(
       results.push(result);
     }
 
-    const passed = results.filter(r => r.execution?.status === 'PASSED').length;
-    const failed = results.filter(r => r.execution?.status === 'FAILED').length;
-    const errors = results.filter(r => r.execution?.status === 'ERROR').length;
+    const passed = results.filter((r: any) => r.execution?.status === 'PASSED').length;
+    const failed = results.filter((r: any) => r.execution?.status === 'FAILED').length;
+    const errors = results.filter((r: any) => r.execution?.status === 'ERROR').length;
 
     revalidatePath('/api-testing');
 
@@ -454,10 +454,10 @@ export async function getApiTestingStats(userId?: string) {
     });
 
     const executionStats = {
-      total: executions.reduce((sum, e) => sum + e._count, 0),
-      passed: executions.find(e => e.status === 'PASSED')?._count || 0,
-      failed: executions.find(e => e.status === 'FAILED')?._count || 0,
-      errors: executions.find(e => e.status === 'ERROR')?._count || 0,
+      total: executions.reduce((sum: any, e: any) => sum + e._count, 0),
+      passed: executions.find((e: any) => e.status === 'PASSED')?._count || 0,
+      failed: executions.find((e: any) => e.status === 'FAILED')?._count || 0,
+      errors: executions.find((e: any) => e.status === 'ERROR')?._count || 0,
     };
 
     const avgResponseTime = await prisma.apiExecution.aggregate({

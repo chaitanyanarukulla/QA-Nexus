@@ -55,8 +55,8 @@ export async function getMetrics() {
     let failedTests = 0
     let blockedTests = 0
 
-    recentTestRuns.forEach(run => {
-        run.results.forEach(result => {
+    recentTestRuns.forEach((run: any) => {
+        run.results.forEach((result: any) => {
             totalTests++
             if (result.status === 'PASS') passedTests++
             if (result.status === 'FAIL') failedTests++
@@ -76,15 +76,15 @@ export async function getMetrics() {
         const nextDate = new Date(date)
         nextDate.setDate(nextDate.getDate() + 1)
 
-        const dayResults = allTestResults.filter(r => {
+        const dayResults = allTestResults.filter((r: any) => {
             const resultDate = new Date(r.createdAt)
             return resultDate >= date && resultDate < nextDate
         })
 
         dailyTrend.push({
             date: date.toLocaleDateString('en-US', { month: 'short', day: 'numeric' }),
-            passed: dayResults.filter(r => r.status === 'PASS').length,
-            failed: dayResults.filter(r => r.status === 'FAIL').length,
+            passed: dayResults.filter((r: any) => r.status === 'PASS').length,
+            failed: dayResults.filter((r: any) => r.status === 'FAIL').length,
             total: dayResults.length
         })
     }
@@ -108,12 +108,12 @@ export async function getMetrics() {
         }
     })
 
-    const coverage = suiteMetrics.map(suite => {
+    const coverage = suiteMetrics.map((suite: any) => {
         const total = suite.testCases.length
-        const tested = suite.testCases.filter(tc =>
+        const tested = suite.testCases.filter((tc: any) =>
             tc.testResults.length > 0 && tc.testResults[0].status !== 'PENDING'
         ).length
-        const passed = suite.testCases.filter(tc =>
+        const passed = suite.testCases.filter((tc: any) =>
             tc.testResults.length > 0 && tc.testResults[0].status === 'PASS'
         ).length
 

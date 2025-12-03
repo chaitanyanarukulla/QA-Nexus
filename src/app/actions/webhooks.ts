@@ -206,7 +206,7 @@ export async function getWebhookLogs(limit = 50) {
 
         return {
             success: true,
-            logs: logs.map((log) => ({
+            logs: logs.map((log: any) => ({
                 id: log.id,
                 source: log.source,
                 eventType: log.eventType,

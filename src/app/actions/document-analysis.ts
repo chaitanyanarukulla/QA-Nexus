@@ -212,10 +212,10 @@ export async function generateTestCasesFromAnalysis(analysisId: string) {
 
         // Reconstruct analysis result object
         const analysisResult: DocumentAnalysisResult = {
-            risks: JSON.parse(analysis.risks),
-            gaps: JSON.parse(analysis.gaps),
-            missedRequirements: JSON.parse(analysis.missedRequirements),
-            recommendations: JSON.parse(analysis.recommendations),
+            risks: JSON.parse(analysis.risks as string),
+            gaps: JSON.parse(analysis.gaps as string),
+            missedRequirements: JSON.parse(analysis.missedRequirements as string),
+            recommendations: JSON.parse(analysis.recommendations as string),
             summary: analysis.summary
         }
 

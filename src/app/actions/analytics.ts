@@ -23,11 +23,11 @@ export async function getAnalyticsData() {
             }
         })
 
-        const runHistory = testRuns.map(run => {
-            const passed = run.results.filter(r => r.status === 'PASS').length
-            const failed = run.results.filter(r => r.status === 'FAIL').length
-            const blocked = run.results.filter(r => r.status === 'BLOCKED').length
-            const skipped = run.results.filter(r => r.status === 'SKIPPED').length
+        const runHistory = testRuns.map((run: any) => {
+            const passed = run.results.filter((r: any) => r.status === 'PASS').length
+            const failed = run.results.filter((r: any) => r.status === 'FAIL').length
+            const blocked = run.results.filter((r: any) => r.status === 'BLOCKED').length
+            const skipped = run.results.filter((r: any) => r.status === 'SKIPPED').length
 
             return {
                 date: run.createdAt.toISOString().split('T')[0],
@@ -41,8 +41,8 @@ export async function getAnalyticsData() {
         })
 
         // Aggregate by date
-        const historyByDate = runHistory.reduce((acc, curr) => {
-            const existing = acc.find(item => item.date === curr.date)
+        const historyByDate = runHistory.reduce((acc: any, curr: any) => {
+            const existing = acc.find((item: any) => item.date === curr.date)
             if (existing) {
                 existing.passed += curr.passed
                 existing.failed += curr.failed
@@ -56,7 +56,7 @@ export async function getAnalyticsData() {
         }, [] as any[])
 
         // Calculate pass rate for each day
-        historyByDate.forEach(day => {
+        historyByDate.forEach((day: any) => {
             day.passRate = day.total > 0 ? Math.round((day.passed / day.total) * 100) : 0
         })
 
@@ -68,17 +68,17 @@ export async function getAnalyticsData() {
         })
 
         const defectsByPriority = {
-            LOW: defects.filter(d => d.priority === 'LOW').length,
-            MEDIUM: defects.filter(d => d.priority === 'MEDIUM').length,
-            HIGH: defects.filter(d => d.priority === 'HIGH').length,
-            CRITICAL: defects.filter(d => d.priority === 'CRITICAL').length,
+            LOW: defects.filter((d: any) => d.priority === 'LOW').length,
+            MEDIUM: defects.filter((d: any) => d.priority === 'MEDIUM').length,
+            HIGH: defects.filter((d: any) => d.priority === 'HIGH').length,
+            CRITICAL: defects.filter((d: any) => d.priority === 'CRITICAL').length,
         }
 
         const defectsByStatus = {
-            OPEN: defects.filter(d => d.status === 'OPEN').length,
-            IN_PROGRESS: defects.filter(d => d.status === 'IN_PROGRESS').length,
-            RESOLVED: defects.filter(d => d.status === 'RESOLVED').length,
-            CLOSED: defects.filter(d => d.status === 'CLOSED').length,
+            OPEN: defects.filter((d: any) => d.status === 'OPEN').length,
+            IN_PROGRESS: defects.filter((d: any) => d.status === 'IN_PROGRESS').length,
+            RESOLVED: defects.filter((d: any) => d.status === 'RESOLVED').length,
+            CLOSED: defects.filter((d: any) => d.status === 'CLOSED').length,
         }
 
         // Test Case Stats
@@ -95,15 +95,15 @@ export async function getAnalyticsData() {
         })
 
         const resultsDistribution = {
-            PASS: allResults.filter(r => r.status === 'PASS').length,
-            FAIL: allResults.filter(r => r.status === 'FAIL').length,
-            BLOCKED: allResults.filter(r => r.status === 'BLOCKED').length,
-            SKIPPED: allResults.filter(r => r.status === 'SKIPPED').length,
-            PENDING: allResults.filter(r => r.status === 'PENDING').length,
+            PASS: allResults.filter((r: any) => r.status === 'PASS').length,
+            FAIL: allResults.filter((r: any) => r.status === 'FAIL').length,
+            BLOCKED: allResults.filter((r: any) => r.status === 'BLOCKED').length,
+            SKIPPED: allResults.filter((r: any) => r.status === 'SKIPPED').length,
+            PENDING: allResults.filter((r: any) => r.status === 'PENDING').length,
         }
 
         // Test Velocity (tests executed per day)
-        const testsLast7Days = allResults.filter(r => new Date(r.createdAt) >= sevenDaysAgo).length
+        const testsLast7Days = allResults.filter((r: any) => new Date(r.createdAt) >= sevenDaysAgo).length
         const testsLast30Days = allResults.length
         const avgTestsPerDay = Math.round(testsLast30Days / 30)
         const recentAvgTestsPerDay = Math.round(testsLast7Days / 7)
@@ -127,7 +127,7 @@ export async function getAnalyticsData() {
             _count: true
         })
 
-        const priorityDistribution = testCasesByPriority.reduce((acc, curr) => {
+        const priorityDistribution = testCasesByPriority.reduce((acc: any, curr: any) => {
             acc[curr.priority] = curr._count
             return acc
         }, {} as Record<string, number>)
@@ -147,7 +147,7 @@ export async function getAnalyticsData() {
         })
 
         const topFailingTestCases = await Promise.all(
-            failingTests.map(async (ft) => {
+            failingTests.map(async (ft: any) => {
                 const testCase = await prisma.testCase.findUnique({
                     where: { id: ft.testCaseId }
                 })
@@ -215,7 +215,7 @@ export async function getRecentActivity(limit: number = 20) {
 
         return {
             success: true,
-            activities: activities.map(activity => ({
+            activities: activities.map((activity: any) => ({
                 id: activity.id,
                 action: activity.action,
                 entityType: activity.entityType,
@@ -223,7 +223,7 @@ export async function getRecentActivity(limit: number = 20) {
                 entityTitle: activity.entityTitle,
                 userName: activity.user.name || activity.user.email,
                 createdAt: activity.createdAt,
-                changes: activity.changes ? JSON.parse(activity.changes) : null
+                changes: activity.changes ? JSON.parse(activity.changes as string) : null
             }))
         }
     } catch (error) {
@@ -255,10 +255,10 @@ export async function getAIInsightsSummary() {
             }
         })
 
-        const criticalCount = insights.filter(i => i.severity === 'CRITICAL').length
-        const highCount = insights.filter(i => i.severity === 'HIGH').length
-        const flakyTestsCount = insights.filter(i => i.type === 'FLAKY_TEST').length
-        const highRiskCount = insights.filter(i => i.type === 'HIGH_FAILURE_RISK').length
+        const criticalCount = insights.filter((i: any) => i.severity === 'CRITICAL').length
+        const highCount = insights.filter((i: any) => i.severity === 'HIGH').length
+        const flakyTestsCount = insights.filter((i: any) => i.type === 'FLAKY_TEST').length
+        const highRiskCount = insights.filter((i: any) => i.type === 'HIGH_FAILURE_RISK').length
 
         return {
             success: true,
@@ -269,7 +269,7 @@ export async function getAIInsightsSummary() {
                 flakyTests: flakyTestsCount,
                 highRisk: highRiskCount
             },
-            topInsights: insights.map(insight => ({
+            topInsights: insights.map((insight: any) => ({
                 id: insight.id,
                 type: insight.type,
                 severity: insight.severity,

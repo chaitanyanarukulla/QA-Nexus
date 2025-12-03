@@ -51,7 +51,7 @@ export function TestRunList({ testRuns }: TestRunListProps) {
     }
 
     const getTestResults = (results: any[]) => {
-        const passed = results.filter(r => r.status === 'PASS').length
+        const passed = results.filter((r: any) => r.status === 'PASS').length
         const total = results.length
         return { passed, total }
     }
@@ -86,7 +86,7 @@ export function TestRunList({ testRuns }: TestRunListProps) {
                     </TableRow>
                 </TableHeader>
                 <TableBody>
-                    {testRuns.map((testRun) => {
+                    {testRuns.map((testRun: any) => {
                         const { passed, total } = getTestResults(testRun.results || [])
                         const percentage = total > 0 ? (passed / total) * 100 : 0
 

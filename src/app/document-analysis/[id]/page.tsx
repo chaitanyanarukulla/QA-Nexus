@@ -32,7 +32,7 @@ export default async function AnalysisDetailPage({ params }: { params: Promise<{
         })
 
         // Parse JSON strings for coverage tracking fields
-        testCases = rawTestCases.map(tc => ({
+        testCases = rawTestCases.map((tc: any) => ({
             ...tc,
             coversRisks: tc.coversRisks ? (typeof tc.coversRisks === 'string' ? JSON.parse(tc.coversRisks) : tc.coversRisks) : [],
             coversGaps: tc.coversGaps ? (typeof tc.coversGaps === 'string' ? JSON.parse(tc.coversGaps) : tc.coversGaps) : [],

@@ -126,12 +126,11 @@ async function handleIssueUpdated(payload: JiraWebhookPayload) {
     })
 
     if (!defect) {
-        console.log(`No linked defect found for Jira issue ${issue.key}`)
         return
     }
 
     // Check if status changed
-    const statusChange = changelog?.items.find(item => item.field === 'status')
+    const statusChange = changelog?.items.find((item: any) => item.field === 'status')
 
     if (statusChange) {
         // Map Jira status to our defect status
@@ -175,11 +174,10 @@ async function handleIssueUpdated(payload: JiraWebhookPayload) {
             }
         })
 
-        console.log(`Updated defect ${defect.id} status to ${newStatus} from Jira ${issue.key}`)
     }
 
     // Check if priority changed
-    const priorityChange = changelog?.items.find(item => item.field === 'priority')
+    const priorityChange = changelog?.items.find((item: any) => item.field === 'priority')
 
     if (priorityChange && issue.fields.priority) {
         const jiraPriority = issue.fields.priority.name.toUpperCase()
@@ -199,8 +197,6 @@ async function handleIssueUpdated(payload: JiraWebhookPayload) {
             where: { id: defect.id },
             data: { priority: newPriority }
         })
-
-        console.log(`Updated defect ${defect.id} priority to ${newPriority}`)
     }
 
     // Update the linked Jira issue record
@@ -247,7 +243,6 @@ async function handleIssueDeleted(payload: JiraWebhookPayload) {
             }
         })
 
-        console.log(`Unlinked defect ${defect.id} from deleted Jira issue ${issue.key}`)
     }
 
     // Remove the Jira issue record
@@ -274,8 +269,6 @@ export async function POST(request: NextRequest) {
         }
 
         const payload: JiraWebhookPayload = JSON.parse(body)
-
-        console.log(`Received Jira webhook: ${payload.webhookEvent}`)
 
         // Process based on event type
         switch (payload.webhookEvent) {
@@ -307,7 +300,8 @@ export async function POST(request: NextRequest) {
                 break
 
             default:
-                console.log(`Unhandled webhook event: ${payload.webhookEvent}`)
+                // Unhandled webhook event types are silently ignored
+                break
         }
 
         return NextResponse.json({ success: true })

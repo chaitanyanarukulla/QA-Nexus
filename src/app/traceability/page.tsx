@@ -1,5 +1,6 @@
 import { getTraceabilityMatrix } from '@/app/actions/traceability'
 import { TraceabilityMatrixView } from '@/components/traceability/traceability-matrix'
+export const dynamic = 'force-dynamic'
 import { Separator } from '@/components/ui/separator'
 import { Link2, AlertCircle } from 'lucide-react'
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert'

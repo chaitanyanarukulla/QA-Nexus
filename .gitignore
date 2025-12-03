@@ -19,10 +19,12 @@
 
 # production
 /build
+/dist
 
 # misc
 .DS_Store
 *.pem
+*.log
 
 # debug
 npm-debug.log*
@@ -41,15 +43,37 @@ yarn-error.log*
 *.tsbuildinfo
 next-env.d.ts
 
+# Prisma generated files
 /src/generated/prisma
+
+# Playwright test artifacts
 test-results.json
 playwright-report/
 test-results/
+test-artifacts/
+/tests/api-generated/*.spec.ts
 
 # SQLite
 *.db-journal
 dev.db
+*.sqlite
+*.sqlite3
 
 # Temporary files
 temp_*.js
-create_jira_project.py
+*.tmp
+*.temp
+
+# IDE
+.idea/
+*.swp
+*.swo
+.vscode/settings.json
+
+# clerk configuration (can include secrets)
+/.clerk/
+
+# Video/Media files (optional - uncomment if needed)
+# *.mp4
+# *.png
+# *.jpg

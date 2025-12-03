@@ -100,9 +100,9 @@ export async function checkAutomationReadiness(suiteId: string) {
         }
 
         // Filter results for this suite
-        const suiteResults = testRun.results.filter(r => r.testCase.suiteId === suiteId)
+        const suiteResults = testRun.results.filter((r: any) => r.testCase.suiteId === suiteId)
         const totalTests = suiteResults.length
-        const passedTests = suiteResults.filter(r => r.status === 'PASS').length
+        const passedTests = suiteResults.filter((r: any) => r.status === 'PASS').length
         const passRate = totalTests > 0 ? (passedTests / totalTests) * 100 : 0
 
         const ready = passRate === 100 && totalTests > 0

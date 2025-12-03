@@ -56,7 +56,7 @@ Epic: ${epic.fields.summary}
 Description: ${epic.fields.description || 'No description'}
 
 Stories:
-${stories.map(s => `- ${s.key}: ${s.fields.summary}`).join('\n')}
+${stories.map((s: any) => `- ${s.key}: ${s.fields.summary}`).join('\n')}
 `
 
     // Generate Test Cases using AI
@@ -90,7 +90,8 @@ ${stories.map(s => `- ${s.key}: ${s.fields.summary}`).join('\n')}
         return { success: true, suiteId: suite.id, count: testCases.length }
     } catch (error) {
         console.error('Failed to generate test plan:', error)
-        return { success: false, error: 'Failed to generate test plan' }
+        const errorMessage = error instanceof Error ? error.message : 'Unknown error'
+        return { success: false, error: `Failed to generate test plan: ${errorMessage}` }
     }
 }
 
@@ -136,6 +137,7 @@ export async function generateTestCasesFromPage(userId: string, pageId: string) 
         return { success: true, suiteId: suite.id, count: testCases.length }
     } catch (error) {
         console.error('Failed to generate from page:', error)
-        return { success: false, error: 'Failed to generate test cases' }
+        const errorMessage = error instanceof Error ? error.message : 'Unknown error'
+        return { success: false, error: `Failed to generate test cases: ${errorMessage}` }
     }
 }

@@ -1,9 +1,11 @@
 import { getAllDocumentAnalyses } from '@/app/actions/document-analysis'
+export const dynamic = 'force-dynamic'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
 import { FileText, ExternalLink, AlertTriangle, AlertCircle, Info } from 'lucide-react'
 import Link from 'next/link'
+import { ImportDialog } from '@/components/import/import-dialog'
 
 export default async function DocumentAnalysisPage() {
     const result = await getAllDocumentAnalyses({ limit: 50 })
@@ -18,6 +20,7 @@ export default async function DocumentAnalysisPage() {
                         Review requirements analysis reports and generate test cases
                     </p>
                 </div>
+                <ImportDialog />
             </div>
 
             {analyses.length === 0 ? (
@@ -28,15 +31,16 @@ export default async function DocumentAnalysisPage() {
                         <p className="text-sm text-muted-foreground mb-4">
                             Use the Import Content dialog to analyze Jira Epics or Confluence Pages
                         </p>
+                        <ImportDialog />
                     </CardContent>
                 </Card>
             ) : (
                 <div className="grid gap-4">
-                    {analyses.map((analysis) => {
-                        const risks = JSON.parse(analysis.risks) as any[]
-                        const gaps = JSON.parse(analysis.gaps) as any[]
-                        const missedReqs = JSON.parse(analysis.missedRequirements) as any[]
-                        const recommendations = JSON.parse(analysis.recommendations) as any[]
+                    {analyses.map((analysis: any) => {
+                        const risks = JSON.parse(analysis.risks as string) as any[]
+                        const gaps = JSON.parse(analysis.gaps as string) as any[]
+                        const missedReqs = JSON.parse(analysis.missedRequirements as string) as any[]
+                        const recommendations = JSON.parse(analysis.recommendations as string) as any[]
 
                         return (
                             <Card key={analysis.id}>

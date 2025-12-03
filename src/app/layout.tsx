@@ -5,6 +5,7 @@ import "./globals.css";
 import { Header } from "@/components/layout/header";
 import { Sidebar } from "@/components/layout/sidebar";
 import { Toaster } from "@/components/ui/sonner";
+import { ThemeProvider } from "@/components/theme-provider";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -21,10 +22,7 @@ export const metadata: Metadata = {
   description: "AI-driven QA platform for test management, execution, and defect tracking",
   icons: {
     icon: [
-      { url: '/favicon.ico' },
-      { url: '/favIcon.png', type: 'image/png' },
-      { url: '/icon-16x16.png', sizes: '16x16', type: 'image/png' },
-      { url: '/icon-32x32.png', sizes: '32x32', type: 'image/png' },
+      { url: '/FavIcon.png', type: 'image/png' },
     ],
     apple: [
       { url: '/apple-icon.png' },
@@ -41,22 +39,28 @@ export default function RootLayout({
 }>) {
   return (
     <ClerkProvider>
-      <html lang="en">
+      <html lang="en" suppressHydrationWarning>
         <body
           className={`${geistSans.variable} ${geistMono.variable} antialiased bg-gradient-to-br from-slate-50 via-blue-50/20 to-indigo-50/30 dark:from-slate-950 dark:via-slate-900 dark:to-slate-950`}
-          suppressHydrationWarning
         >
-          <Sidebar />
-          <div className="flex flex-col min-h-screen lg:ml-64">
-            <Header />
-            <main className="flex-1 p-6">
-              <div className="max-w-7xl mx-auto">
-                {children}
-              </div>
-            </main>
-          </div>
-          <AIChatWidget />
-          <Toaster />
+          <ThemeProvider
+            attribute="class"
+            defaultTheme="system"
+            enableSystem
+            disableTransitionOnChange
+          >
+            <Sidebar />
+            <div className="flex flex-col min-h-screen lg:ml-64">
+              <Header />
+              <main className="flex-1 p-6">
+                <div className="max-w-7xl mx-auto">
+                  {children}
+                </div>
+              </main>
+            </div>
+            <AIChatWidget />
+            <Toaster />
+          </ThemeProvider>
         </body>
       </html>
     </ClerkProvider>

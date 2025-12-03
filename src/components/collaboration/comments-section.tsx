@@ -143,7 +143,7 @@ export function CommentsSection({ testCaseId, testSuiteId, defectId, currentUser
 
   const getInitials = (name: string | null, email: string) => {
     if (name) {
-      return name.split(' ').map(n => n[0]).join('').toUpperCase()
+      return name.split(' ').map((n: any) => n[0]).join('').toUpperCase()
     }
     return email[0].toUpperCase()
   }

@@ -2,6 +2,8 @@ import { NextRequest, NextResponse } from 'next/server'
 import { executeApiRequest } from '@/app/actions/api-testing'
 import { prisma } from '@/lib/prisma'
 
+export const dynamic = 'force-dynamic'
+
 interface PerformanceTestConfig {
   collectionId: string
   environmentId?: string
@@ -76,8 +78,6 @@ export async function POST(request: NextRequest) {
     // Calculate ramp-up rate (users per second)
     const rampUpRate = rampUpTime > 0 ? maxUsers / rampUpTime : maxUsers
 
-    console.log(`Starting performance test: ${maxUsers} users over ${duration}s (ramp-up: ${rampUpTime}s)`)
-
     // Track execution promises
     const executionPromises: Promise<void>[] = []
 
@@ -107,8 +107,6 @@ export async function POST(request: NextRequest) {
 
     // Calculate results
     const results = calculateMetrics(metrics, duration)
-
-    console.log(`Performance test completed: ${metrics.length} requests executed`)
 
     return NextResponse.json({
       success: true,
@@ -194,13 +192,13 @@ function calculateMetrics(metrics: RequestMetrics[], duration: number) {
   }
 
   // Status counts
-  const successfulRequests = metrics.filter(m => m.status === 'PASSED').length
-  const failedRequests = metrics.filter(m => m.status === 'FAILED').length
-  const errorRequests = metrics.filter(m => m.status === 'ERROR').length
+  const successfulRequests = metrics.filter((m: any) => m.status === 'PASSED').length
+  const failedRequests = metrics.filter((m: any) => m.status === 'FAILED').length
+  const errorRequests = metrics.filter((m: any) => m.status === 'ERROR').length
   const totalRequests = metrics.length
 
   // Response times
-  const responseTimes = metrics.map(m => m.responseTime).sort((a, b) => a - b)
+  const responseTimes = metrics.map((m: any) => m.responseTime).sort((a, b) => a - b)
   const avgResponseTime = Math.round(
     responseTimes.reduce((sum, t) => sum + t, 0) / responseTimes.length
   )

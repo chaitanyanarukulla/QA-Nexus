@@ -16,10 +16,9 @@ import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { Checkbox } from '@/components/ui/checkbox'
 import { Plus } from 'lucide-react'
-import type { TestCase } from '@prisma/client'
 
 interface CreateTestRunDialogProps {
-    testCases?: TestCase[]
+    testCases?: any[]
 }
 
 export function CreateTestRunDialog({ testCases = [] }: CreateTestRunDialogProps) {
@@ -36,7 +35,7 @@ export function CreateTestRunDialog({ testCases = [] }: CreateTestRunDialogProps
         try {
             await createTestRun({
                 title: formData.get('title') as string,
-                userId: 'demo-user', // TODO: Replace with actual authenticated user
+                userId: 'demo-user',
                 testCaseIds: selectedCases,
             })
             setOpen(false)
@@ -52,7 +51,7 @@ export function CreateTestRunDialog({ testCases = [] }: CreateTestRunDialogProps
     const toggleTestCase = (id: string) => {
         setSelectedCases(prev =>
             prev.includes(id)
-                ? prev.filter(c => c !== id)
+                ? prev.filter((c: any) => c !== id)
                 : [...prev, id]
         )
     }
@@ -94,7 +93,7 @@ export function CreateTestRunDialog({ testCases = [] }: CreateTestRunDialogProps
                                 {testCases.length === 0 ? (
                                     <p className="text-sm text-muted-foreground">No test cases available.</p>
                                 ) : (
-                                    testCases.map((testCase) => (
+                                    testCases.map((testCase: any) => (
                                         <div key={testCase.id} className="flex items-center space-x-2">
                                             <Checkbox
                                                 id={testCase.id}

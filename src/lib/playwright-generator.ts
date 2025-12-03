@@ -172,6 +172,21 @@ function generateAssertion(assertion: Assertion): string {
 }
 
 /**
+ * Parse JSON if string, otherwise return as-is
+ * Handles legacy data that was double-stringified
+ */
+function parseIfString(value: any): any {
+  if (typeof value === 'string') {
+    try {
+      return JSON.parse(value);
+    } catch {
+      return value;
+    }
+  }
+  return value;
+}
+
+/**
  * Generate complete Playwright test code from API request configuration
  */
 export function generatePlaywrightTest(config: ApiRequestConfig): string {
@@ -189,13 +204,17 @@ export function generatePlaywrightTest(config: ApiRequestConfig): string {
     environmentVariables = {}
   } = config;
 
+  // Parse headers/queryParams if they're strings (legacy data handling)
+  const parsedHeaders = parseIfString(headers);
+  const parsedQueryParams = parseIfString(queryParams);
+
   // Replace variables
   const processedUrl = replaceVariables(url, environmentVariables);
-  let processedHeaders = replaceVariables(headers, environmentVariables);
+  let processedHeaders = replaceVariables(parsedHeaders, environmentVariables);
   const processedBody = body ? replaceVariables(body, environmentVariables) : undefined;
 
   // Add authentication headers
-  let processedQueryParams = { ...queryParams };
+  let processedQueryParams = { ...parsedQueryParams };
   const { headers: authHeaders, queryParams: authQueryParams } = generateAuthHeaders(authType, authConfig, processedHeaders);
   processedHeaders = authHeaders;
   processedQueryParams = { ...processedQueryParams, ...authQueryParams };

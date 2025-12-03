@@ -6,6 +6,7 @@ import { CommentsSection } from '@/components/collaboration/comments-section'
 import { ReviewPanel } from '@/components/collaboration/review-panel'
 import { ActivityTimeline } from '@/components/collaboration/activity-timeline'
 import { FileText, Tag, AlertCircle } from 'lucide-react'
+import { TestCaseActions } from '@/components/test-cases/test-case-actions'
 
 interface PageProps {
   params: Promise<{ id: string }>
@@ -47,9 +48,9 @@ export default async function TestCaseDetailPage({ params }: PageProps) {
   const steps = Array.isArray(testCase.steps) ? testCase.steps : []
 
   // Parse coverage fields from JSON strings
-  const coversRisks: string[] = testCase.coversRisks ? JSON.parse(testCase.coversRisks) : []
-  const coversGaps: string[] = testCase.coversGaps ? JSON.parse(testCase.coversGaps) : []
-  const coversRequirements: string[] = testCase.coversRequirements ? JSON.parse(testCase.coversRequirements) : []
+  const coversRisks: string[] = testCase.coversRisks ? JSON.parse(testCase.coversRisks as string) : []
+  const coversGaps: string[] = testCase.coversGaps ? JSON.parse(testCase.coversGaps as string) : []
+  const coversRequirements: string[] = testCase.coversRequirements ? JSON.parse(testCase.coversRequirements as string) : []
 
   const getPriorityColor = (priority: string) => {
     switch (priority) {
@@ -81,12 +82,15 @@ export default async function TestCaseDetailPage({ params }: PageProps) {
 
   return (
     <div className="container mx-auto py-8 space-y-8">
-      <div>
-        <h1 className="text-3xl font-bold mb-2">{testCase.title}</h1>
-        <div className="flex items-center gap-2 text-sm text-muted-foreground">
-          <FileText className="h-4 w-4" />
-          <span>Test Case ID: {testCase.id}</span>
+      <div className="flex justify-between items-start">
+        <div>
+          <h1 className="text-3xl font-bold mb-2">{testCase.title}</h1>
+          <div className="flex items-center gap-2 text-sm text-muted-foreground">
+            <FileText className="h-4 w-4" />
+            <span>Test Case ID: {testCase.id}</span>
+          </div>
         </div>
+        <TestCaseActions testCase={testCase} />
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
@@ -137,7 +141,7 @@ export default async function TestCaseDetailPage({ params }: PageProps) {
               <div>
                 <p className="text-sm font-medium mb-2">Steps</p>
                 <ol className="list-decimal list-inside space-y-2">
-                  {steps.map((step, index) => (
+                  {steps.map((step: any, index: number) => (
                     <li key={index} className="text-sm text-muted-foreground">
                       {String(step)}
                     </li>
@@ -163,7 +167,7 @@ export default async function TestCaseDetailPage({ params }: PageProps) {
                       <div>
                         <p className="text-xs font-medium text-muted-foreground mb-1">Risks Covered</p>
                         <div className="flex flex-wrap gap-2">
-                          {coversRisks.map((risk, index) => (
+                          {coversRisks.map((risk: any, index: number) => (
                             <Badge key={index} variant="danger" className="text-xs">
                               <AlertCircle className="h-3 w-3 mr-1" />
                               {risk}
@@ -176,7 +180,7 @@ export default async function TestCaseDetailPage({ params }: PageProps) {
                       <div>
                         <p className="text-xs font-medium text-muted-foreground mb-1">Gaps Covered</p>
                         <div className="flex flex-wrap gap-2">
-                          {coversGaps.map((gap, index) => (
+                          {coversGaps.map((gap: any, index: number) => (
                             <Badge key={index} variant="secondary" className="text-xs">
                               {gap}
                             </Badge>
@@ -188,7 +192,7 @@ export default async function TestCaseDetailPage({ params }: PageProps) {
                       <div>
                         <p className="text-xs font-medium text-muted-foreground mb-1">Requirements Covered</p>
                         <div className="flex flex-wrap gap-2">
-                          {coversRequirements.map((req, index) => (
+                          {coversRequirements.map((req: any, index: number) => (
                             <Badge key={index} variant="outline" className="text-xs">
                               {req}
                             </Badge>

@@ -1,4 +1,5 @@
 import { getTestSuites } from '@/app/actions/test-suites'
+export const dynamic = 'force-dynamic'
 import { TestSuiteList } from '@/components/test-suites/test-suite-list'
 import { CreateTestSuiteDialog } from '@/components/test-suites/create-test-suite-dialog'
 import { ImportDialog } from '@/components/import/import-dialog'

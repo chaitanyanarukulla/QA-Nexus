@@ -3,8 +3,13 @@ import { prisma } from '@/lib/prisma'
 
 export async function Header() {
     // Get the first user (in a real app, you'd get from session/auth)
-    const user = await prisma.user.findFirst()
-    const userId = user?.id || ''
+    let userId = ''
+    try {
+        const user = await prisma.user.findFirst()
+        userId = user?.id || ''
+    } catch (error) {
+        console.warn('Failed to fetch user in Header (likely during build):', error)
+    }
 
     return (
         <header className="sticky top-0 z-40 w-full border-b bg-gradient-to-r from-white via-blue-50/30 to-indigo-50/30 dark:from-slate-900 dark:via-slate-900 dark:to-slate-800 backdrop-blur-lg supports-[backdrop-filter]:bg-white/80 dark:supports-[backdrop-filter]:bg-slate-900/80 border-slate-200 dark:border-slate-700 shadow-sm">

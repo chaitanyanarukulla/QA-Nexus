@@ -4,34 +4,21 @@ import { useEffect, useState } from 'react'
 import { Moon, Sun } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
+import { useTheme } from "next-themes"
 
 export function DarkModeToggle() {
-  const [isDark, setIsDark] = useState(false)
+  const { theme, setTheme } = useTheme()
   const [mounted, setMounted] = useState(false)
 
-  // Hydrate on client side only
   useEffect(() => {
     setMounted(true)
-    const isDarkMode = document.documentElement.classList.contains('dark')
-    setIsDark(isDarkMode)
   }, [])
-
-  const toggleDarkMode = () => {
-    const newDarkMode = !isDark
-    setIsDark(newDarkMode)
-
-    if (newDarkMode) {
-      document.documentElement.classList.add('dark')
-      localStorage.setItem('theme', 'dark')
-    } else {
-      document.documentElement.classList.remove('dark')
-      localStorage.setItem('theme', 'light')
-    }
-  }
 
   if (!mounted) {
     return null
   }
+
+  const isDark = theme === 'dark'
 
   return (
     <Card>
@@ -56,7 +43,7 @@ export function DarkModeToggle() {
           </div>
         </div>
         <Button
-          onClick={toggleDarkMode}
+          onClick={() => setTheme(isDark ? 'light' : 'dark')}
           variant={isDark ? 'primary' : 'secondary'}
           size="sm"
         >

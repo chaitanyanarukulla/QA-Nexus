@@ -57,8 +57,8 @@ export async function detectFlakyTests(testCaseId?: string) {
     if (testCase.testResults.length < 5) continue // Need at least 5 executions
 
     const results = testCase.testResults
-    const passCount = results.filter(r => r.status === 'PASS').length
-    const failCount = results.filter(r => r.status === 'FAIL').length
+    const passCount = results.filter((r: any) => r.status === 'PASS').length
+    const failCount = results.filter((r: any) => r.status === 'FAIL').length
     const totalCount = results.length
 
     // Calculate flaky score based on result variance
@@ -161,14 +161,14 @@ export async function predictTestFailures() {
     if (testCase.testResults.length < 3) continue
 
     const recentResults = testCase.testResults.slice(0, 5)
-    const recentFailures = recentResults.filter(r => r.status === 'FAIL').length
+    const recentFailures = recentResults.filter((r: any) => r.status === 'FAIL').length
 
     // Calculate failure trend
     const failureRate = recentFailures / recentResults.length
 
     // Check if failures are increasing
     const last3 = testCase.testResults.slice(0, 3)
-    const failuresInLast3 = last3.filter(r => r.status === 'FAIL').length
+    const failuresInLast3 = last3.filter((r: any) => r.status === 'FAIL').length
 
     if (failureRate > 0.3 || failuresInLast3 >= 2) {
       const failurePrediction = Math.min(100, failureRate * 100 + (failuresInLast3 * 15))
@@ -273,9 +273,9 @@ export async function generateAIRecommendations(testSuiteId?: string) {
   // Prepare summary for AI
   const summary = {
     totalTests: testCases.length,
-    automatedTests: testCases.filter(tc => tc.isAutomated).length,
-    averageFlakyScore: testCases.reduce((sum, tc) => sum + (tc.flakyScore || 0), 0) / testCases.length,
-    highRiskTests: testCases.filter(tc => (tc.failurePrediction || 0) > 50).length,
+    automatedTests: testCases.filter((tc: any) => tc.isAutomated).length,
+    averageFlakyScore: testCases.reduce((sum: any, tc: any) => sum + (tc.flakyScore || 0), 0) / testCases.length,
+    highRiskTests: testCases.filter((tc: any) => (tc.failurePrediction || 0) > 50).length,
   }
 
   const prompt = `As a QA expert, analyze this test suite and provide actionable recommendations:
@@ -322,8 +322,6 @@ Provide 3-5 specific, actionable recommendations to improve test quality, covera
  * Run all AI insights analysis
  */
 export async function analyzeAllTests() {
-  console.log('Running AI insights analysis...')
-
   const [flaky, failures, slow] = await Promise.all([
     detectFlakyTests(),
     predictTestFailures(),
@@ -367,6 +365,5 @@ export async function analyzeAllTests() {
     }
   }
 
-  console.log(`Generated ${allInsights.length} insights`)
   return allInsights
 }

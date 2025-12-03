@@ -1,6 +1,6 @@
 'use client'
 
-import type { TestSuite } from '@prisma/client'
+
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
 import { FileText, Play, Trash2, CheckCircle2, TrendingUp, AlertCircle } from 'lucide-react'
@@ -12,7 +12,8 @@ import { deleteTestSuite } from '@/app/actions/test-suites'
 import { useRouter } from 'next/navigation'
 import { useState } from 'react'
 
-interface TestSuiteWithCases extends TestSuite {
+interface TestSuiteWithCases {
+    [key: string]: any
     testCases: any[]
 }
 

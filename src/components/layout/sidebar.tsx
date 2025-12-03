@@ -71,17 +71,24 @@ export function Sidebar() {
         <div className="flex h-20 items-center justify-between border-b border-slate-200 dark:border-slate-700 px-4 bg-gradient-to-r from-blue-50 to-indigo-50 dark:from-slate-800 dark:to-slate-900">
           {!isCollapsed && (
             <Link href="/" className="flex items-center space-x-2 flex-1">
-              <img
-                src="/icon.png"
-                alt="QA Nexus"
-                className="h-[72px] w-auto max-w-[310px] object-contain flex-shrink-0"
-              />
+              <>
+                <img
+                  src="/LogoLightMode.png"
+                  alt="QA Nexus"
+                  className="h-[72px] w-auto max-w-[310px] object-contain flex-shrink-0 dark:hidden"
+                />
+                <img
+                  src="/LogodarkMode.png"
+                  alt="QA Nexus"
+                  className="h-[72px] w-auto max-w-[310px] object-contain flex-shrink-0 hidden dark:block"
+                />
+              </>
             </Link>
           )}
           {isCollapsed && (
             <Link href="/" className="flex items-center justify-center w-full">
               <img
-                src="/favIcon.png"
+                src="/FavIcon.png"
                 alt="QA Nexus"
                 className="h-8 w-8 object-contain"
               />

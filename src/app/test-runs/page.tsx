@@ -1,4 +1,5 @@
 import { getTestRuns } from '@/app/actions/test-runs'
+export const dynamic = 'force-dynamic'
 import { getTestCases } from '@/app/actions/test-cases'
 import { TestRunList } from '@/components/test-runs/test-run-list'
 import { CreateTestRunDialog } from '@/components/test-runs/create-test-run-dialog'

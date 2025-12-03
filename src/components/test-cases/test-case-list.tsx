@@ -1,7 +1,6 @@
 'use client'
 
 import { useState } from 'react'
-import type { TestCase } from '@prisma/client'
 import {
     Table,
     TableBody,
@@ -20,24 +19,24 @@ import { useRouter } from 'next/navigation'
 import { TestCaseDetailDialog } from './test-case-detail-dialog'
 
 interface TestCaseListProps {
-    testCases: TestCase[]
+    testCases: any[]
 }
 
 export function TestCaseList({ testCases }: TestCaseListProps) {
     const router = useRouter()
     const [search, setSearch] = useState('')
     const [priorityFilter, setPriorityFilter] = useState('ALL')
-    const [selectedTestCase, setSelectedTestCase] = useState<TestCase | null>(null)
+    const [selectedTestCase, setSelectedTestCase] = useState<any | null>(null)
     const [detailOpen, setDetailOpen] = useState(false)
 
-    const filteredCases = testCases.filter(tc => {
+    const filteredCases = testCases.filter((tc: any) => {
         const matchesSearch = tc.title.toLowerCase().includes(search.toLowerCase()) ||
             tc.id.toLowerCase().includes(search.toLowerCase())
         const matchesPriority = priorityFilter === 'ALL' || tc.priority === priorityFilter
         return matchesSearch && matchesPriority
     })
 
-    const handleRowClick = (testCase: TestCase) => {
+    const handleRowClick = (testCase: any) => {
         router.push(`/test-cases/${testCase.id}`)
     }
 

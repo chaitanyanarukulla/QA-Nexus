@@ -38,7 +38,7 @@ export async function getEpicMetrics(userId: string, suiteId: string, epicKey: s
     let blocked = 0
     let skipped = 0
 
-    suite.testCases.forEach(tc => {
+    suite.testCases.forEach((tc: any) => {
         const lastResult = tc.testResults[0]
         if (!lastResult) {
             pending++

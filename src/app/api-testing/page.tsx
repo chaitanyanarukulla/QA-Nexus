@@ -1,6 +1,7 @@
 import { Suspense } from 'react'
 import { prisma } from '@/lib/prisma'
 import { ApiTestingClient } from './client'
+export const dynamic = 'force-dynamic'
 import { Network, Zap } from 'lucide-react'
 
 export const metadata = {

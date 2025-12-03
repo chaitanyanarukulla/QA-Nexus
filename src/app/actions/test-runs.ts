@@ -98,9 +98,9 @@ async function updateTestRunStatusBasedOnResults(testRunId: string) {
     if (testRun.status === RunStatus.PAUSED) return
 
     const allResults = testRun.results
-    const pendingCount = allResults.filter(r => r.status === ResultStatus.PENDING).length
-    const failedCount = allResults.filter(r => r.status === ResultStatus.FAIL).length
-    const blockedCount = allResults.filter(r => r.status === ResultStatus.BLOCKED).length
+    const pendingCount = allResults.filter((r: any) => r.status === ResultStatus.PENDING).length
+    const failedCount = allResults.filter((r: any) => r.status === ResultStatus.FAIL).length
+    const blockedCount = allResults.filter((r: any) => r.status === ResultStatus.BLOCKED).length
 
     let newStatus: RunStatus
 
@@ -146,7 +146,7 @@ export async function resumeTestRun(testRunId: string) {
 
     if (!testRun) throw new Error('Test run not found')
 
-    const pendingCount = testRun.results.filter(r => r.status === ResultStatus.PENDING).length
+    const pendingCount = testRun.results.filter((r: any) => r.status === ResultStatus.PENDING).length
     const newStatus = pendingCount > 0 ? RunStatus.IN_PROGRESS : RunStatus.COMPLETED
 
     const updated = await prisma.testRun.update({
@@ -205,7 +205,7 @@ export async function createTestRunFromSuite(userId: string, suiteId: string) {
             status: RunStatus.IN_PROGRESS,
             userId: userId,
             results: {
-                create: suite.testCases.map(tc => ({
+                create: suite.testCases.map((tc: any) => ({
                     testCaseId: tc.id,
                     status: ResultStatus.PENDING,
                 }))

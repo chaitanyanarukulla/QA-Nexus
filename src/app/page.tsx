@@ -87,7 +87,7 @@ export default async function Home() {
           </CardHeader>
           <CardContent className="p-6">
             <div className="space-y-3">
-              {metrics.trends.dailyTrend.map((day, index) => (
+              {metrics.trends.dailyTrend.map((day: any, index: number) => (
                 <div key={index} className="space-y-1">
                   <div className="flex items-center justify-between text-sm px-1">
                     <span className="font-medium text-neutral-700 dark:text-neutral-300">{day.date}</span>
@@ -130,7 +130,7 @@ export default async function Home() {
             </CardHeader>
             <CardContent className="p-6 space-y-4">
               {metrics.coverage.length > 0 ? (
-                metrics.coverage.map((suite, index) => (
+                metrics.coverage.map((suite: any, index: number) => (
                   <div key={index} className="space-y-2 px-1">
                     <div className="flex items-center justify-between text-sm">
                       <span className="font-medium truncate flex-1 text-neutral-900 dark:text-neutral-100">{suite.suiteName}</span>
@@ -175,7 +175,7 @@ export default async function Home() {
 
                 <TabsContent value="runs" className="space-y-3 [&>a]:animate-slideInLeft">
                   {recentRuns.length > 0 ? (
-                    recentRuns.slice(0, 5).map(run => (
+                    recentRuns.slice(0, 5).map((run: any) => (
                       <Link
                         key={run.id}
                         href={`/test-runs/${run.id}`}
@@ -219,7 +219,7 @@ export default async function Home() {
 
                 <TabsContent value="defects" className="space-y-3 [&>div]:animate-slideInLeft">
                   {recentDefects.length > 0 ? (
-                    recentDefects.map(defect => (
+                    recentDefects.map((defect: any) => (
                       <div key={defect.id} className="flex items-center justify-between p-4 border-2 border-red-100 dark:border-red-900/50 rounded-xl hover:bg-gradient-to-r hover:from-red-50 hover:to-orange-50 dark:hover:from-red-950/50 dark:hover:to-orange-950/50 transition-all hover:shadow-lg hover:border-red-300 dark:hover:border-red-700 hover:scale-[1.01] bg-white/50 dark:bg-slate-900/50 backdrop-blur-sm">
                         <div className="flex items-center gap-4">
                           <div className={`p-2.5 rounded-full ${defect.priority === 'CRITICAL' ? 'bg-danger-100 text-danger-600 dark:bg-danger-900 dark:text-danger-300' :
