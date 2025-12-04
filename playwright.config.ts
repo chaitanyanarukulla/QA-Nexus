@@ -91,7 +91,7 @@ export default defineConfig({
     /* Run your local dev server before starting the tests */
     webServer: {
         command: process.env.CI
-            ? 'DATABASE_URL=file:./test.db npm run dev -- -p 3002'
+            ? 'DATABASE_URL=file:./test.db npm run start -- -p 3002'
             : 'npm run dev -- -p 3002',
         url: 'http://localhost:3002/sign-in',
         reuseExistingServer: !process.env.CI,

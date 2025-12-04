@@ -55,6 +55,12 @@ jobs:
           # Seed
           npm run db:seed
       
+      - name: Build application
+        run: npm run build
+        env:
+          DATABASE_URL: "file:./test.db"
+          NEXT_TELEMETRY_DISABLED: 1
+      
       - name: Install Playwright Browsers
         run: npx playwright install --with-deps ${{ matrix.browser }}
       
