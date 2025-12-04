@@ -93,10 +93,8 @@ export default defineConfig({
         command: process.env.CI
             ? 'npm run start -- -p 3002'  // CI: Use pre-built production server
             : 'npm run dev -- -p 3002',    // Local: Use dev server
-        url: 'http://localhost:3002/api/health',  // Use health endpoint to avoid Clerk issues
+        url: 'http://127.0.0.1:3002',
         reuseExistingServer: !process.env.CI,
-        stdout: 'inherit',
-        stderr: 'inherit',
-        timeout: 120000,
+        timeout: 120 * 1000,
     },
 });
