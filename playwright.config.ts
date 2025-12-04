@@ -93,7 +93,7 @@ export default defineConfig({
         command: 'echo "=== WEBSERVER SCHEMA ===" && cat prisma/schema.prisma && DATABASE_URL=file:./test.db npm run dev -- -p 3002',
         url: 'http://localhost:3002/sign-in',
         reuseExistingServer: true,
-        stdout: 'ignore',
+        stdout: 'pipe',
         stderr: 'pipe',
         timeout: 120000,
     },

@@ -46,10 +46,11 @@ jobs:
           
           echo "DATABASE_URL=file:./test.db" > .env
           rm -rf node_modules/.prisma
+          rm -rf node_modules/@prisma/client
           rm -rf .next
           
-          # Generate client
-          npx prisma generate
+          # Generate client explicitly from SQLite schema
+          npx prisma generate --schema=prisma/schema.sqlite.prisma
           
           echo "=== VERIFY GENERATED CLIENT SCHEMA ==="
           # Prisma Client usually copies the schema here
@@ -59,8 +60,8 @@ jobs:
             echo "Schema file not found in node_modules/.prisma/client"
           fi
           
-          # Push db
-          npx prisma db push
+          # Push db using the same schema
+          npx prisma db push --schema=prisma/schema.sqlite.prisma
           
           # Seed
           npm run db:seed
