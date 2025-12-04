@@ -37,9 +37,11 @@ jobs:
       - name: Run Setup and Tests
         run: |
           # Overwrite schema with SQLite version
+          rm prisma/schema.prisma
           cp prisma/schema.sqlite.prisma prisma/schema.prisma
           
-          echo "=== VERIFY SCHEMA CONTENT ==="
+          echo "=== VERIFY SCHEMA CONTENT ON DISK ==="
+          ls -l prisma/schema.prisma
           cat prisma/schema.prisma
           
           echo "DATABASE_URL=file:./test.db" > .env
@@ -48,6 +50,14 @@ jobs:
           
           # Generate client
           npx prisma generate
+          
+          echo "=== VERIFY GENERATED CLIENT SCHEMA ==="
+          # Prisma Client usually copies the schema here
+          if [ -f node_modules/.prisma/client/schema.prisma ]; then
+            cat node_modules/.prisma/client/schema.prisma
+          else
+            echo "Schema file not found in node_modules/.prisma/client"
+          fi
           
           # Push db
           npx prisma db push
