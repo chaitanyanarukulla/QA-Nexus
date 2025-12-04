@@ -36,10 +36,15 @@ jobs:
       
       - name: Setup database
         run: |
-          # Overwrite schema.prisma with SQLite version using cat
-          cat prisma/schema.sqlite.prisma > prisma/schema.prisma
+          # Modify schema using sed (safer than in-place)
+          sed -e 's/provider *= *"postgresql"/provider = "sqlite"/g' \
+              -e 's/url *= *env("DATABASE_URL")/url = "file:.\/test.db"/g' \
+              prisma/schema.prisma > prisma/schema.new
           
-          echo "=== VERIFY SCHEMA CONTENT AFTER OVERWRITE ==="
+          # Overwrite original schema
+          mv prisma/schema.new prisma/schema.prisma
+          
+          echo "=== VERIFY SCHEMA CONTENT AFTER SED ==="
           ls -l prisma/schema.prisma
           cat prisma/schema.prisma
           
