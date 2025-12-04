@@ -38,21 +38,29 @@ jobs:
         run: |
           echo "=== Original schema ==="
           head -20 prisma/schema.prisma
-          # Use robust script to fix schema
-          node scripts/fix-schema.js
-          echo "=== Modified schema ==="
-          head -20 prisma/schema.prisma
+          # Create dedicated CI schema
+          node scripts/create-ci-schema.js
+          
           echo "DATABASE_URL=file:./test.db" > .env
           rm -rf node_modules/.prisma
-          npx prisma generate
-          npx prisma migrate deploy
+          
+          # Generate client from CI schema
+          npx prisma generate --schema=prisma/schema.ci.prisma
+          
+          # Push db using CI schema
+          npx prisma db push --schema=prisma/schema.ci.prisma
+          
+          # Seed (needs to use the client we just generated)
           npm run db:seed
       
       - name: Install Playwright Browsers
         run: npx playwright install --with-deps ${{ matrix.browser }}
       
       - name: Run Playwright tests
-        run: npx playwright test --project=${{ matrix.browser }}
+        run: |
+          echo "=== Checking CI schema persistence ==="
+          head -20 prisma/schema.ci.prisma
+          npx playwright test --project=${{ matrix.browser }}
         env:
           OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
           AI_PROVIDER: openai
