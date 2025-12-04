@@ -1,0 +1,147 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client-js"
+  binaryTargets = ["native"]
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = "file:./test.db"
+}
+
+model User {
+  id        String   @id @default(cuid())
+  clerkId   String?  @unique // Link to Clerk User
+  email     String   @unique
+  name      String?
+  role      String   @default("TESTER")
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  testRuns  TestRun[]
+  jiraIntegration JiraIntegration?
+  comments  Comment[]
+  notifications Notification[]
+  activityLogs ActivityLog[]
+  testCases TestCase[]
+}
+
+model TestCase {
+  id          String   @id @default(cuid())
+  title       String
+  description String?
+  status      String   @default("DRAFT")
+  priority    String   @default("MEDIUM")
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  projectId   String?
+  authorId    String
+  author      User     @relation(fields: [authorId], references: [id])
+  steps       TestStep[]
+  testRuns    TestRun[]
+  comments    Comment[]
+  jiraIssueId String?
+  tags        String? // Comma separated tags
+}
+
+model TestStep {
+  id          String   @id @default(cuid())
+  testCaseId  String
+  testCase    TestCase @relation(fields: [testCaseId], references: [id], onDelete: Cascade)
+  order       Int
+  description String
+  expectedResult String?
+}
+
+model TestRun {
+  id          String   @id @default(cuid())
+  testCaseId  String
+  testCase    TestCase @relation(fields: [testCaseId], references: [id])
+  status      String   // PASSED, FAILED, SKIPPED
+  executedBy  String
+  executor    User     @relation(fields: [executedBy], references: [id])
+  executedAt  DateTime @default(now())
+  notes       String?
+  evidence    String?  // URL to screenshot or log
+}
+
+model JiraIntegration {
+  id          String   @id @default(cuid())
+  userId      String   @unique
+  user        User     @relation(fields: [userId], references: [id])
+  jiraUrl     String
+  email       String
+  apiToken    String
+  projectKey  String
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
+
+model Comment {
+  id          String   @id @default(cuid())
+  content     String
+  userId      String
+  user        User     @relation(fields: [userId], references: [id])
+  testCaseId  String
+  testCase    TestCase @relation(fields: [testCaseId], references: [id], onDelete: Cascade)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
+
+model Notification {
+  id          String   @id @default(cuid())
+  userId      String
+  user        User     @relation(fields: [userId], references: [id])
+  title       String
+  message     String
+  read        Boolean  @default(false)
+  type        String   // INFO, WARNING, SUCCESS, ERROR
+  link        String?
+  createdAt   DateTime @default(now())
+}
+
+model ActivityLog {
+  id          String   @id @default(cuid())
+  userId      String
+  user        User     @relation(fields: [userId], references: [id])
+  action      String
+  entityType  String   // TEST_CASE, TEST_RUN, etc.
+  entityId    String
+  details     String?
+  createdAt   DateTime @default(now())
+}
+
+model ApiCollection {
+  id          String   @id @default(cuid())
+  name        String
+  description String?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  requests    ApiRequest[]
+}
+
+model ApiRequest {
+  id            String   @id @default(cuid())
+  collectionId  String
+  collection    ApiCollection @relation(fields: [collectionId], references: [id], onDelete: Cascade)
+  name          String
+  method        String
+  url           String
+  headers       String? // JSON string
+  body          String?
+  auth          String? // JSON string
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+}
+
+model ApiEnvironment {
+  id          String   @id @default(cuid())
+  name        String
+  variables   String? // JSON string
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}

@@ -38,19 +38,20 @@ jobs:
         run: |
           echo "=== Original schema ==="
           head -20 prisma/schema.prisma
-          # Create dedicated CI schema
-          node scripts/create-ci-schema.js
+          # Overwrite schema.prisma with SQLite version
+          cp prisma/schema.sqlite.prisma prisma/schema.prisma
           
           echo "DATABASE_URL=file:./test.db" > .env
           rm -rf node_modules/.prisma
+          rm -rf .next
           
-          # Generate client from CI schema
-          npx prisma generate --schema=prisma/schema.ci.prisma
+          # Generate client (uses overwritten schema.prisma by default)
+          npx prisma generate
           
-          # Push db using CI schema
-          npx prisma db push --schema=prisma/schema.ci.prisma
+          # Push db (uses overwritten schema.prisma by default)
+          npx prisma db push
           
-          # Seed (needs to use the client we just generated)
+          # Seed
           npm run db:seed
       
       - name: Install Playwright Browsers
@@ -58,8 +59,8 @@ jobs:
       
       - name: Run Playwright tests
         run: |
-          echo "=== Checking CI schema persistence ==="
-          head -20 prisma/schema.ci.prisma
+          echo "=== Checking schema persistence ==="
+          head -20 prisma/schema.prisma
           npx playwright test --project=${{ matrix.browser }}
         env:
           OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
