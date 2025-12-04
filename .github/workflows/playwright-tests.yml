@@ -69,11 +69,8 @@ jobs:
       - name: Install Playwright Browsers
         run: npx playwright install --with-deps ${{ matrix.browser }}
 
-      - name: Build and Run Playwright Tests
+      - name: Build Application
         run: |
-          # Build the application
-          echo "Current directory: $(pwd)"
-
           # Check if Clerk keys are set
           if [ -z "$NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY" ]; then
             echo "WARNING: NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY is not set"
@@ -84,23 +81,17 @@ jobs:
           npm run build
 
           # Verify build exists
-          echo "Checking for .next directory..."
-          if [ ! -d ".next" ]; then
-            echo "ERROR: .next directory not found after build"
+          if [ ! -d ".next" ] || [ ! -f ".next/BUILD_ID" ]; then
+            echo "ERROR: Build failed - .next directory or BUILD_ID not found"
             exit 1
           fi
-          echo "Build successful, .next directory exists"
+          echo "Build successful! BUILD_ID: $(cat .next/BUILD_ID)"
+        env:
+          DATABASE_URL: postgresql://postgres:postgres@localhost:5432/qanexus_test
+          NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY: ${{ secrets.NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY }}
 
-          # Verify BUILD_ID exists (required for production mode)
-          if [ ! -f ".next/BUILD_ID" ]; then
-            echo "ERROR: .next/BUILD_ID not found"
-            exit 1
-          fi
-          echo "BUILD_ID: $(cat .next/BUILD_ID)"
-
-          # Run Playwright tests (will start production server)
-          echo "Starting Playwright tests..."
-          npx playwright test --project=${{ matrix.browser }}
+      - name: Run Playwright Tests
+        run: npx playwright test --project=${{ matrix.browser }}
         env:
           DATABASE_URL: postgresql://postgres:postgres@localhost:5432/qanexus_test
           OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}

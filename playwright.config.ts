@@ -95,8 +95,8 @@ export default defineConfig({
             : 'npm run dev -- -p 3002',    // Local: Use dev server
         url: 'http://localhost:3002/sign-in',
         reuseExistingServer: !process.env.CI,
-        stdout: 'pipe',
-        stderr: 'pipe',
+        stdout: 'inherit',
+        stderr: 'inherit',
         timeout: 120000,
     },
 });
