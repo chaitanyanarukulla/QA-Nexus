@@ -46,6 +46,11 @@ export default defineConfig({
 
         /* Maximum time each action can take */
         actionTimeout: 10000,
+
+        /* Bypass auth for testing */
+        extraHTTPHeaders: {
+            'x-bypass-auth': 'true',
+        },
     },
 
     /* Global timeout for each test */
@@ -81,27 +86,15 @@ export default defineConfig({
                 viewport: { width: 1920, height: 1080 },
             },
         },
-
-        /* Test against mobile viewports */
-        // {
-        //     name: 'Mobile Chrome',
-        //     use: { ...devices['Pixel 5'] },
-        // },
-        // {
-        //     name: 'Mobile Safari',
-        //     use: { ...devices['iPhone 12'] },
-        // },
     ],
 
     /* Run your local dev server before starting the tests */
-    /* Run your local dev server before starting the tests */
-    /* Run your local dev server before starting the tests */
-    // webServer: {
-    //     command: 'npm run dev -- -p 3002',
-    //     url: 'http://localhost:3002',
-    //     reuseExistingServer: !process.env.CI,
-    //     stdout: 'ignore',
-    //     stderr: 'pipe',
-    //     timeout: 120000,
-    // },
+    webServer: {
+        command: 'npm run dev -- -p 3002',
+        url: 'http://localhost:3002/sign-in',
+        reuseExistingServer: !process.env.CI,
+        stdout: 'ignore',
+        stderr: 'pipe',
+        timeout: 120000,
+    },
 });

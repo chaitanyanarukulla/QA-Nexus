@@ -56,7 +56,7 @@ export async function createTestUser(data?: {
 }) {
     return await prisma.user.create({
         data: {
-            email: data?.email || `test-${Date.now()}@qanexus.test`,
+            email: data?.email || `test-${Date.now()}-${Math.random().toString(36).substring(7)}@qanexus.test`,
             name: data?.name || 'Test User',
             role: data?.role || 'TESTER',
         },
