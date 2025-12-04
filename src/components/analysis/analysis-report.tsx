@@ -7,14 +7,14 @@ import { Separator } from '@/components/ui/separator'
 import { AlertTriangle, AlertCircle, Info, CheckCircle2, FileText, ExternalLink, Loader2 } from 'lucide-react'
 import { DocumentAnalysisResult } from '@/lib/ai'
 import { useState } from 'react'
-import { generateTestCasesFromAnalysis } from '@/app/actions/document-analysis'
+import { generateTestCasesFromAnalysis, createJiraTicketFromAnalysis } from '@/app/actions/document-analysis'
 import { toast } from 'sonner'
 import { useRouter } from 'next/navigation'
 
 interface AnalysisReportProps {
     analysisId: string
     analysis: DocumentAnalysisResult
-    sourceType: 'JIRA_EPIC' | 'CONFLUENCE_PAGE'
+    sourceType: 'JIRA_EPIC' | 'CONFLUENCE_PAGE' | 'LOCAL_FILE'
     sourceTitle: string
     sourceId: string
     testSuiteId?: string | null
@@ -29,6 +29,7 @@ export function AnalysisReport({
     testSuiteId
 }: AnalysisReportProps) {
     const [generating, setGenerating] = useState(false)
+    const [creatingTicket, setCreatingTicket] = useState<string | null>(null)
     const router = useRouter()
 
     const getSeverityColor = (severity: string) => {
@@ -68,6 +69,33 @@ export function AnalysisReport({
         }
     }
 
+    async function handleCreateTicket(type: 'RISK' | 'GAP' | 'MISSED_REQ', item: any, index: number) {
+        const id = `${type}-${index}`
+        setCreatingTicket(id)
+        try {
+            const result = await createJiraTicketFromAnalysis(
+                'demo-user', // TODO: Get actual user ID
+                analysisId,
+                type,
+                {
+                    title: item.title,
+                    description: item.description,
+                    priority: item.severity || item.priority // severity for risks, priority for others if any
+                }
+            )
+
+            if (result.success) {
+                toast.success(`Jira ticket created: ${result.issueKey}`)
+            } else {
+                toast.error(result.error || 'Failed to create Jira ticket')
+            }
+        } catch (error) {
+            toast.error('Failed to create ticket')
+        } finally {
+            setCreatingTicket(null)
+        }
+    }
+
     return (
         <div className="space-y-6">
             {/* Header */}
@@ -75,7 +103,7 @@ export function AnalysisReport({
                 <div>
                     <h1 className="text-3xl font-bold">{sourceTitle}</h1>
                     <p className="text-muted-foreground mt-1">
-                        {sourceType === 'JIRA_EPIC' ? 'Jira Epic' : 'Confluence Page'} • {sourceId}
+                        {sourceType === 'JIRA_EPIC' ? 'Jira Epic' : sourceType === 'CONFLUENCE_PAGE' ? 'Confluence Page' : 'Local File'} • {sourceId}
                     </p>
                 </div>
                 {testSuiteId ? (
@@ -188,6 +216,21 @@ export function AnalysisReport({
                                     <p className="text-xs font-medium text-muted-foreground mb-1">Impact:</p>
                                     <p className="text-sm">{risk.impact}</p>
                                 </div>
+                                <div className="flex justify-end">
+                                    <Button
+                                        variant="outline"
+                                        size="sm"
+                                        onClick={() => handleCreateTicket('RISK', risk, idx)}
+                                        disabled={creatingTicket === `RISK-${idx}`}
+                                    >
+                                        {creatingTicket === `RISK-${idx}` ? (
+                                            <Loader2 className="h-3 w-3 animate-spin mr-2" />
+                                        ) : (
+                                            <ExternalLink className="h-3 w-3 mr-2" />
+                                        )}
+                                        Create Ticket
+                                    </Button>
+                                </div>
                             </div>
                         ))}
                     </CardContent>
@@ -244,6 +287,21 @@ export function AnalysisReport({
                                 <div className="bg-muted p-3 rounded-md">
                                     <p className="text-xs font-medium text-muted-foreground mb-1">Why this matters:</p>
                                     <p className="text-sm">{req.reasoning}</p>
+                                </div>
+                                <div className="flex justify-end">
+                                    <Button
+                                        variant="outline"
+                                        size="sm"
+                                        onClick={() => handleCreateTicket('MISSED_REQ', req, idx)}
+                                        disabled={creatingTicket === `MISSED_REQ-${idx}`}
+                                    >
+                                        {creatingTicket === `MISSED_REQ-${idx}` ? (
+                                            <Loader2 className="h-3 w-3 animate-spin mr-2" />
+                                        ) : (
+                                            <ExternalLink className="h-3 w-3 mr-2" />
+                                        )}
+                                        Create Ticket
+                                    </Button>
                                 </div>
                             </div>
                         ))}

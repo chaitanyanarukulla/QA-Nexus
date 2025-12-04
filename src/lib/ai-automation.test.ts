@@ -77,6 +77,7 @@ describe('AI Automation', () => {
         });
 
         it('should handle failures gracefully', async () => {
+            jest.useFakeTimers();
             (chatCompletion as jest.Mock).mockRejectedValue(new Error('AI Error'));
 
             const testCases = [{
@@ -87,9 +88,17 @@ describe('AI Automation', () => {
                 expectedResult: 'Pass'
             }];
 
-            const result = await generatePlaywrightTestSuite(testCases, 'My Suite');
+            const promise = generatePlaywrightTestSuite(testCases, 'My Suite');
+
+            // Fast-forward through retries
+            await jest.runAllTimersAsync();
+
+            const result = await promise;
+
             expect(result).toContain('test.skip(\'My Test\'');
-            expect(result).toContain('Failed to generate Playwright test');
+            expect(result).toContain('Test generation failed after multiple attempts');
+
+            jest.useRealTimers();
         });
     });
 

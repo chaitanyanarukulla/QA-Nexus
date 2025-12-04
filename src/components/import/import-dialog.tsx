@@ -15,8 +15,9 @@ import { Label } from '@/components/ui/label'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import { getJiraEpics, searchConfluencePages, generateTestPlanFromEpic, generateTestCasesFromPage } from '@/app/actions/import'
 import { analyzeJiraEpic, analyzeConfluencePage } from '@/app/actions/document-analysis'
+import { analyzeUploadedFile } from '@/app/actions/file-upload'
 import { toast } from 'sonner'
-import { Loader2, Search, FileText, Layers } from 'lucide-react'
+import { Loader2, Search, FileText, Layers, Upload } from 'lucide-react'
 import { useRouter } from 'next/navigation'
 import {
     Select,
@@ -41,6 +42,9 @@ export function ImportDialog() {
     const [searchQuery, setSearchQuery] = useState('')
     const [pages, setPages] = useState<any[]>([])
     const [selectedPage, setSelectedPage] = useState<string | null>(null)
+
+    // File Upload State
+    const [selectedFile, setSelectedFile] = useState<File | null>(null)
 
     async function handleSearchEpics() {
         if (!projectKey) return
@@ -118,6 +122,25 @@ export function ImportDialog() {
         }
     }
 
+    async function handleUploadFile() {
+        if (!selectedFile) return
+        setGenerating(true)
+
+        const formData = new FormData()
+        formData.append('file', selectedFile)
+
+        const res = await analyzeUploadedFile(formData)
+        setGenerating(false)
+
+        if (res.success) {
+            toast.success('File analyzed successfully!')
+            setOpen(false)
+            router.push(`/document-analysis/${res.analysisId}`)
+        } else {
+            toast.error(res.error || 'Failed to analyze file')
+        }
+    }
+
     return (
         <Dialog open={open} onOpenChange={setOpen}>
             <DialogTrigger asChild>
@@ -137,9 +160,10 @@ export function ImportDialog() {
                 </DialogHeader>
 
                 <Tabs defaultValue="jira" className="w-full">
-                    <TabsList className="grid w-full grid-cols-2">
+                    <TabsList className="grid w-full grid-cols-3">
                         <TabsTrigger value="jira">Jira Epic</TabsTrigger>
                         <TabsTrigger value="confluence">Confluence Page</TabsTrigger>
+                        <TabsTrigger value="upload">Upload File</TabsTrigger>
                     </TabsList>
 
 
@@ -253,6 +277,43 @@ export function ImportDialog() {
                                 )}
                             </Button>
                         </div>
+                    </TabsContent>
+
+                    <TabsContent value="upload" className="space-y-4 pt-4">
+                        <div className="border-2 border-dashed rounded-lg p-8 text-center space-y-4">
+                            <div className="flex justify-center">
+                                <div className="h-12 w-12 rounded-full bg-muted flex items-center justify-center">
+                                    <Upload className="h-6 w-6 text-muted-foreground" />
+                                </div>
+                            </div>
+                            <div>
+                                <h3 className="font-medium mb-1">Upload a document</h3>
+                                <p className="text-sm text-muted-foreground">
+                                    Support for PDF, TXT, and Markdown files
+                                </p>
+                            </div>
+                            <Input
+                                type="file"
+                                accept=".pdf,.txt,.md"
+                                className="max-w-xs mx-auto"
+                                onChange={(e) => setSelectedFile(e.target.files?.[0] || null)}
+                            />
+                        </div>
+
+                        <Button
+                            className="w-full"
+                            onClick={handleUploadFile}
+                            disabled={!selectedFile || generating}
+                        >
+                            {generating ? (
+                                <>
+                                    <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                                    Analyzing File...
+                                </>
+                            ) : (
+                                'Analyze Document'
+                            )}
+                        </Button>
                     </TabsContent>
                 </Tabs>
             </DialogContent>

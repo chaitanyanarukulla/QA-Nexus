@@ -18,9 +18,9 @@ export interface EnhancedTestCase {
 export async function generateTestCasesWithCoverage(
     analysis: DocumentAnalysisResult,
     documentContent: string,
-    count: number = 20
+    count: number = 30
 ): Promise<EnhancedTestCase[]> {
-    const prompt = `You are a QA expert. Generate comprehensive test cases with requirements traceability.
+    const prompt = `You are a QA expert. Generate comprehensive, detailed test cases with requirements traceability.
 
 Document Content:
 ${documentContent.substring(0, 10000)}
@@ -40,9 +40,9 @@ Generate ${count} comprehensive test cases that specifically address the above r
 
 For EACH test case, you MUST specify:
 1. title: Concise, descriptive test case title
-2. description: Brief context about what this test validates
-3. steps: Numbered list of clear, actionable steps
-4. expectedResult: What should happen when test passes
+2. description: Detailed context about what this test validates and why it is important
+3. steps: Detailed, numbered list of clear, actionable steps. Be specific about inputs and actions.
+4. expectedResult: Clear, verifiable outcome. Describe the expected system state or UI feedback.
 5. priority: LOW, MEDIUM, HIGH, or CRITICAL
 6. coversRisks: Array of risk titles (from above list) that this test case addresses
 7. coversGaps: Array of gap titles (from above list) that this test case covers
@@ -54,12 +54,13 @@ IMPORTANT INSTRUCTIONS:
 - Ensure comprehensive coverage - all risks/gaps/requirements should be covered by at least one test
 - Include edge cases, negative scenarios, and validation tests
 - Prioritize based on risk severity and requirement importance
+- **Be extremely detailed in "steps" and "expectedResult"**
 
 Return ONLY a valid JSON array with this exact structure:
 [
   {
     "title": "Test case title",
-    "description": "Brief description",
+    "description": "Detailed description",
     "steps": "1. Step one\\n2. Step two\\n3. Step three",
     "expectedResult": "Expected outcome",
     "priority": "HIGH",

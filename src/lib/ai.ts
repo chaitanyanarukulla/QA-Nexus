@@ -102,9 +102,9 @@ export async function generateTestCases(
         count?: number
     }
 ): Promise<GeneratedTestCase[]> {
-    const { includeEdgeCases = true, includeNegativeCases = true, count = 5 } = options || {}
+    const { includeEdgeCases = true, includeNegativeCases = true, count = 10 } = options || {}
 
-    const prompt = `You are a QA expert. Generate comprehensive test cases for the following requirement:
+    const prompt = `You are a QA expert. Generate comprehensive, detailed test cases for the following requirement:
 
 ${requirement}
 
@@ -113,19 +113,20 @@ ${includeEdgeCases ? '- Edge cases and boundary conditions' : ''}
 ${includeNegativeCases ? '- Negative test scenarios' : ''}
 - Happy path scenarios
 - Important validations
+- Security and performance considerations where applicable
 
-For each test case, provide:
-1. Title (concise, descriptive)
-2. Description (brief context)
-3. Steps (numbered list, clear and actionable)
-4. Expected Result (what should happen)
-5. Priority (LOW, MEDIUM, HIGH, or CRITICAL)
+For each test case, you MUST provide:
+1. Title: Concise but descriptive
+2. Description: Detailed context about what is being tested and why
+3. Steps: A detailed, numbered list of actionable steps. Be specific (e.g., "Click 'Submit' button", "Enter 'test@example.com'").
+4. Expected Result: A clear, verifiable outcome. What exactly should the user see or the system do?
+5. Priority: LOW, MEDIUM, HIGH, or CRITICAL
 
 Return ONLY a valid JSON array of test cases with this exact structure:
 [
   {
     "title": "Test case title",
-    "description": "Brief description",
+    "description": "Detailed description",
     "steps": "1. Step one\\n2. Step two\\n3. Step three",
     "expectedResult": "Expected outcome",
     "priority": "MEDIUM"
@@ -271,9 +272,9 @@ export interface DocumentAnalysisResult {
 export async function analyzeDocument(
     documentContent: string,
     documentTitle: string,
-    sourceType: 'JIRA_EPIC' | 'CONFLUENCE_PAGE'
+    sourceType: 'JIRA_EPIC' | 'CONFLUENCE_PAGE' | 'LOCAL_FILE'
 ): Promise<DocumentAnalysisResult> {
-    const prompt = `You are a QA expert analyzing requirements documentation. Perform a comprehensive analysis of the following ${sourceType === 'JIRA_EPIC' ? 'Jira Epic and its stories' : 'Confluence documentation'}.
+    const prompt = `You are a QA expert analyzing requirements documentation. Perform a comprehensive analysis of the following ${sourceType === 'JIRA_EPIC' ? 'Jira Epic and its stories' : sourceType === 'CONFLUENCE_PAGE' ? 'Confluence documentation' : 'uploaded document'}.
 
 Document Title: ${documentTitle}
 
@@ -299,6 +300,8 @@ Analyze the document and identify:
    - Include specific action items
 
 5. **Summary**: A brief executive summary of the analysis (2-3 paragraphs)
+
+For each category (Risks, Gaps, Missed Requirements, Recommendations), aim to identify **at least 5-7 items** to ensure a thorough analysis. Be specific and detailed.
 
 Return ONLY valid JSON with this exact structure:
 {

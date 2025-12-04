@@ -14,35 +14,35 @@ interface TrendChartProps {
 
 export function TrendChart({ trends }: TrendChartProps) {
     return (
-        <Card className="border-2 border-blue-100 dark:border-blue-900 shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-[1.03] bg-gradient-to-br from-white to-blue-50/30 dark:from-slate-900 dark:to-blue-950/20">
-            <CardHeader className="border-b border-blue-100 dark:border-blue-900/50 bg-gradient-to-r from-blue-50 to-indigo-50 dark:from-blue-950 dark:to-indigo-950 px-6 py-4 rounded-t-xl">
-                <CardTitle className="flex items-center gap-2 text-blue-900 dark:text-blue-100">
-                    <TrendingUp className="h-5 w-5 text-blue-600 dark:text-blue-400" />
+        <Card className="border border-indigo-200 dark:border-indigo-500/20 shadow-lg hover:shadow-indigo-500/10 transition-all duration-300 bg-white dark:bg-slate-900/50 backdrop-blur-sm">
+            <CardHeader className="border-b border-slate-100 dark:border-white/5 px-6 py-4">
+                <CardTitle className="flex items-center gap-2 text-lg text-indigo-900 dark:text-indigo-100">
+                    <TrendingUp className="h-6 w-6 text-indigo-600 dark:text-indigo-400" />
                     Test Execution Trend (Last 7 Days)
                 </CardTitle>
-                <CardDescription className="text-blue-700 dark:text-blue-300">Daily breakdown of test results</CardDescription>
+                <CardDescription className="text-base text-slate-500 dark:text-slate-400">Daily breakdown of test results</CardDescription>
             </CardHeader>
             <CardContent className="p-6">
-                <div className="space-y-3">
+                <div className="space-y-4">
                     {trends.dailyTrend.map((day, index) => (
-                        <div key={index} className="space-y-1">
-                            <div className="flex items-center justify-between text-sm px-1">
-                                <span className="font-medium text-neutral-700 dark:text-neutral-300">{day.date}</span>
-                                <div className="flex items-center gap-4 text-xs">
-                                    <span className="text-success-600 dark:text-success-400 font-medium">✓ {day.passed}</span>
-                                    <span className="text-danger-600 dark:text-danger-400 font-medium">✗ {day.failed}</span>
-                                    <span className="text-neutral-500 dark:text-neutral-400">Total: {day.total}</span>
+                        <div key={index} className="space-y-2 group">
+                            <div className="flex items-center justify-between text-base px-1">
+                                <span className="font-medium text-slate-700 dark:text-slate-200 group-hover:text-indigo-600 dark:group-hover:text-white transition-colors">{day.date}</span>
+                                <div className="flex items-center gap-4 text-sm opacity-70 group-hover:opacity-100 transition-opacity">
+                                    <span className="text-emerald-600 dark:text-emerald-400 font-medium drop-shadow-[0_0_5px_rgba(52,211,153,0.5)]">✓ {day.passed}</span>
+                                    <span className="text-rose-600 dark:text-rose-400 font-medium drop-shadow-[0_0_5px_rgba(251,113,133,0.5)]">✗ {day.failed}</span>
+                                    <span className="text-slate-500 dark:text-slate-400">Total: {day.total}</span>
                                 </div>
                             </div>
-                            <div className="h-3 flex rounded-full overflow-hidden bg-neutral-200 dark:bg-neutral-700">
+                            <div className="h-3 flex rounded-full overflow-hidden bg-slate-100 dark:bg-slate-800 ring-1 ring-slate-200 dark:ring-white/5">
                                 {day.total > 0 && (
                                     <>
                                         <div
-                                            className="bg-gradient-to-r from-success-500 to-success-600"
+                                            className="bg-gradient-to-r from-emerald-500 to-emerald-400 shadow-[0_0_10px_rgba(16,185,129,0.3)]"
                                             style={{ width: `${(day.passed / day.total) * 100}%` }}
                                         />
                                         <div
-                                            className="bg-gradient-to-r from-danger-500 to-danger-600"
+                                            className="bg-gradient-to-r from-rose-500 to-rose-400 shadow-[0_0_10px_rgba(244,63,94,0.3)]"
                                             style={{ width: `${(day.failed / day.total) * 100}%` }}
                                         />
                                     </>

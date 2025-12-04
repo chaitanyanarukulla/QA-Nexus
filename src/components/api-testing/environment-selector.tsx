@@ -1,5 +1,6 @@
 'use client'
 
+import * as React from 'react'
 import { Globe, Settings } from 'lucide-react'
 import {
   Select,
@@ -33,7 +34,17 @@ export function EnvironmentSelector({
   onSelectEnvironment,
   onManageEnvironments
 }: EnvironmentSelectorProps) {
+  const [mounted, setMounted] = React.useState(false)
+
+  React.useEffect(() => {
+    setMounted(true)
+  }, [])
+
   const selectedEnv = environments.find(e => e.id === selectedEnvironmentId)
+
+  if (!mounted) {
+    return null
+  }
 
   return (
     <div className="flex items-center gap-2">

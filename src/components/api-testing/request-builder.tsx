@@ -1,6 +1,6 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { Play, Save, Loader2, Code, CheckCircle2, XCircle, Clock } from 'lucide-react'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
@@ -250,14 +250,24 @@ export function RequestBuilder({ requestId, collectionId, userId, environmentId,
     }
   }
 
+  const [mounted, setMounted] = useState(false)
+
+  useEffect(() => {
+    setMounted(true)
+  }, [])
+
+  if (!mounted) {
+    return null
+  }
+
   return (
     <div className="space-y-4">
       {/* Request Configuration */}
-      <Card>
-        <CardHeader>
-          <CardTitle>Request Configuration</CardTitle>
+      <Card className="bg-white/5 border-white/10 backdrop-blur-sm shadow-xl">
+        <CardHeader className="border-b border-white/5 pb-4">
+          <CardTitle className="text-lg font-medium text-slate-200">Request Configuration</CardTitle>
         </CardHeader>
-        <CardContent className="space-y-4">
+        <CardContent className="space-y-4 pt-6">
           {/* Title */}
           <div className="space-y-2">
             <Label htmlFor="title">Title (optional)</Label>
@@ -455,12 +465,12 @@ export function RequestBuilder({ requestId, collectionId, userId, environmentId,
 
       {/* Response Display */}
       {execution && (
-        <Card>
-          <CardHeader>
+        <Card className="bg-white/5 border-white/10 backdrop-blur-sm shadow-xl">
+          <CardHeader className="border-b border-white/5 pb-4">
             <div className="flex items-center justify-between">
-              <CardTitle>Response</CardTitle>
+              <CardTitle className="text-lg font-medium text-slate-200">Response</CardTitle>
               <div className="flex items-center gap-4">
-                <Badge variant={execution.status === 'PASSED' ? 'success' : 'danger'}>
+                <Badge variant={execution.status === 'PASSED' ? 'success' : 'danger'} className="px-3 py-1">
                   {execution.status === 'PASSED' ? (
                     <CheckCircle2 className="h-3 w-3 mr-1" />
                   ) : (
@@ -484,13 +494,13 @@ export function RequestBuilder({ requestId, collectionId, userId, environmentId,
               </TabsList>
 
               <TabsContent value="body" className="mt-4">
-                <pre className="p-4 bg-muted rounded-lg overflow-auto text-sm max-h-[400px]">
+                <pre className="p-4 bg-black/30 rounded-lg overflow-auto text-sm max-h-[400px] border border-white/5 font-mono text-slate-300 scrollbar-thin scrollbar-thumb-white/10 scrollbar-track-transparent">
                   {execution.responseBody || 'No response body'}
                 </pre>
               </TabsContent>
 
               <TabsContent value="headers" className="mt-4">
-                <pre className="p-4 bg-muted rounded-lg overflow-auto text-sm max-h-[400px]">
+                <pre className="p-4 bg-black/30 rounded-lg overflow-auto text-sm max-h-[400px] border border-white/5 font-mono text-slate-300 scrollbar-thin scrollbar-thumb-white/10 scrollbar-track-transparent">
                   {execution.responseHeaders
                     ? JSON.stringify(execution.responseHeaders, null, 2)
                     : 'No headers'}
@@ -499,7 +509,7 @@ export function RequestBuilder({ requestId, collectionId, userId, environmentId,
 
               <TabsContent value="code" className="mt-4">
                 <div className="relative">
-                  <pre className="p-4 bg-muted rounded-lg overflow-auto text-sm max-h-[400px]">
+                  <pre className="p-4 bg-black/30 rounded-lg overflow-auto text-sm max-h-[400px] border border-white/5 font-mono text-slate-300 scrollbar-thin scrollbar-thumb-white/10 scrollbar-track-transparent">
                     {generatedCode || 'No code generated'}
                   </pre>
                   <Button

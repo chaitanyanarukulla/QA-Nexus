@@ -46,235 +46,251 @@
 :root {
   --radius: 0.625rem;
 
-  /* ========== NEUTRAL GRAYSCALE ========== */
-  --neutral-50: oklch(0.99 0 0);
-  --neutral-100: oklch(0.975 0 0);
-  --neutral-200: oklch(0.94 0 0);
-  --neutral-300: oklch(0.88 0 0);
-  --neutral-400: oklch(0.75 0 0);
-  --neutral-500: oklch(0.63 0 0);
-  --neutral-600: oklch(0.50 0 0);
-  --neutral-700: oklch(0.40 0 0);
-  --neutral-800: oklch(0.25 0 0);
-  --neutral-900: oklch(0.15 0 0);
+  /* ========== NEUTRAL SLATE ========== */
+  --neutral-50: oklch(0.98 0.01 240);
+  --neutral-100: oklch(0.96 0.02 240);
+  --neutral-200: oklch(0.92 0.03 240);
+  --neutral-300: oklch(0.87 0.04 240);
+  --neutral-400: oklch(0.70 0.06 240);
+  --neutral-500: oklch(0.55 0.06 240);
+  --neutral-600: oklch(0.45 0.06 240);
+  --neutral-700: oklch(0.35 0.06 240);
+  --neutral-800: oklch(0.25 0.06 240);
+  --neutral-900: oklch(0.15 0.06 240);
 
-  /* ========== PRIMARY BLUE ========== */
-  --primary-50: oklch(0.97 0.03 264);
-  --primary-100: oklch(0.93 0.08 265);
-  --primary-200: oklch(0.87 0.14 266);
-  --primary-300: oklch(0.80 0.18 267);
-  --primary-400: oklch(0.71 0.22 268);
-  --primary-500: oklch(0.62 0.24 269);
-  --primary-600: oklch(0.55 0.25 268);
-  --primary-700: oklch(0.46 0.24 266);
-  --primary-800: oklch(0.40 0.22 265);
-  --primary-900: oklch(0.30 0.18 263);
+  /* ========== PRIMARY INDIGO (Standard) ========== */
+  --primary-50: oklch(0.97 0.02 280);
+  --primary-100: oklch(0.93 0.05 280);
+  --primary-200: oklch(0.85 0.10 280);
+  --primary-300: oklch(0.75 0.15 280);
+  --primary-400: oklch(0.65 0.20 280);
+  --primary-500: oklch(0.55 0.22 280);
+  --primary-600: oklch(0.45 0.22 280);
+  --primary-700: oklch(0.35 0.20 280);
+  --primary-800: oklch(0.25 0.15 280);
+  --primary-900: oklch(0.15 0.10 280);
 
-  /* ========== SUCCESS GREEN ========== */
-  --success-50: oklch(0.97 0.02 155);
-  --success-100: oklch(0.93 0.06 155);
-  --success-200: oklch(0.87 0.11 155);
-  --success-300: oklch(0.79 0.15 155);
-  --success-400: oklch(0.69 0.17 155);
-  --success-500: oklch(0.60 0.18 155);
-  --success-600: oklch(0.53 0.18 155);
-  --success-700: oklch(0.46 0.17 155);
-  --success-800: oklch(0.37 0.15 155);
-  --success-900: oklch(0.28 0.12 155);
+  /* ========== SUCCESS TEAL (Standard) ========== */
+  --success-50: oklch(0.98 0.02 170);
+  --success-100: oklch(0.94 0.05 170);
+  --success-200: oklch(0.88 0.09 170);
+  --success-300: oklch(0.80 0.13 170);
+  --success-400: oklch(0.70 0.16 170);
+  --success-500: oklch(0.60 0.18 170);
+  --success-600: oklch(0.50 0.18 170);
+  --success-700: oklch(0.40 0.16 170);
+  --success-800: oklch(0.30 0.13 170);
+  --success-900: oklch(0.20 0.10 170);
 
-  /* ========== WARNING AMBER ========== */
-  --warning-50: oklch(0.98 0.02 74);
-  --warning-100: oklch(0.95 0.05 74);
-  --warning-200: oklch(0.90 0.08 74);
-  --warning-300: oklch(0.83 0.12 74);
-  --warning-400: oklch(0.74 0.14 74);
-  --warning-500: oklch(0.63 0.15 74);
-  --warning-600: oklch(0.56 0.15 74);
-  --warning-700: oklch(0.48 0.14 74);
-  --warning-800: oklch(0.39 0.12 74);
-  --warning-900: oklch(0.30 0.09 74);
+  /* ========== WARNING AMBER (Standard) ========== */
+  --warning-50: oklch(0.98 0.03 85);
+  --warning-100: oklch(0.95 0.06 85);
+  --warning-200: oklch(0.90 0.10 85);
+  --warning-300: oklch(0.82 0.14 85);
+  --warning-400: oklch(0.72 0.17 85);
+  --warning-500: oklch(0.62 0.19 85);
+  --warning-600: oklch(0.52 0.19 85);
+  --warning-700: oklch(0.42 0.17 85);
+  --warning-800: oklch(0.32 0.14 85);
+  --warning-900: oklch(0.22 0.10 85);
 
-  /* ========== DANGER RED ========== */
-  --danger-50: oklch(0.97 0.03 21);
-  --danger-100: oklch(0.93 0.08 21);
-  --danger-200: oklch(0.87 0.14 21);
-  --danger-300: oklch(0.80 0.18 21);
-  --danger-400: oklch(0.71 0.21 21);
-  --danger-500: oklch(0.62 0.23 21);
-  --danger-600: oklch(0.54 0.24 21);
-  --danger-700: oklch(0.45 0.23 21);
-  --danger-800: oklch(0.37 0.21 21);
-  --danger-900: oklch(0.27 0.17 21);
+  /* ========== DANGER ROSE (Standard) ========== */
+  --danger-50: oklch(0.98 0.02 15);
+  --danger-100: oklch(0.94 0.06 15);
+  --danger-200: oklch(0.88 0.11 15);
+  --danger-300: oklch(0.80 0.16 15);
+  --danger-400: oklch(0.70 0.20 15);
+  --danger-500: oklch(0.60 0.23 15);
+  --danger-600: oklch(0.50 0.23 15);
+  --danger-700: oklch(0.40 0.20 15);
+  --danger-800: oklch(0.30 0.16 15);
+  --danger-900: oklch(0.20 0.11 15);
 
-  /* ========== INFO CYAN ========== */
-  --info-50: oklch(0.97 0.02 271);
-  --info-100: oklch(0.93 0.06 271);
-  --info-200: oklch(0.87 0.11 271);
-  --info-300: oklch(0.79 0.15 271);
-  --info-400: oklch(0.69 0.17 271);
-  --info-500: oklch(0.60 0.18 271);
-  --info-600: oklch(0.53 0.18 271);
-  --info-700: oklch(0.46 0.17 271);
-  --info-800: oklch(0.37 0.15 271);
-  --info-900: oklch(0.28 0.12 271);
+  /* ========== INFO SKY (Standard) ========== */
+  --info-50: oklch(0.98 0.02 230);
+  --info-100: oklch(0.94 0.05 230);
+  --info-200: oklch(0.88 0.09 230);
+  --info-300: oklch(0.80 0.13 230);
+  --info-400: oklch(0.70 0.16 230);
+  --info-500: oklch(0.60 0.18 230);
+  --info-600: oklch(0.50 0.18 230);
+  --info-700: oklch(0.40 0.16 230);
+  --info-800: oklch(0.30 0.13 230);
+  --info-900: oklch(0.20 0.10 230);
 
   /* ========== SEMANTIC ALIASES ========== */
-  --background: oklch(0.99 0 0);
-  --foreground: oklch(0.15 0 0);
-  --muted: oklch(0.75 0 0);
-  --muted-foreground: oklch(0.63 0 0);
-  --border: oklch(0.94 0 0);
-  --input: oklch(0.975 0 0);
-  --primary: oklch(0.62 0.24 269);
-  --primary-foreground: oklch(0.99 0 0);
-  --secondary: oklch(0.975 0 0);
-  --secondary-foreground: oklch(0.15 0 0);
-  --accent: oklch(0.975 0 0);
-  --accent-foreground: oklch(0.15 0 0);
-  --destructive: oklch(0.62 0.23 21);
+  --background: oklch(0.99 0.01 240);
+  --foreground: oklch(0.15 0.06 240);
+  --muted: oklch(0.96 0.02 240);
+  --muted-foreground: oklch(0.55 0.06 240);
+  --border: oklch(0.92 0.03 240);
+  --input: oklch(0.92 0.03 240);
+  --primary: oklch(0.55 0.22 280);
+  --primary-foreground: oklch(0.99 0.01 240);
+  --secondary: oklch(0.96 0.02 240);
+  --secondary-foreground: oklch(0.25 0.06 240);
+  --accent: oklch(0.96 0.02 240);
+  --accent-foreground: oklch(0.25 0.06 240);
+  --destructive: oklch(0.60 0.23 15);
   --card: oklch(1 0 0);
-  --card-foreground: oklch(0.15 0 0);
+  --card-foreground: oklch(0.15 0.06 240);
   --popover: oklch(1 0 0);
-  --popover-foreground: oklch(0.15 0 0);
+  --popover-foreground: oklch(0.15 0.06 240);
 
   /* ========== CHARTS ========== */
-  --chart-1: oklch(0.62 0.24 269);    /* Primary Blue */
-  --chart-2: oklch(0.60 0.18 155);    /* Success Green */
-  --chart-3: oklch(0.62 0.23 21);     /* Danger Red */
-  --chart-4: oklch(0.63 0.15 74);     /* Warning Amber */
-  --chart-5: oklch(0.60 0.18 271);    /* Info Cyan */
+  --chart-1: oklch(0.55 0.22 280);
+  /* Indigo */
+  --chart-2: oklch(0.60 0.18 170);
+  /* Teal */
+  --chart-3: oklch(0.60 0.23 15);
+  /* Rose */
+  --chart-4: oklch(0.62 0.19 85);
+  /* Amber */
+  --chart-5: oklch(0.60 0.18 230);
+  /* Sky */
 
   /* ========== SIDEBAR ========== */
-  --sidebar: oklch(1 0 0);
-  --sidebar-foreground: oklch(0.15 0 0);
-  --sidebar-primary: oklch(0.62 0.24 269);
-  --sidebar-primary-foreground: oklch(1 0 0);
-  --sidebar-accent: oklch(0.975 0 0);
-  --sidebar-accent-foreground: oklch(0.15 0 0);
-  --sidebar-border: oklch(0.94 0 0);
-  --sidebar-ring: oklch(0.62 0.24 269);
+  --sidebar: oklch(0.98 0.01 240);
+  --sidebar-foreground: oklch(0.25 0.06 240);
+  --sidebar-primary: oklch(0.55 0.22 280);
+  --sidebar-primary-foreground: oklch(0.99 0.01 240);
+  --sidebar-accent: oklch(0.95 0.02 240);
+  --sidebar-accent-foreground: oklch(0.25 0.06 240);
+  --sidebar-border: oklch(0.92 0.03 240);
+  --sidebar-ring: oklch(0.55 0.22 280);
 
   /* ========== RING/FOCUS ========== */
-  --ring: oklch(0.62 0.24 269);
+  --ring: oklch(0.55 0.22 280);
 }
 
 .dark {
-  /* ========== DARK NEUTRAL GRAYSCALE (INVERTED) ========== */
-  --neutral-50: oklch(0.15 0 0);
-  --neutral-100: oklch(0.25 0 0);
-  --neutral-200: oklch(0.30 0 0);
-  --neutral-300: oklch(0.40 0 0);
-  --neutral-400: oklch(0.55 0 0);
-  --neutral-500: oklch(0.65 0 0);
-  --neutral-600: oklch(0.75 0 0);
-  --neutral-700: oklch(0.83 0 0);
-  --neutral-800: oklch(0.90 0 0);
-  --neutral-900: oklch(0.98 0 0);
+  /* ========== DARK NEUTRAL SLATE (INVERTED) ========== */
+  --neutral-50: oklch(0.15 0.06 240);
+  --neutral-100: oklch(0.20 0.06 240);
+  --neutral-200: oklch(0.25 0.06 240);
+  --neutral-300: oklch(0.35 0.06 240);
+  --neutral-400: oklch(0.45 0.06 240);
+  --neutral-500: oklch(0.55 0.06 240);
+  --neutral-600: oklch(0.65 0.06 240);
+  --neutral-700: oklch(0.75 0.05 240);
+  --neutral-800: oklch(0.85 0.04 240);
+  --neutral-900: oklch(0.95 0.02 240);
 
-  /* ========== DARK PRIMARY BLUE ========== */
-  --primary-50: oklch(0.30 0.18 263);
-  --primary-100: oklch(0.40 0.22 265);
-  --primary-200: oklch(0.46 0.24 266);
-  --primary-300: oklch(0.55 0.25 268);
-  --primary-400: oklch(0.62 0.24 269);
-  --primary-500: oklch(0.71 0.22 268);
-  --primary-600: oklch(0.80 0.18 267);
-  --primary-700: oklch(0.87 0.14 266);
-  --primary-800: oklch(0.93 0.08 265);
-  --primary-900: oklch(0.97 0.03 264);
+  /* ========== DARK PRIMARY INDIGO (NEON) ========== */
+  --primary-50: oklch(0.25 0.15 280);
+  --primary-100: oklch(0.35 0.20 280);
+  --primary-200: oklch(0.45 0.22 280);
+  --primary-300: oklch(0.55 0.22 280);
+  --primary-400: oklch(0.65 0.20 280);
+  --primary-500: oklch(0.75 0.15 280);
+  --primary-600: oklch(0.85 0.10 280);
+  --primary-700: oklch(0.93 0.05 280);
+  --primary-800: oklch(0.97 0.02 280);
+  --primary-900: oklch(0.99 0.01 280);
 
-  /* ========== DARK SUCCESS GREEN ========== */
-  --success-50: oklch(0.28 0.12 155);
-  --success-100: oklch(0.37 0.15 155);
-  --success-200: oklch(0.46 0.17 155);
-  --success-300: oklch(0.53 0.18 155);
-  --success-400: oklch(0.60 0.18 155);
-  --success-500: oklch(0.69 0.17 155);
-  --success-600: oklch(0.79 0.15 155);
-  --success-700: oklch(0.87 0.11 155);
-  --success-800: oklch(0.93 0.06 155);
-  --success-900: oklch(0.97 0.02 155);
+  /* ========== DARK SUCCESS EMERALD (NEON) ========== */
+  --success-50: oklch(0.20 0.10 150);
+  --success-100: oklch(0.30 0.13 150);
+  --success-200: oklch(0.40 0.16 150);
+  --success-300: oklch(0.50 0.18 150);
+  --success-400: oklch(0.60 0.18 150);
+  --success-500: oklch(0.70 0.16 150);
+  --success-600: oklch(0.80 0.13 150);
+  --success-700: oklch(0.88 0.09 150);
+  --success-800: oklch(0.94 0.05 150);
+  --success-900: oklch(0.98 0.02 150);
 
   /* ========== DARK WARNING AMBER ========== */
-  --warning-50: oklch(0.30 0.09 74);
-  --warning-100: oklch(0.39 0.12 74);
-  --warning-200: oklch(0.48 0.14 74);
-  --warning-300: oklch(0.56 0.15 74);
-  --warning-400: oklch(0.63 0.15 74);
-  --warning-500: oklch(0.74 0.14 74);
-  --warning-600: oklch(0.83 0.12 74);
-  --warning-700: oklch(0.90 0.08 74);
-  --warning-800: oklch(0.95 0.05 74);
-  --warning-900: oklch(0.98 0.02 74);
+  --warning-50: oklch(0.22 0.10 85);
+  --warning-100: oklch(0.32 0.14 85);
+  --warning-200: oklch(0.42 0.17 85);
+  --warning-300: oklch(0.52 0.19 85);
+  --warning-400: oklch(0.62 0.19 85);
+  --warning-500: oklch(0.72 0.17 85);
+  --warning-600: oklch(0.82 0.14 85);
+  --warning-700: oklch(0.90 0.10 85);
+  --warning-800: oklch(0.95 0.06 85);
+  --warning-900: oklch(0.98 0.03 85);
 
-  /* ========== DARK DANGER RED ========== */
-  --danger-50: oklch(0.27 0.17 21);
-  --danger-100: oklch(0.37 0.21 21);
-  --danger-200: oklch(0.45 0.23 21);
-  --danger-300: oklch(0.54 0.24 21);
-  --danger-400: oklch(0.62 0.23 21);
-  --danger-500: oklch(0.71 0.21 21);
-  --danger-600: oklch(0.80 0.18 21);
-  --danger-700: oklch(0.87 0.14 21);
-  --danger-800: oklch(0.93 0.08 21);
-  --danger-900: oklch(0.97 0.03 21);
+  /* ========== DARK DANGER ROSE (NEON) ========== */
+  --danger-50: oklch(0.20 0.11 15);
+  --danger-100: oklch(0.30 0.16 15);
+  --danger-200: oklch(0.40 0.20 15);
+  --danger-300: oklch(0.50 0.23 15);
+  --danger-400: oklch(0.60 0.23 15);
+  --danger-500: oklch(0.70 0.20 15);
+  --danger-600: oklch(0.80 0.16 15);
+  --danger-700: oklch(0.88 0.11 15);
+  --danger-800: oklch(0.94 0.06 15);
+  --danger-900: oklch(0.98 0.02 15);
 
-  /* ========== DARK INFO CYAN ========== */
-  --info-50: oklch(0.28 0.12 271);
-  --info-100: oklch(0.37 0.15 271);
-  --info-200: oklch(0.46 0.17 271);
-  --info-300: oklch(0.53 0.18 271);
-  --info-400: oklch(0.60 0.18 271);
-  --info-500: oklch(0.69 0.17 271);
-  --info-600: oklch(0.79 0.15 271);
-  --info-700: oklch(0.87 0.11 271);
-  --info-800: oklch(0.93 0.06 271);
-  --info-900: oklch(0.97 0.02 271);
+  /* ========== DARK INFO SKY ========== */
+  --info-50: oklch(0.20 0.10 230);
+  --info-100: oklch(0.30 0.13 230);
+  --info-200: oklch(0.40 0.16 230);
+  --info-300: oklch(0.50 0.18 230);
+  --info-400: oklch(0.60 0.18 230);
+  --info-500: oklch(0.70 0.16 230);
+  --info-600: oklch(0.80 0.13 230);
+  --info-700: oklch(0.88 0.09 230);
+  --info-800: oklch(0.94 0.05 230);
+  --info-900: oklch(0.98 0.02 230);
 
-  /* ========== DARK SEMANTIC ALIASES ========== */
-  --background: oklch(0.15 0 0);
-  --foreground: oklch(0.98 0 0);
-  --muted: oklch(0.55 0 0);
-  --muted-foreground: oklch(0.65 0 0);
-  --border: oklch(0.30 0 0);
-  --input: oklch(0.25 0 0);
-  --primary: oklch(0.71 0.22 268);
-  --primary-foreground: oklch(0.15 0 0);
-  --secondary: oklch(0.25 0 0);
-  --secondary-foreground: oklch(0.98 0 0);
-  --accent: oklch(0.25 0 0);
-  --accent-foreground: oklch(0.98 0 0);
-  --destructive: oklch(0.71 0.21 21);
-  --card: oklch(0.20 0 0);
-  --card-foreground: oklch(0.98 0 0);
-  --popover: oklch(0.20 0 0);
-  --popover-foreground: oklch(0.98 0 0);
+  /* ========== DARK SEMANTIC ALIASES (DEEP OBSIDIAN) ========== */
+  --background: oklch(0.12 0.04 260);
+  /* Deep Obsidian Base */
+  --foreground: oklch(0.98 0.01 240);
+  --muted: oklch(0.20 0.06 240);
+  --muted-foreground: oklch(0.65 0.06 240);
+  --border: oklch(0.25 0.06 240);
+  --input: oklch(0.25 0.06 240);
+  --primary: oklch(0.65 0.25 280);
+  /* Neon Indigo */
+  --primary-foreground: oklch(0.12 0.04 260);
+  --secondary: oklch(0.20 0.06 240);
+  --secondary-foreground: oklch(0.98 0.01 240);
+  --accent: oklch(0.20 0.06 240);
+  --accent-foreground: oklch(0.98 0.01 240);
+  --destructive: oklch(0.65 0.25 15);
+  /* Neon Rose */
+  --card: oklch(0.15 0.05 260);
+  /* Slightly lighter than bg */
+  --card-foreground: oklch(0.98 0.01 240);
+  --popover: oklch(0.15 0.05 260);
+  --popover-foreground: oklch(0.98 0.01 240);
 
-  /* ========== DARK CHARTS ========== */
-  --chart-1: oklch(0.71 0.22 268);    /* Primary Blue */
-  --chart-2: oklch(0.69 0.17 155);    /* Success Green */
-  --chart-3: oklch(0.71 0.21 21);     /* Danger Red */
-  --chart-4: oklch(0.74 0.14 74);     /* Warning Amber */
-  --chart-5: oklch(0.69 0.17 271);    /* Info Cyan */
+  /* ========== DARK CHARTS (NEON) ========== */
+  --chart-1: oklch(0.65 0.25 280);
+  /* Indigo */
+  --chart-2: oklch(0.65 0.25 150);
+  /* Emerald */
+  --chart-3: oklch(0.65 0.25 15);
+  /* Rose */
+  --chart-4: oklch(0.62 0.19 85);
+  /* Amber */
+  --chart-5: oklch(0.60 0.18 230);
+  /* Sky */
 
-  /* ========== DARK SIDEBAR ========== */
-  --sidebar: oklch(0.20 0 0);
-  --sidebar-foreground: oklch(0.98 0 0);
-  --sidebar-primary: oklch(0.71 0.22 268);
-  --sidebar-primary-foreground: oklch(0.15 0 0);
-  --sidebar-accent: oklch(0.25 0 0);
-  --sidebar-accent-foreground: oklch(0.98 0 0);
-  --sidebar-border: oklch(0.30 0 0);
-  --sidebar-ring: oklch(0.71 0.22 268);
+  /* ========== DARK SIDEBAR (DEEP OBSIDIAN) ========== */
+  --sidebar: oklch(0.10 0.04 260);
+  /* Darker than bg */
+  --sidebar-foreground: oklch(0.98 0.01 240);
+  --sidebar-primary: oklch(0.65 0.25 280);
+  --sidebar-primary-foreground: oklch(0.12 0.04 260);
+  --sidebar-accent: oklch(0.15 0.05 260);
+  --sidebar-accent-foreground: oklch(0.98 0.01 240);
+  --sidebar-border: oklch(0.20 0.06 240);
+  --sidebar-ring: oklch(0.65 0.25 280);
 
   /* ========== DARK RING/FOCUS ========== */
-  --ring: oklch(0.71 0.22 268);
+  --ring: oklch(0.65 0.25 280);
 }
 
 @layer base {
   * {
     @apply border-border outline-ring/50;
   }
+
   body {
     @apply bg-background text-foreground;
   }
@@ -285,6 +301,7 @@
   from {
     opacity: 0;
   }
+
   to {
     opacity: 1;
   }
@@ -295,6 +312,7 @@
     opacity: 0;
     transform: translateY(8px);
   }
+
   to {
     opacity: 1;
     transform: translateY(0);
@@ -306,6 +324,7 @@
     opacity: 0;
     transform: translateY(-8px);
   }
+
   to {
     opacity: 1;
     transform: translateY(0);
@@ -317,6 +336,7 @@
     opacity: 0;
     transform: translateX(-8px);
   }
+
   to {
     opacity: 1;
     transform: translateX(0);
@@ -328,6 +348,7 @@
     opacity: 0;
     transform: translateX(8px);
   }
+
   to {
     opacity: 1;
     transform: translateX(0);
@@ -339,6 +360,7 @@
     opacity: 0;
     transform: scale(0.95);
   }
+
   to {
     opacity: 1;
     transform: scale(1);
@@ -346,15 +368,19 @@
 }
 
 @keyframes bounce {
-  0%, 100% {
+
+  0%,
+  100% {
     transform: translateY(0);
   }
+
   50% {
     transform: translateY(-2px);
   }
 }
 
 @layer utilities {
+
   /* Smooth transitions for interactive elements */
   .transition-smooth {
     @apply transition-all duration-200 ease-in-out;
@@ -427,6 +453,7 @@
       width: 0;
       left: 50%;
     }
+
     to {
       width: 100%;
       left: 0;

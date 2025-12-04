@@ -45,24 +45,14 @@ export default async function ApiTestingPage() {
 
   return (
     <div className="flex flex-col h-[calc(100vh-4rem)] space-y-6">
-      {/* Hero Header */}
-      <div className="relative overflow-hidden rounded-2xl bg-gradient-to-br from-cyan-500 via-blue-600 to-indigo-700 p-8 shadow-2xl">
-        <div className="absolute inset-0 bg-grid-white/10 [mask-image:linear-gradient(0deg,transparent,black)]" />
-        <div className="relative">
-          <div className="flex items-center gap-3 mb-2">
-            <div className="p-2.5 rounded-xl bg-white/20 backdrop-blur-sm">
-              <Network className="h-8 w-8 text-white drop-shadow-lg" />
-            </div>
-            <h1 className="text-4xl font-bold tracking-tight text-white drop-shadow-md">
-              API Testing
-            </h1>
-          </div>
-          <p className="text-blue-100 mt-2 text-lg flex items-center gap-2">
-            <Zap className="h-5 w-5 text-yellow-300" />
-            Playwright-powered API testing with visual request builder and OpenAPI support
-          </p>
-        </div>
+      {/* Header */}
+      <div className="flex flex-col gap-2">
+        <h1 className="text-3xl font-bold tracking-tight">API Testing</h1>
+        <p className="text-muted-foreground">
+          Playwright-powered API testing with visual request builder and OpenAPI support
+        </p>
       </div>
+
 
       <Suspense fallback={
         <div className="p-8 text-center">

@@ -1,6 +1,7 @@
 import { getDocumentAnalysis } from '@/app/actions/document-analysis'
 import { AnalysisReport } from '@/components/analysis/analysis-report'
 import { CoverageMatrix } from '@/components/analysis/coverage-matrix'
+import { ChatInterface } from '@/components/analysis/chat-interface'
 import { DocumentAnalysisResult } from '@/lib/ai'
 import { notFound } from 'next/navigation'
 import { prisma } from '@/lib/prisma'
@@ -45,24 +46,36 @@ export default async function AnalysisDetailPage({ params }: { params: Promise<{
             <AnalysisReport
                 analysisId={analysis.id}
                 analysis={analysisResult}
-                sourceType={analysis.sourceType as 'JIRA_EPIC' | 'CONFLUENCE_PAGE'}
+                sourceType={analysis.sourceType as 'JIRA_EPIC' | 'CONFLUENCE_PAGE' | 'LOCAL_FILE'}
                 sourceTitle={analysis.sourceTitle}
                 sourceId={analysis.sourceId}
                 testSuiteId={analysis.testSuiteId}
             />
 
-            {analysis.testSuiteId && testCases.length > 0 && (
-                <>
-                    <Separator />
-                    <CoverageMatrix
-                        risks={analysisResult.risks}
-                        gaps={analysisResult.gaps}
-                        missedRequirements={analysisResult.missedRequirements}
-                        testCases={testCases}
-                        suiteId={analysis.testSuiteId}
-                    />
-                </>
-            )}
+            <Separator />
+
+            <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+                <div className="lg:col-span-2">
+                    {analysis.testSuiteId && testCases.length > 0 ? (
+                        <CoverageMatrix
+                            risks={analysisResult.risks}
+                            gaps={analysisResult.gaps}
+                            missedRequirements={analysisResult.missedRequirements}
+                            testCases={testCases}
+                            suiteId={analysis.testSuiteId}
+                        />
+                    ) : (
+                        <div className="text-center py-10 border rounded-lg bg-muted/20">
+                            <p className="text-muted-foreground">Generate test cases to see coverage matrix</p>
+                        </div>
+                    )}
+                </div>
+                <div>
+                    <ChatInterface analysisId={analysis.id} />
+                </div>
+            </div>
+
+            {/* Legacy Coverage Matrix placement removed */}
         </div>
     )
 }

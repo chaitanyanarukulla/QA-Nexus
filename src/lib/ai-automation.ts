@@ -138,18 +138,51 @@ export async function generatePlaywrightTestSuite(
             generatedTests.push(test)
         } catch (error) {
             console.error(`Failed to generate test for ${testCase.title}:`, error)
-            // Add a placeholder comment for failed test generation
-            generatedTests.push({
-                testCaseId: testCase.id,
-                testCaseTitle: testCase.title,
-                code: `test.skip('${testCase.title}', async ({ page }) => {
-  // TODO: Test generation failed. Please implement manually.
+
+            // Retry logic for transient failures (up to 3 attempts)
+            let retryCount = 0;
+            let success = false;
+
+            while (retryCount < 3 && !success) {
+                try {
+                    console.log(`Retrying generation for "${testCase.title}" (Attempt ${retryCount + 1}/3)...`);
+                    const test = await generatePlaywrightTest(testCase, baseUrl);
+                    generatedTests.push(test);
+                    success = true;
+                } catch (retryError) {
+                    console.error(`Retry ${retryCount + 1} failed:`, retryError);
+                    retryCount++;
+                    // Wait a bit before retrying (exponential backoff)
+                    await new Promise(resolve => setTimeout(resolve, 1000 * Math.pow(2, retryCount)));
+                }
+            }
+
+            if (!success) {
+                // Add a placeholder comment for failed test generation with steps
+                const stepsComment = Array.isArray(testCase.steps)
+                    ? testCase.steps.map((s: string, i: number) => `  // ${i + 1}. ${s}`).join('\n')
+                    : `  // Steps: ${JSON.stringify(testCase.steps)}`;
+
+                generatedTests.push({
+                    testCaseId: testCase.id,
+                    testCaseTitle: testCase.title,
+                    code: `test.skip('${testCase.title}', async ({ page }) => {
+  // TODO: Test generation failed after multiple attempts. Please implement manually.
   // Test Case ID: ${testCase.id}
   // Error: ${error instanceof Error ? error.message : 'Unknown error'}
+
+  // Original Steps:
+${stepsComment}
+
+  // Skeleton for manual implementation:
+  // await page.goto('${baseUrl}');
+  // await page.getByRole('...').click();
+  // await expect(page.getByText('...')).toBeVisible();
 })`,
-                imports: ['test'],
-                setup: undefined
-            })
+                    imports: ['test', 'expect'],
+                    setup: undefined
+                })
+            }
         }
     }
 
@@ -180,14 +213,14 @@ export async function generatePlaywrightTestSuite(
 const BASE_URL = '${baseUrl}';
 
 ${generatedTests.map(test => {
-    let testCode = `
+        let testCode = `
 // Test Case: ${test.testCaseTitle}
 // ID: ${test.testCaseId}
 ${test.setup ? `\n// Setup:\n${test.setup}\n` : ''}
 ${test.code}
 `
-    return testCode
-}).join('\n')}
+        return testCode
+    }).join('\n')}
 `
 
     return testFile

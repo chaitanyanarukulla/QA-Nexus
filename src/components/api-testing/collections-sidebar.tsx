@@ -183,9 +183,9 @@ export function CollectionsSidebar({
   }
 
   return (
-    <div className="w-80 border-r bg-muted/30 flex flex-col h-full">
+    <div className="w-80 flex flex-col h-full bg-transparent">
       {/* Header */}
-      <div className="p-4 border-b bg-background">
+      <div className="p-4 border-b border-white/10 bg-white/5 backdrop-blur-sm">
         <div className="mb-3">
           <h2 className="font-semibold mb-3">Collections</h2>
           <div className="flex flex-col gap-2">
@@ -270,15 +270,15 @@ export function CollectionsSidebar({
           ) : (
             collections.map((collection) => (
               <div key={collection.id} className="mb-2">
-                <div className="flex items-center justify-between p-2 rounded hover:bg-accent group">
+                <div className="flex items-center justify-between p-2 rounded-lg hover:bg-white/5 transition-colors group">
                   <div className="flex items-center gap-2 flex-1">
-                    <Folder className="h-4 w-4 text-muted-foreground" />
-                    <span className="text-sm font-medium">{collection.title}</span>
-                    <span className="text-xs text-muted-foreground">
+                    <Folder className="h-4 w-4 text-indigo-400" />
+                    <span className="text-sm font-medium text-slate-200">{collection.title}</span>
+                    <span className="text-xs text-slate-500">
                       ({collection.requests.length})
                     </span>
                   </div>
-                  <div className="flex gap-1 opacity-0 group-hover:opacity-100">
+                  <div className="flex gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
                     <CollectionRunner
                       collectionId={collection.id}
                       collectionName={collection.title}
@@ -289,7 +289,7 @@ export function CollectionsSidebar({
                     <Button
                       size="sm"
                       variant="ghost"
-                      className="h-6 w-6 p-0"
+                      className="h-6 w-6 p-0 hover:bg-white/10 hover:text-red-400"
                       onClick={() => handleDeleteCollection(collection.id)}
                     >
                       <Trash2 className="h-3 w-3" />
@@ -298,11 +298,13 @@ export function CollectionsSidebar({
                 </div>
 
                 {/* Requests in collection */}
-                <div className="ml-4 mt-1 space-y-1">
+                <div className="ml-4 mt-1 space-y-1 border-l border-white/5 pl-2">
                   {collection.requests.map((request) => (
                     <div
                       key={request.id}
-                      className={`flex items-center gap-2 p-2 rounded cursor-pointer hover:bg-accent group ${selectedRequestId === request.id ? 'bg-accent' : ''
+                      className={`flex items-center gap-2 p-2 rounded-md cursor-pointer transition-all duration-200 group ${selectedRequestId === request.id
+                        ? 'bg-indigo-500/20 text-indigo-300 shadow-[0_0_10px_rgba(99,102,241,0.1)]'
+                        : 'hover:bg-white/5 text-slate-400 hover:text-slate-200'
                         }`}
                       onClick={() => onRequestSelect(request.id)}
                     >

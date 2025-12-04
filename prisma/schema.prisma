@@ -37,6 +37,10 @@ model User {
   apiExecutions   ApiExecution[]
   environments    Environment[]
   openApiSpecs    OpenApiSpec[]
+
+  // Performance Testing relations
+  performanceTests PerformanceTest[]
+  performanceExecutions PerformanceExecution[]
 }
 
 model TestCase {
@@ -608,4 +612,48 @@ model WebhookLog {
   @@index([eventType])
   @@index([entityType])
   @@index([processedAt])
+}
+
+// Performance Testing Models (k6)
+model PerformanceTest {
+  id          String   @id @default(cuid())
+  name        String
+  description String?
+  targetUrl   String
+  vus         Int      @default(10)
+  duration    String   @default("30s") // e.g., "30s", "1m"
+  
+  // Thresholds (JSON object)
+  // e.g., { "http_req_duration": ["p(95)<500"], "http_req_failed": ["rate<0.01"] }
+  thresholds  Json?
+
+  executions  PerformanceExecution[]
+
+  createdBy   String
+  user        User     @relation(fields: [createdBy], references: [id])
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  @@index([createdBy])
+}
+
+model PerformanceExecution {
+  id          String   @id @default(cuid())
+  status      String   @default("PENDING") // PENDING, RUNNING, COMPLETED, FAILED
+  
+  testId      String
+  test        PerformanceTest @relation(fields: [testId], references: [id], onDelete: Cascade)
+
+  // k6 results summary
+  metrics     Json?    // Store full JSON summary from k6
+  
+  startedAt   DateTime @default(now())
+  completedAt DateTime?
+
+  executedBy  String
+  user        User     @relation(fields: [executedBy], references: [id])
+
+  @@index([testId])
+  @@index([status])
+  @@index([executedBy])
 }

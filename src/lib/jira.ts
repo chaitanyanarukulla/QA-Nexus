@@ -140,6 +140,7 @@ export class JiraClient {
                     issuetype: {
                         name: data.issueType,
                     },
+                    ...(data.priority ? { priority: { name: data.priority } } : {}),
                 },
             }
 

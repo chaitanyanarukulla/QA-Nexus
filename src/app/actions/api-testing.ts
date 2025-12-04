@@ -58,6 +58,12 @@ export async function getCollections(userId?: string) {
 
 export async function deleteCollection(id: string) {
   try {
+    // Unlink any OpenAPI specs that reference this collection
+    await prisma.openApiSpec.updateMany({
+      where: { collectionId: id },
+      data: { collectionId: null }
+    });
+
     await prisma.apiCollection.delete({
       where: { id }
     });
