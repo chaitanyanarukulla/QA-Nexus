@@ -36,10 +36,27 @@ jobs:
       
       - name: Run Setup and Tests
         run: |
-          # Transform schema to SQLite using Node script
-          node scripts/create-ci-schema.js
+          # Transform schema to SQLite using sed
+          echo "Transforming schema..."
+          sed -i 's/provider *= *"postgresql"/provider = "sqlite"/g' prisma/schema.prisma
+          sed -i 's/url *= *env("DATABASE_URL")/url = "file:.\/test.db"/g' prisma/schema.prisma
+          sed -i '/directUrl/d' prisma/schema.prisma
           
-          echo "=== VERIFY SCHEMA CONTENT ON DISK ==="
+          echo "=== VERIFY SCHEMA TRANSFORMATION ==="
+          if grep -q 'provider = "sqlite"' prisma/schema.prisma; then
+            echo "SUCCESS: Provider is sqlite"
+          else
+            echo "FAILURE: Provider is NOT sqlite"
+            cat prisma/schema.prisma
+            exit 1
+          fi
+          
+          if grep -q 'postgresql' prisma/schema.prisma; then
+            echo "FAILURE: Found 'postgresql' in schema"
+            cat prisma/schema.prisma
+            exit 1
+          fi
+          
           cat prisma/schema.prisma
           
           echo "DATABASE_URL=file:./test.db" > .env
