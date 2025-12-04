@@ -7,6 +7,7 @@ export async function getMetrics() {
     const thirtyDaysAgo = new Date(now.getTime() - 30 * 24 * 60 * 60 * 1000)
     const sevenDaysAgo = new Date(now.getTime() - 7 * 24 * 60 * 60 * 1000)
 
+    // Parallelize independent queries
     const [
         totalTestCases,
         totalTestSuites,
@@ -19,7 +20,6 @@ export async function getMetrics() {
         testRunsLast30Days,
         testRunsLast7Days,
         defectsLast7Days,
-        allTestResults,
     ] = await Promise.all([
         prisma.testCase.count(),
         prisma.testSuite.count(),
@@ -31,25 +31,21 @@ export async function getMetrics() {
             take: 10,
             orderBy: { createdAt: 'desc' },
             include: {
-                results: true,
+                results: {
+                    select: { status: true }
+                },
+                user: {
+                    select: { name: true }
+                }
             },
         }),
         prisma.testCase.count({ where: { createdAt: { gte: thirtyDaysAgo } } }),
         prisma.testRun.count({ where: { createdAt: { gte: thirtyDaysAgo } } }),
         prisma.testRun.count({ where: { createdAt: { gte: sevenDaysAgo } } }),
         prisma.defect.count({ where: { createdAt: { gte: sevenDaysAgo } } }),
-        prisma.testResult.findMany({
-            where: {
-                createdAt: { gte: thirtyDaysAgo }
-            },
-            select: {
-                status: true,
-                createdAt: true
-            }
-        }),
     ])
 
-    // Calculate overall pass rate
+    // Calculate overall pass rate from recent runs (last 10 runs)
     let totalTests = 0
     let passedTests = 0
     let failedTests = 0
@@ -66,46 +62,57 @@ export async function getMetrics() {
 
     const passRate = totalTests > 0 ? Math.round((passedTests / totalTests) * 100) : 0
 
-    // Calculate test execution trend (daily for last 7 days)
+    // Optimized Daily Trend using raw query for aggregation
+    // This avoids fetching thousands of rows to JS
+    const trendResults = await prisma.$queryRaw<{ date: Date, status: string, count: bigint }[]>`
+        SELECT DATE("createdAt") as date, "status", COUNT(*)::int as count
+        FROM "TestResult"
+        WHERE "createdAt" >= ${sevenDaysAgo}
+        GROUP BY DATE("createdAt"), "status"
+        ORDER BY date ASC
+    `
+
+    // Process raw results into the expected format
     const dailyTrend: { date: string; passed: number; failed: number; total: number }[] = []
+
     for (let i = 6; i >= 0; i--) {
         const date = new Date(now)
         date.setDate(date.getDate() - i)
-        date.setHours(0, 0, 0, 0)
+        const dateStr = date.toISOString().split('T')[0] // YYYY-MM-DD
 
-        const nextDate = new Date(date)
-        nextDate.setDate(nextDate.getDate() + 1)
-
-        const dayResults = allTestResults.filter((r: any) => {
-            const resultDate = new Date(r.createdAt)
-            return resultDate >= date && resultDate < nextDate
+        // Find matching rows for this date
+        const dayRows = trendResults.filter(r => {
+            const rDate = new Date(r.date).toISOString().split('T')[0]
+            return rDate === dateStr
         })
+
+        const passed = Number(dayRows.find(r => r.status === 'PASS')?.count || 0)
+        const failed = Number(dayRows.find(r => r.status === 'FAIL')?.count || 0)
+        const total = dayRows.reduce((acc, r) => acc + Number(r.count), 0)
 
         dailyTrend.push({
             date: date.toLocaleDateString('en-US', { month: 'short', day: 'numeric' }),
-            passed: dayResults.filter((r: any) => r.status === 'PASS').length,
-            failed: dayResults.filter((r: any) => r.status === 'FAIL').length,
-            total: dayResults.length
+            passed,
+            failed,
+            total
         })
     }
 
-    // Calculate test coverage by suite
+    // Calculate test coverage by suite - Optimized query
     const suiteMetrics = await prisma.testSuite.findMany({
         select: {
             title: true,
             testCases: {
                 select: {
-                    id: true,
                     testResults: {
                         take: 1,
                         orderBy: { createdAt: 'desc' },
-                        select: {
-                            status: true
-                        }
+                        select: { status: true }
                     }
                 }
             }
-        }
+        },
+        take: 10 // Limit to top 10 suites to avoid huge payload
     })
 
     const coverage = suiteMetrics.map((suite: any) => {

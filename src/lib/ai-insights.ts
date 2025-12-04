@@ -18,35 +18,60 @@ interface TestExecutionHistory {
  * Analyze test execution history to detect flaky tests
  * A test is considered flaky if it has inconsistent results
  */
+/**
+ * Analyze test execution history to detect flaky tests
+ * A test is considered flaky if it has inconsistent results
+ */
 export async function detectFlakyTests(testCaseId?: string) {
-  const where = testCaseId ? { testCaseId } : {}
-
-  // Get test results from last 30 days
   const thirtyDaysAgo = new Date()
   thirtyDaysAgo.setDate(thirtyDaysAgo.getDate() - 30)
 
+  // 1. First pass: Identify candidates using aggregation
+  // This avoids fetching all results for stable tests
+  const stats = await prisma.testResult.groupBy({
+    by: ['testCaseId', 'status'],
+    where: {
+      createdAt: { gte: thirtyDaysAgo },
+      testCaseId: testCaseId || undefined
+    },
+    _count: {
+      _all: true
+    }
+  })
+
+  // Group by testCaseId to see which ones have mixed results
+  const candidates = new Map<string, { pass: number, fail: number }>()
+
+  for (const stat of stats) {
+    if (!candidates.has(stat.testCaseId)) {
+      candidates.set(stat.testCaseId, { pass: 0, fail: 0 })
+    }
+    const entry = candidates.get(stat.testCaseId)!
+    if (stat.status === 'PASS') entry.pass += stat._count._all
+    if (stat.status === 'FAIL') entry.fail += stat._count._all
+  }
+
+  // Filter for tests that have BOTH pass and fail results
+  const flakyCandidateIds = Array.from(candidates.entries())
+    .filter(([_, counts]) => counts.pass > 0 && counts.fail > 0)
+    .map(([id]) => id)
+
+  if (flakyCandidateIds.length === 0) return []
+
+  // 2. Second pass: Fetch details only for flaky candidates to calculate score
   const testCases = await prisma.testCase.findMany({
     where: {
-      ...where,
-      testResults: {
-        some: {
-          createdAt: {
-            gte: thirtyDaysAgo,
-          },
-        },
-      },
+      id: { in: flakyCandidateIds }
     },
     include: {
       testResults: {
         where: {
-          createdAt: {
-            gte: thirtyDaysAgo,
-          },
+          createdAt: { gte: thirtyDaysAgo },
         },
         orderBy: {
           createdAt: 'desc',
         },
-        take: 20, // Last 20 executions
+        take: 20, // Last 20 executions for flip calculation
       },
     },
   })
@@ -54,9 +79,9 @@ export async function detectFlakyTests(testCaseId?: string) {
   const insights = []
 
   for (const testCase of testCases) {
-    if (testCase.testResults.length < 5) continue // Need at least 5 executions
-
     const results = testCase.testResults
+    if (results.length < 5) continue // Need at least 5 executions
+
     const passCount = results.filter((r: any) => r.status === 'PASS').length
     const failCount = results.filter((r: any) => r.status === 'FAIL').length
     const totalCount = results.length
@@ -65,56 +90,53 @@ export async function detectFlakyTests(testCaseId?: string) {
     const passRate = passCount / totalCount
     const failRate = failCount / totalCount
 
-    // Flaky if it has both passes and failures
-    if (passCount > 0 && failCount > 0) {
-      // Higher score = more flaky (closer to 50/50 split)
-      const flakyScore = 100 * (1 - Math.abs(passRate - failRate))
+    // Higher score = more flaky (closer to 50/50 split)
+    const flakyScore = 100 * (1 - Math.abs(passRate - failRate))
 
-      // Check for flip-flopping pattern
-      let flipCount = 0
-      for (let i = 1; i < results.length; i++) {
-        if (results[i].status !== results[i - 1].status) {
-          flipCount++
-        }
+    // Check for flip-flopping pattern
+    let flipCount = 0
+    for (let i = 1; i < results.length; i++) {
+      if (results[i].status !== results[i - 1].status) {
+        flipCount++
       }
-      const flipRate = flipCount / (results.length - 1)
+    }
+    const flipRate = flipCount / (results.length - 1)
 
-      // Boost flaky score if test flips frequently
-      const adjustedFlakyScore = Math.min(100, flakyScore * (1 + flipRate))
+    // Boost flaky score if test flips frequently
+    const adjustedFlakyScore = Math.min(100, flakyScore * (1 + flipRate))
 
-      if (adjustedFlakyScore > 30) {
-        // Update test case with flaky score
-        await prisma.testCase.update({
-          where: { id: testCase.id },
-          data: {
-            flakyScore: adjustedFlakyScore,
-            lastAnalyzedAt: new Date(),
-          },
-        })
+    if (adjustedFlakyScore > 30) {
+      // Update test case with flaky score
+      await prisma.testCase.update({
+        where: { id: testCase.id },
+        data: {
+          flakyScore: adjustedFlakyScore,
+          lastAnalyzedAt: new Date(),
+        },
+      })
 
-        // Create insight
-        const severity: InsightSeverity =
-          adjustedFlakyScore > 70 ? 'CRITICAL' :
-            adjustedFlakyScore > 50 ? 'HIGH' :
-              adjustedFlakyScore > 30 ? 'MEDIUM' : 'LOW'
+      // Create insight
+      const severity: InsightSeverity =
+        adjustedFlakyScore > 70 ? 'CRITICAL' :
+          adjustedFlakyScore > 50 ? 'HIGH' :
+            adjustedFlakyScore > 30 ? 'MEDIUM' : 'LOW'
 
-        insights.push({
-          type: 'FLAKY_TEST' as InsightType,
-          severity,
-          title: `Flaky Test Detected: ${testCase.title}`,
-          description: `This test has inconsistent results with a flaky score of ${adjustedFlakyScore.toFixed(1)}%. It passed ${passCount} times and failed ${failCount} times out of ${totalCount} recent executions.`,
-          recommendation: 'Review test for timing issues, race conditions, or environmental dependencies. Consider adding explicit waits or stabilizing test data.',
-          confidence: Math.min(100, (totalCount / 20) * 100),
-          testCaseId: testCase.id,
-          metadata: {
-            flakyScore: adjustedFlakyScore,
-            passCount,
-            failCount,
-            totalCount,
-            flipRate: flipRate * 100,
-          },
-        })
-      }
+      insights.push({
+        type: 'FLAKY_TEST' as InsightType,
+        severity,
+        title: `Flaky Test Detected: ${testCase.title}`,
+        description: `This test has inconsistent results with a flaky score of ${adjustedFlakyScore.toFixed(1)}%. It passed ${passCount} times and failed ${failCount} times out of ${totalCount} recent executions.`,
+        recommendation: 'Review test for timing issues, race conditions, or environmental dependencies. Consider adding explicit waits or stabilizing test data.',
+        confidence: Math.min(100, (totalCount / 20) * 100),
+        testCaseId: testCase.id,
+        metadata: {
+          flakyScore: adjustedFlakyScore,
+          passCount,
+          failCount,
+          totalCount,
+          flipRate: flipRate * 100,
+        },
+      })
     }
   }
 
