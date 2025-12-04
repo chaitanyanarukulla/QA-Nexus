@@ -106,9 +106,13 @@ jobs:
           # Install Playwright Browsers
           npx playwright install --with-deps ${{ matrix.browser }}
 
-          # Start server in background
+          # Build the application (forces fresh compilation with SQLite schema)
+          echo "Building Next.js application..."
+          npm run build
+
+          # Start server in production mode
           echo "Starting Next.js server..."
-          npm run dev -- -p 3002 &
+          npm run start -- -p 3002 &
 
           # Wait for server to be ready
           echo "Waiting for server..."
