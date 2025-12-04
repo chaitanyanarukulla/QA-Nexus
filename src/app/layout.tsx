@@ -7,6 +7,9 @@ import { Sidebar } from "@/components/layout/sidebar";
 import { Toaster } from "@/components/ui/sonner";
 import { ThemeProvider } from "@/components/theme-provider";
 
+// Force dynamic rendering for all pages (required for Clerk in CI without real keys)
+export const dynamic = 'force-dynamic';
+
 const geistSans = Geist({
   variable: "--font-geist-sans",
   subsets: ["latin"],
