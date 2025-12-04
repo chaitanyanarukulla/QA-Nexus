@@ -77,15 +77,7 @@ jobs:
           CLERK_SECRET_KEY: ${{ secrets.CLERK_SECRET_KEY }}
 
       - name: Run Playwright Tests
-        run: |
-          # Start server in production mode
-          npm run start -- -p 3002 &
-
-          # Wait for server to be ready
-          npx wait-on http://localhost:3002/sign-in --timeout 120000
-
-          # Run tests
-          npx playwright test --project=${{ matrix.browser }}
+        run: npx playwright test --project=${{ matrix.browser }}
         env:
           DATABASE_URL: postgresql://postgres:postgres@localhost:5432/qanexus_test
           OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
