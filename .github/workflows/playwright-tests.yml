@@ -36,7 +36,11 @@ jobs:
       
       - name: Setup database
         run: |
+          echo "=== Original schema ==="
+          head -20 prisma/schema.prisma
           node scripts/switch-db-provider.js
+          echo "=== Modified schema ==="
+          head -20 prisma/schema.prisma
           echo "DATABASE_URL=file:./test.db" > .env
           rm -rf node_modules/.prisma
           npx prisma generate
