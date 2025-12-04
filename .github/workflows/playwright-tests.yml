@@ -72,16 +72,28 @@ jobs:
       - name: Build and Run Playwright Tests
         run: |
           # Build the application
+          echo "Current directory: $(pwd)"
           npm run build
 
           # Verify build exists
+          echo "Checking for .next directory..."
+          ls -la
           if [ ! -d ".next" ]; then
             echo "ERROR: .next directory not found after build"
             exit 1
           fi
           echo "Build successful, .next directory exists"
+          ls -la .next/
+
+          # Verify BUILD_ID exists (required for production mode)
+          if [ ! -f ".next/BUILD_ID" ]; then
+            echo "ERROR: .next/BUILD_ID not found"
+            exit 1
+          fi
+          echo "BUILD_ID: $(cat .next/BUILD_ID)"
 
           # Run Playwright tests (will start production server)
+          echo "Starting Playwright tests..."
           npx playwright test --project=${{ matrix.browser }}
         env:
           DATABASE_URL: postgresql://postgres:postgres@localhost:5432/qanexus_test
