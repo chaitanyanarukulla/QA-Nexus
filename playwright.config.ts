@@ -96,6 +96,5 @@ export default defineConfig({
         stdout: 'ignore',
         stderr: 'pipe',
         timeout: 120000,
-        env: process.env.CI ? { DATABASE_URL: process.env.DATABASE_URL || '' } : undefined,
     },
 });
