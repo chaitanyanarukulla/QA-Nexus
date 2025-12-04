@@ -45,36 +45,46 @@ jobs:
           sed -i 's/url *= *env("DATABASE_URL")/url = "file:.\/test.db"/g' prisma/schema.prisma
           sed -i '/directUrl/d' prisma/schema.prisma
 
-          echo "=== VERIFY SCHEMA ==="
-          if grep -q 'provider = "sqlite"' prisma/schema.prisma; then
-            echo "SUCCESS: Provider is sqlite"
-          else
-            echo "FAILURE: Provider is NOT sqlite"
-            cat prisma/schema.prisma
-            exit 1
-          fi
-
+          echo "=== VERIFY SCHEMA FILE ==="
           cat prisma/schema.prisma
 
-          echo "DATABASE_URL=file:./test.db" > .env
+          if ! grep -q 'provider = "sqlite"' prisma/schema.prisma; then
+            echo "FAILURE: Provider is NOT sqlite"
+            exit 1
+          fi
+          echo "SUCCESS: Schema transformed to SQLite"
 
-          # Clean generated client artifacts
+          # Set environment
+          echo "DATABASE_URL=file:./test.db" > .env
+          export DATABASE_URL="file:./test.db"
+
+          # CRITICAL: Remove ALL Prisma cached artifacts to force complete regeneration
+          echo "Cleaning Prisma cache..."
           rm -rf node_modules/.prisma
+          rm -rf node_modules/@prisma/client/runtime
           rm -rf .next
 
-          # Generate Prisma Client from transformed schema
+          # Regenerate Prisma Client with SQLite schema
           echo "Generating Prisma Client..."
-          npx prisma generate
+          npx prisma generate --schema=prisma/schema.prisma
 
-          echo "=== VERIFY GENERATED CLIENT SCHEMA ==="
+          # Verify the generated client has SQLite
+          echo "=== VERIFY GENERATED CLIENT ==="
           if [ -f node_modules/.prisma/client/schema.prisma ]; then
+            echo "Generated client schema:"
             cat node_modules/.prisma/client/schema.prisma
+            if grep -q 'provider = "sqlite"' node_modules/.prisma/client/schema.prisma; then
+              echo "SUCCESS: Generated client uses SQLite"
+            else
+              echo "FAILURE: Generated client still has PostgreSQL!"
+              exit 1
+            fi
           else
-            echo "Schema file not found in node_modules/.prisma/client"
+            echo "WARNING: Schema file not found in generated client"
           fi
 
-          # Push db schema to SQLite
-          npx prisma db push
+          # Create SQLite database
+          npx prisma db push --accept-data-loss
 
           # Seed the database
           npm run db:seed
