@@ -90,6 +90,36 @@ jobs:
           DATABASE_URL: postgresql://postgres:postgres@localhost:5432/qanexus_test
           NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY: ${{ secrets.NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY }}
 
+      - name: Verify Build and Test Server Startup
+        run: |
+          echo "=== Verifying .next directory exists ==="
+          ls -la .next/ || { echo "ERROR: .next directory not found!"; exit 1; }
+          cat .next/BUILD_ID
+
+          echo "=== Testing npm run start ==="
+          # Start server in background
+          npm run start -- -p 3002 &
+          SERVER_PID=$!
+
+          # Wait for server to start (max 30 seconds)
+          for i in {1..30}; do
+            if curl -s http://localhost:3002 > /dev/null 2>&1; then
+              echo "Server started successfully on port 3002"
+              kill $SERVER_PID 2>/dev/null || true
+              exit 0
+            fi
+            echo "Waiting for server... ($i/30)"
+            sleep 1
+          done
+
+          echo "ERROR: Server failed to start within 30 seconds"
+          kill $SERVER_PID 2>/dev/null || true
+          exit 1
+        env:
+          DATABASE_URL: postgresql://postgres:postgres@localhost:5432/qanexus_test
+          NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY: ${{ secrets.NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY }}
+          CLERK_SECRET_KEY: ${{ secrets.CLERK_SECRET_KEY }}
+
       - name: Run Playwright Tests
         run: npx playwright test --project=${{ matrix.browser }}
         env:
