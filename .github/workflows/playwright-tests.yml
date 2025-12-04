@@ -36,19 +36,20 @@ jobs:
       
       - name: Setup database
         run: |
-          echo "=== Original schema ==="
-          head -20 prisma/schema.prisma
-          # Overwrite schema.prisma with SQLite version
-          cp prisma/schema.sqlite.prisma prisma/schema.prisma
+          # Move SQLite schema to replace the main schema
+          mv prisma/schema.sqlite.prisma prisma/schema.prisma
+          
+          echo "=== VERIFY SCHEMA CONTENT AFTER MOVE ==="
+          cat prisma/schema.prisma
           
           echo "DATABASE_URL=file:./test.db" > .env
           rm -rf node_modules/.prisma
           rm -rf .next
           
-          # Generate client (uses overwritten schema.prisma by default)
+          # Generate client
           npx prisma generate
           
-          # Push db (uses overwritten schema.prisma by default)
+          # Push db
           npx prisma db push
           
           # Seed
@@ -59,12 +60,13 @@ jobs:
       
       - name: Run Playwright tests
         run: |
-          echo "=== Checking schema persistence ==="
-          head -20 prisma/schema.prisma
+          echo "=== VERIFY SCHEMA CONTENT BEFORE TESTS ==="
+          cat prisma/schema.prisma
           npx playwright test --project=${{ matrix.browser }}
         env:
           OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
           AI_PROVIDER: openai
+          DATABASE_URL: "file:./test.db"
       
       - name: Upload test results
         if: always()
