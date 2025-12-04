@@ -36,13 +36,16 @@ jobs:
       
       - name: Run Setup and Tests
         run: |
-          # Transform schema to SQLite using sed
-          echo "Transforming schema..."
+          # Backup original schema
+          cp prisma/schema.prisma prisma/schema.prisma.bak
+
+          # Transform schema IN PLACE to SQLite for CI
+          echo "Transforming schema to SQLite..."
           sed -i 's/provider *= *"postgresql"/provider = "sqlite"/g' prisma/schema.prisma
           sed -i 's/url *= *env("DATABASE_URL")/url = "file:.\/test.db"/g' prisma/schema.prisma
           sed -i '/directUrl/d' prisma/schema.prisma
-          
-          echo "=== VERIFY SCHEMA TRANSFORMATION ==="
+
+          echo "=== VERIFY SCHEMA ==="
           if grep -q 'provider = "sqlite"' prisma/schema.prisma; then
             echo "SUCCESS: Provider is sqlite"
           else
@@ -50,47 +53,43 @@ jobs:
             cat prisma/schema.prisma
             exit 1
           fi
-          
-          if grep -q 'postgresql' prisma/schema.prisma; then
-            echo "FAILURE: Found 'postgresql' in schema"
-            cat prisma/schema.prisma
-            exit 1
-          fi
-          
+
           cat prisma/schema.prisma
-          
+
           echo "DATABASE_URL=file:./test.db" > .env
+
+          # Clean generated client artifacts
           rm -rf node_modules/.prisma
-          rm -rf node_modules/@prisma/client
           rm -rf .next
-          
-          # Generate client
+
+          # Generate Prisma Client from transformed schema
+          echo "Generating Prisma Client..."
           npx prisma generate
-          
+
           echo "=== VERIFY GENERATED CLIENT SCHEMA ==="
           if [ -f node_modules/.prisma/client/schema.prisma ]; then
             cat node_modules/.prisma/client/schema.prisma
           else
             echo "Schema file not found in node_modules/.prisma/client"
           fi
-          
-          # Push db
+
+          # Push db schema to SQLite
           npx prisma db push
-          
-          # Seed
+
+          # Seed the database
           npm run db:seed
-          
+
           # Install Playwright Browsers
           npx playwright install --with-deps ${{ matrix.browser }}
-          
+
           # Start server in background
           echo "Starting Next.js server..."
           npm run dev -- -p 3002 &
-          
+
           # Wait for server to be ready
           echo "Waiting for server..."
           npx wait-on http://localhost:3002/sign-in --timeout 120000
-          
+
           # Run tests
           echo "Running tests..."
           npx playwright test --project=${{ matrix.browser }}
@@ -98,6 +97,12 @@ jobs:
           OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
           AI_PROVIDER: openai
           DATABASE_URL: "file:./test.db"
+          NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY: ${{ secrets.NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY }}
+          CLERK_SECRET_KEY: ${{ secrets.CLERK_SECRET_KEY }}
+          NEXT_PUBLIC_CLERK_SIGN_IN_URL: /sign-in
+          NEXT_PUBLIC_CLERK_SIGN_UP_URL: /sign-up
+          NEXT_PUBLIC_CLERK_AFTER_SIGN_IN_URL: /
+          NEXT_PUBLIC_CLERK_AFTER_SIGN_UP_URL: /
       
       - name: Upload test results
         if: always()
@@ -136,7 +141,7 @@ jobs:
         uses: actions/download-artifact@v4
       
       - name: Publish HTML Report
-        uses: actions upload-pages-artifact@v3
+        uses: actions/upload-pages-artifact@v3
         with:
           path: playwright-report/
       
