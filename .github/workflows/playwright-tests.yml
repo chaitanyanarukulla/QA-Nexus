@@ -36,10 +36,11 @@ jobs:
       
       - name: Setup database
         run: |
-          # Move SQLite schema to replace the main schema
-          mv prisma/schema.sqlite.prisma prisma/schema.prisma
+          # Overwrite schema.prisma with SQLite version using cat
+          cat prisma/schema.sqlite.prisma > prisma/schema.prisma
           
-          echo "=== VERIFY SCHEMA CONTENT AFTER MOVE ==="
+          echo "=== VERIFY SCHEMA CONTENT AFTER OVERWRITE ==="
+          ls -l prisma/schema.prisma
           cat prisma/schema.prisma
           
           echo "DATABASE_URL=file:./test.db" > .env
