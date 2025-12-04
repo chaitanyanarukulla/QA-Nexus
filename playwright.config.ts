@@ -91,7 +91,7 @@ export default defineConfig({
     /* Run your local dev server before starting the tests */
     webServer: {
         command: process.env.CI
-            ? 'echo "PWD=$(pwd)" && ls -la .next/ && npm run start -- -p 3002'  // CI: Debug + production server
+            ? 'npm run start -- -p 3002'  // CI: Use pre-built production server
             : 'npm run dev -- -p 3002',    // Local: Use dev server
         url: 'http://localhost:3002/sign-in',
         reuseExistingServer: !process.env.CI,

@@ -73,17 +73,23 @@ jobs:
         run: |
           # Build the application
           echo "Current directory: $(pwd)"
+
+          # Check if Clerk keys are set
+          if [ -z "$NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY" ]; then
+            echo "WARNING: NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY is not set"
+            echo "Using test/demo key for CI build"
+            export NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY="pk_test_placeholder"
+          fi
+
           npm run build
 
           # Verify build exists
           echo "Checking for .next directory..."
-          ls -la
           if [ ! -d ".next" ]; then
             echo "ERROR: .next directory not found after build"
             exit 1
           fi
           echo "Build successful, .next directory exists"
-          ls -la .next/
 
           # Verify BUILD_ID exists (required for production mode)
           if [ ! -f ".next/BUILD_ID" ]; then
