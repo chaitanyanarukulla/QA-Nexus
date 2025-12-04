@@ -36,6 +36,7 @@ jobs:
       
       - name: Setup database
         run: |
+          node scripts/switch-db-provider.js
           npx prisma generate
           npx prisma migrate deploy
           npm run db:seed
