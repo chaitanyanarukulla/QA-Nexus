@@ -38,9 +38,8 @@ jobs:
         run: |
           echo "=== Original schema ==="
           head -20 prisma/schema.prisma
-          # Use sed to switch provider to sqlite and remove directUrl
-          sed -i 's/provider[[:space:]]*=[[:space:]]*"postgresql"/provider = "sqlite"/g' prisma/schema.prisma
-          sed -i '/directUrl/d' prisma/schema.prisma
+          # Use robust script to fix schema
+          node scripts/fix-schema.js
           echo "=== Modified schema ==="
           head -20 prisma/schema.prisma
           echo "DATABASE_URL=file:./test.db" > .env
