@@ -69,15 +69,20 @@ jobs:
       - name: Install Playwright Browsers
         run: npx playwright install --with-deps ${{ matrix.browser }}
 
-      - name: Build Application
-        run: npm run build
-        env:
-          DATABASE_URL: postgresql://postgres:postgres@localhost:5432/qanexus_test
-          NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY: ${{ secrets.NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY }}
-          CLERK_SECRET_KEY: ${{ secrets.CLERK_SECRET_KEY }}
+      - name: Build and Run Playwright Tests
+        run: |
+          # Build the application
+          npm run build
 
-      - name: Run Playwright Tests
-        run: npx playwright test --project=${{ matrix.browser }}
+          # Verify build exists
+          if [ ! -d ".next" ]; then
+            echo "ERROR: .next directory not found after build"
+            exit 1
+          fi
+          echo "Build successful, .next directory exists"
+
+          # Run Playwright tests (will start production server)
+          npx playwright test --project=${{ matrix.browser }}
         env:
           DATABASE_URL: postgresql://postgres:postgres@localhost:5432/qanexus_test
           OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
