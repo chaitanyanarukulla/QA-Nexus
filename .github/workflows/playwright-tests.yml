@@ -41,9 +41,15 @@ jobs:
 
           # Transform schema IN PLACE to SQLite for CI
           echo "Transforming schema to SQLite..."
+
+          # Change provider and URL
           sed -i 's/provider *= *"postgresql"/provider = "sqlite"/g' prisma/schema.prisma
           sed -i 's/url *= *env("DATABASE_URL")/url = "file:.\/test.db"/g' prisma/schema.prisma
           sed -i '/directUrl/d' prisma/schema.prisma
+
+          # CRITICAL: Convert Json fields to String (SQLite doesn't support Json)
+          sed -i 's/Json\?/String?/g' prisma/schema.prisma
+          sed -i 's/Json /String /g' prisma/schema.prisma
 
           echo "=== VERIFY SCHEMA FILE ==="
           cat prisma/schema.prisma
@@ -52,7 +58,15 @@ jobs:
             echo "FAILURE: Provider is NOT sqlite"
             exit 1
           fi
-          echo "SUCCESS: Schema transformed to SQLite"
+
+          # Verify no Json types remain
+          if grep -q ' Json' prisma/schema.prisma; then
+            echo "FAILURE: Json types still present in schema"
+            grep ' Json' prisma/schema.prisma
+            exit 1
+          fi
+
+          echo "SUCCESS: Schema transformed to SQLite with String fields"
 
           # Set environment
           echo "DATABASE_URL=file:./test.db" > .env
