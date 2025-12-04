@@ -11,120 +11,85 @@ jobs:
   test:
     timeout-minutes: 60
     runs-on: ubuntu-latest
-    
+
+    # Use PostgreSQL service container (same as production)
+    services:
+      postgres:
+        image: postgres:15-alpine
+        env:
+          POSTGRES_USER: postgres
+          POSTGRES_PASSWORD: postgres
+          POSTGRES_DB: qanexus_test
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+        ports:
+          - 5432:5432
+
     strategy:
       matrix:
         node-version: [20.x, 22.x]
         browser: [chromium, firefox, webkit]
-    
+
     env:
-      DATABASE_URL: file:./test.db
+      DATABASE_URL: postgresql://postgres:postgres@localhost:5432/qanexus_test
       CI: true
 
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
-      
+
       - name: Setup Node.js ${{ matrix.node-version }}
         uses: actions/setup-node@v4
         with:
           node-version: ${{ matrix.node-version }}
           cache: 'npm'
-      
+
       - name: Install dependencies
         run: npm ci
-      
-      - name: Run Setup and Tests
+
+      - name: Setup Database
         run: |
-          # Backup original schema
-          cp prisma/schema.prisma prisma/schema.prisma.bak
-
-          # Transform schema IN PLACE to SQLite for CI
-          echo "Transforming schema to SQLite..."
-
-          # Change provider and URL
-          sed -i 's/provider *= *"postgresql"/provider = "sqlite"/g' prisma/schema.prisma
-          sed -i 's/url *= *env("DATABASE_URL")/url = "file:.\/test.db"/g' prisma/schema.prisma
+          # Remove directUrl from schema (not needed for CI)
           sed -i '/directUrl/d' prisma/schema.prisma
 
-          # CRITICAL: Convert Json fields to String (SQLite doesn't support Json)
-          sed -i 's/Json\?/String?/g' prisma/schema.prisma
-          sed -i 's/Json /String /g' prisma/schema.prisma
+          # Generate Prisma Client
+          npx prisma generate
 
-          echo "=== VERIFY SCHEMA FILE ==="
-          cat prisma/schema.prisma
-
-          if ! grep -q 'provider = "sqlite"' prisma/schema.prisma; then
-            echo "FAILURE: Provider is NOT sqlite"
-            exit 1
-          fi
-
-          # Verify no Json types remain
-          if grep -q ' Json' prisma/schema.prisma; then
-            echo "FAILURE: Json types still present in schema"
-            grep ' Json' prisma/schema.prisma
-            exit 1
-          fi
-
-          echo "SUCCESS: Schema transformed to SQLite with String fields"
-
-          # Set environment
-          echo "DATABASE_URL=file:./test.db" > .env
-          export DATABASE_URL="file:./test.db"
-
-          # CRITICAL: Remove ALL Prisma cached artifacts to force complete regeneration
-          echo "Cleaning Prisma cache..."
-          rm -rf node_modules/.prisma
-          rm -rf node_modules/@prisma/client/runtime
-          rm -rf .next
-
-          # Regenerate Prisma Client with SQLite schema
-          echo "Generating Prisma Client..."
-          npx prisma generate --schema=prisma/schema.prisma
-
-          # Verify the generated client has SQLite
-          echo "=== VERIFY GENERATED CLIENT ==="
-          if [ -f node_modules/.prisma/client/schema.prisma ]; then
-            echo "Generated client schema:"
-            cat node_modules/.prisma/client/schema.prisma
-            if grep -q 'provider = "sqlite"' node_modules/.prisma/client/schema.prisma; then
-              echo "SUCCESS: Generated client uses SQLite"
-            else
-              echo "FAILURE: Generated client still has PostgreSQL!"
-              exit 1
-            fi
-          else
-            echo "WARNING: Schema file not found in generated client"
-          fi
-
-          # Create SQLite database
+          # Push schema to database
           npx prisma db push --accept-data-loss
 
           # Seed the database
           npm run db:seed
+        env:
+          DATABASE_URL: postgresql://postgres:postgres@localhost:5432/qanexus_test
 
-          # Install Playwright Browsers
-          npx playwright install --with-deps ${{ matrix.browser }}
+      - name: Install Playwright Browsers
+        run: npx playwright install --with-deps ${{ matrix.browser }}
 
-          # Build the application (forces fresh compilation with SQLite schema)
-          echo "Building Next.js application..."
-          npm run build
+      - name: Build Application
+        run: npm run build
+        env:
+          DATABASE_URL: postgresql://postgres:postgres@localhost:5432/qanexus_test
+          NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY: ${{ secrets.NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY }}
+          CLERK_SECRET_KEY: ${{ secrets.CLERK_SECRET_KEY }}
 
+      - name: Run Playwright Tests
+        run: |
           # Start server in production mode
-          echo "Starting Next.js server..."
           npm run start -- -p 3002 &
 
           # Wait for server to be ready
-          echo "Waiting for server..."
           npx wait-on http://localhost:3002/sign-in --timeout 120000
 
           # Run tests
-          echo "Running tests..."
           npx playwright test --project=${{ matrix.browser }}
         env:
+          DATABASE_URL: postgresql://postgres:postgres@localhost:5432/qanexus_test
           OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
           AI_PROVIDER: openai
-          DATABASE_URL: "file:./test.db"
           NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY: ${{ secrets.NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY }}
           CLERK_SECRET_KEY: ${{ secrets.CLERK_SECRET_KEY }}
           NEXT_PUBLIC_CLERK_SIGN_IN_URL: /sign-in
