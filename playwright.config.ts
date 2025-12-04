@@ -90,11 +90,9 @@ export default defineConfig({
 
     /* Run your local dev server before starting the tests */
     webServer: {
-        command: process.env.CI
-            ? 'echo "=== WEBSERVER SCHEMA ===" && cat prisma/schema.prisma && DATABASE_URL=file:./test.db npm run dev -- -p 3002'
-            : 'npm run dev -- -p 3002',
+        command: 'npm run dev -- -p 3002',
         url: 'http://localhost:3002/sign-in',
-        reuseExistingServer: !process.env.CI,
+        reuseExistingServer: true,
         stdout: 'ignore',
         stderr: 'pipe',
         timeout: 120000,

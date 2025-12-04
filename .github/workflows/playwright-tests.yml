@@ -34,18 +34,12 @@ jobs:
       - name: Install dependencies
         run: npm ci
       
-      - name: Setup database
+      - name: Run Setup and Tests
         run: |
-          # Modify schema using sed (safer than in-place)
-          sed -e 's/provider *= *"postgresql"/provider = "sqlite"/g' \
-              -e 's/url *= *env("DATABASE_URL")/url = "file:.\/test.db"/g' \
-              prisma/schema.prisma > prisma/schema.new
+          # Overwrite schema with SQLite version
+          cp prisma/schema.sqlite.prisma prisma/schema.prisma
           
-          # Overwrite original schema
-          mv prisma/schema.new prisma/schema.prisma
-          
-          echo "=== VERIFY SCHEMA CONTENT AFTER SED ==="
-          ls -l prisma/schema.prisma
+          echo "=== VERIFY SCHEMA CONTENT ==="
           cat prisma/schema.prisma
           
           echo "DATABASE_URL=file:./test.db" > .env
@@ -60,14 +54,20 @@ jobs:
           
           # Seed
           npm run db:seed
-      
-      - name: Install Playwright Browsers
-        run: npx playwright install --with-deps ${{ matrix.browser }}
-      
-      - name: Run Playwright tests
-        run: |
-          echo "=== VERIFY SCHEMA CONTENT BEFORE TESTS ==="
-          cat prisma/schema.prisma
+          
+          # Install Playwright Browsers
+          npx playwright install --with-deps ${{ matrix.browser }}
+          
+          # Start server in background
+          echo "Starting Next.js server..."
+          npm run dev -- -p 3002 &
+          
+          # Wait for server to be ready
+          echo "Waiting for server..."
+          npx wait-on http://localhost:3002/sign-in --timeout 120000
+          
+          # Run tests
+          echo "Running tests..."
           npx playwright test --project=${{ matrix.browser }}
         env:
           OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
