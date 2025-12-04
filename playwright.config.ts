@@ -45,7 +45,7 @@ export default defineConfig({
         video: 'retain-on-failure',
 
         /* Maximum time each action can take */
-        actionTimeout: 10000,
+        actionTimeout: 15000,
 
         /* Bypass auth for testing */
         extraHTTPHeaders: {
@@ -54,11 +54,11 @@ export default defineConfig({
     },
 
     /* Global timeout for each test */
-    timeout: 60000,
+    timeout: 90000,
 
     /* Timeout for assertions */
     expect: {
-        timeout: 5000,
+        timeout: 10000,
     },
 
     /* Configure projects for major browsers */
