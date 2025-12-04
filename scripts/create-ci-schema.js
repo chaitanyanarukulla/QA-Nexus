@@ -2,7 +2,8 @@ const fs = require('fs');
 const path = require('path');
 
 const sourcePath = path.join(process.cwd(), 'prisma/schema.prisma');
-const targetPath = path.join(process.cwd(), 'prisma/schema.ci.prisma');
+// Overwrite the source file directly for CI
+const targetPath = path.join(process.cwd(), 'prisma/schema.prisma');
 
 console.log('=== CREATING CI SCHEMA ===');
 console.log('Source:', sourcePath);

@@ -36,13 +36,8 @@ jobs:
       
       - name: Run Setup and Tests
         run: |
-          # Transform schema to SQLite
-          # 1. Change provider to sqlite
-          sed -i 's/provider *= *"postgresql"/provider = "sqlite"/g' prisma/schema.prisma
-          # 2. Change url to file:./test.db
-          sed -i 's/url *= *env("DATABASE_URL")/url = "file:.\/test.db"/g' prisma/schema.prisma
-          # 3. Remove directUrl (not supported in SQLite)
-          sed -i '/directUrl/d' prisma/schema.prisma
+          # Transform schema to SQLite using Node script
+          node scripts/create-ci-schema.js
           
           echo "=== VERIFY SCHEMA CONTENT ON DISK ==="
           cat prisma/schema.prisma
