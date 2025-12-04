@@ -15,11 +15,12 @@ Welcome to QA Nexus, your comprehensive AI-powered QA platform. This manual will
 5. [Test Suites](#5-test-suites)
 6. [Test Execution](#6-test-execution)
 7. [API Testing](#7-api-testing)
-8. [Defect Management](#8-defect-management)
-9. [Analytics](#9-analytics)
-10. [AI Insights](#10-ai-insights)
-11. [Collaboration](#11-collaboration)
-12. [Settings](#12-settings)
+8. [Performance Testing](#8-performance-testing)
+9. [Defect Management](#9-defect-management)
+10. [Analytics](#10-analytics)
+11. [AI Insights](#11-ai-insights)
+12. [Collaboration](#12-collaboration)
+13. [Settings](#13-settings)
 
 ---
 
@@ -639,7 +640,7 @@ Request chaining allows you to extract values from one API response and use them
 
 ---
 
-## 8. Defect Management
+## 9. Defect Management
 
 Track and manage defects with Jira integration.
 
@@ -711,7 +712,7 @@ In **Analytics** → **Defects**:
 
 ---
 
-## 9. Analytics
+## 10. Analytics
 
 View comprehensive metrics and trends across your QA activities.
 
@@ -756,9 +757,90 @@ When test suites are linked to Jira Epics:
 
 ---
 
-## 10. AI Insights
+## 10. Performance Testing
+
+Execute k6 load tests to ensure system stability under load.
+
+### Creating a Performance Test
+
+1. Navigate to **Performance** in the sidebar
+2. Click **New Test**
+3. Configure test parameters:
+   - **Name**: Test name (e.g., "Homepage Load Test")
+   - **Target URL**: Endpoint to test (e.g., `https://api.example.com/users`)
+   - **Virtual Users (VUs)**: Number of concurrent users (1-100)
+   - **Duration**: Test duration (e.g., "30s", "1m", "5m")
+4. Click **Create Test**
+
+### Running a Performance Test
+
+1. Open a performance test
+2. Click **Run Test**
+3. Monitor execution in real-time:
+   - Active users
+   - Requests per second
+   - Response time metrics
+4. Wait for test completion
+
+### Understanding Test Results
+
+After execution completes, view:
+
+**Metrics Summary:**
+- **HTTP Requests**: Total requests made
+- **Request Rate**: Requests per second
+- **Response Time**:
+  - p50 (median)
+  - p95 (95th percentile)
+  - p99 (99th percentile)
+- **Failed Requests**: Error rate
+- **Thresholds**: Pass/fail criteria
+
+**Performance Insights:**
+- Bottleneck detection
+- Response time degradation
+- Error patterns under load
+- Recommendations for optimization
+
+### Setting Thresholds
+
+Optional: Define pass/fail criteria for automated testing
+
+1. Edit performance test
+2. Add thresholds (JSON format):
+```json
+{
+  "http_req_duration": ["p(95)<500"],
+  "http_req_failed": ["rate<0.01"]
+}
+```
+3. Thresholds are evaluated after each run
+4. Failed thresholds indicate performance regressions
+
+### Viewing Test History
+
+1. Open a performance test
+2. Scroll to **Execution History**
+3. View all past runs with:
+   - Timestamp
+   - Status (Completed/Failed)
+   - Metrics summary
+   - Raw k6 output
+
+**Use Case**: Test API endpoint performance by creating a test with 50 VUs for 2 minutes, then analyze response times and throughput to identify scaling issues.
+
+---
+
+## 11. AI Insights
 
 Leverage AI to identify issues and get intelligent recommendations.
+
+### Initial Data Requirements
+
+AI Insights requires test execution history to generate meaningful insights. If you see "No insights yet", you need to:
+1. Execute test suites and generate test results
+2. Run tests multiple times to establish patterns
+3. Wait for AI analysis (typically runs automatically)
 
 ### Viewing AI Insights
 
@@ -822,7 +904,7 @@ AI analyzes trends to predict which tests are likely to fail:
 
 ---
 
-## 11. Collaboration
+## 12. Collaboration
 
 Work with your team using comments, mentions, and reviews.
 

@@ -39,6 +39,15 @@ QA Nexus is an enterprise-grade, AI-driven Quality Engineering platform that tra
 
 ## 🎉 What’s New in v3.0.0
 
+### 🚀 Performance Testing (k6 Integration)
+
+* Load testing dashboard
+* Virtual user (VU) configuration
+* Duration and threshold settings
+* k6 test execution with metrics
+* Test run history and analytics
+* Performance regression detection
+
 ### ✅ API Testing Suite (Playwright-Powered)
 
 * Visual API request builder (no code required)
@@ -50,6 +59,8 @@ QA Nexus is an enterprise-grade, AI-driven Quality Engineering platform that tra
 * Collection runner with execution history
 * Pre-request scripts & environment variables
 * Full request body support (JSON, form-data, x-www-form-urlencoded)
+* GraphQL query builder with variables
+* Request chaining (extract & reuse response data)
 
 ### 🤝 Collaboration & Governance
 
@@ -60,16 +71,21 @@ QA Nexus is an enterprise-grade, AI-driven Quality Engineering platform that tra
 
 ### 🧠 Advanced AI Intelligence
 
-* Flaky test detection
+* Enhanced analysis with 5-7 items per category (risks, gaps, requirements, recommendations)
+* Detailed test case generation (30 test cases with comprehensive steps)
+* Flaky test detection with confidence scoring
 * Predictive failure analysis
 * Performance bottleneck detection
-* AI insights dashboard
+* AI insights dashboard with actionable recommendations
+* File upload support (PDF, TXT) for document analysis
+* Interactive chat interface for analysis refinement
 
 ### 🎨 UI & UX Enhancements
 
 * Full dark mode with persistent preferences
 * Responsive layouts
 * Polished empty states and visual hierarchy
+* Hydration error fixes for smooth rendering
 
 ---
 
@@ -379,10 +395,10 @@ GitHub Actions included for Playwright execution and result import.
 * API testing
 * Collaboration
 * Predictive AI analytics
+* Performance testing (k6)
 
 ### 🚀 Upcoming
 
-* Performance testing (k6)
 * RBAC & SSO
 * Multi-tenant architecture
 * PDF/Excel reporting
