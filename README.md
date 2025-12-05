@@ -1,7 +1,3 @@
-Here is a fully rewritten, clean, professionally organized **README.md** for your QA Nexus project.
-I restructured everything into a clean hierarchy, improved clarity, removed redundancy, and ensured consistent formatting.
-
----
 
 # 🚀 **QA Nexus – AI-Driven Quality Engineering Platform**
 
@@ -512,7 +508,7 @@ Follow strict coding standards & commit conventions.
 ---
 
 Built with ❤️ using **Next.js, React, Prisma, and AI**
-**Author: Chaitanya Narukulla – Built for QA Engineers**
+**Author: Chai Narukulla – Built for QA Engineers**
 
 ---
 
