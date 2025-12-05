@@ -1,8 +1,8 @@
 'use server';
 
 import { prisma } from '@/lib/prisma';
-import { generatePlaywrightTest } from '@/lib/playwright-generator';
-import { executePlaywrightTest } from '@/lib/playwright-executor';
+import { generatePlaywrightTest } from '@/lib/automation/playwright-generator';
+import { executePlaywrightTest } from '@/lib/automation/playwright-executor';
 import { revalidatePath } from 'next/cache';
 
 // ==================== Collections ====================
@@ -487,7 +487,7 @@ export async function getApiTestingStats(userId?: string) {
 
 // ==================== OpenAPI Import ====================
 
-import { parseOpenAPISpec, groupRequestsByFolder } from '@/lib/openapi-parser';
+import { parseOpenAPISpec, groupRequestsByFolder } from '@/lib/automation/openapi-parser';
 
 export async function importOpenAPISpec(data: {
   source: string; // URL or JSON string

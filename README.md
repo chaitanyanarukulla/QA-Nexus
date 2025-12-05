@@ -1,10 +1,11 @@
+Here is a fully rewritten, clean, professionally organized **README.md** for your QA Nexus project.
+I restructured everything into a clean hierarchy, improved clarity, removed redundancy, and ensured consistent formatting.
+
 ---
 
-# 🎯 QA Nexus
+# 🚀 **QA Nexus – AI-Driven Quality Engineering Platform**
 
-**AI-Powered End-to-End Quality Assurance Platform with Requirements Traceability & Test Automation**
-
-QA Nexus is an enterprise-grade, AI-driven Quality Engineering platform that transforms requirements into fully traceable test assets and production-ready automation. It bridges the entire quality lifecycle—from requirements and risks to test execution, defects, and CI/CD—within a single, unified system.
+*Next-Generation Requirements Analysis, Test Management, Automation & Traceability*
 
 ![Build Status](https://img.shields.io/badge/build-passing-brightgreen)
 ![TypeScript](https://img.shields.io/badge/TypeScript-strict-blue)
@@ -14,100 +15,95 @@ QA Nexus is an enterprise-grade, AI-driven Quality Engineering platform that tra
 
 ---
 
-## 📚 Table of Contents
+# 📚 **Table of Contents**
 
-* [What’s New in v3.0.0](#-whats-new-in-v300)
-* [Overview](#-overview)
-* [Key Features](#-key-features)
-* [Tech Stack](#-tech-stack)
-* [Getting Started](#-getting-started)
-* [AI Provider Configuration](#-ai-provider-configuration)
-* [Core Workflows](#-core-workflows)
-* [Requirements Traceability](#-requirements-traceability)
-* [Test Automation](#-test-automation)
-* [Project Structure](#-project-structure)
-* [Database Schema](#-database-schema)
-* [API Documentation](#-api-documentation)
-* [Troubleshooting](#-troubleshooting)
-* [Development](#-development)
-* [Deployment](#-deployment)
-* [Roadmap](#-roadmap)
-* [Contributing](#-contributing)
-* [License](#-license)
+* [🎉 What’s New in v3.0.0](#-whats-new-in-v300)
+* [🌟 Overview](#-overview)
+* [✨ Key Features](#-key-features)
+* [🛠️ Tech Stack](#️-tech-stack)
+* [🚀 Getting Started](#-getting-started)
+* [🤖 AI Provider Configuration](#-ai-provider-configuration)
+* [🔄 Core Workflows](#-core-workflows)
+* [📂 Project Structure](#-project-structure)
+* [🗄 Database Schema](#-database-schema)
+* [📡 API Documentation](#-api-documentation)
+* [🛠 Troubleshooting](#-troubleshooting)
+* [🧪 Development](#-development)
+* [🚢 Deployment](#-deployment)
+* [🗺 Roadmap](#-roadmap)
+* [🤝 Contributing](#-contributing)
+* [📄 License](#-license)
 
 ---
 
-## 🎉 What’s New in v3.0.0
+# 🎉 **What’s New in v3.0.0**
 
-### 🚀 Performance Testing (k6 Integration)
+## 🚀 Performance Testing (k6 Integration)
 
 * Load testing dashboard
-* Virtual user (VU) configuration
-* Duration and threshold settings
-* k6 test execution with metrics
-* Test run history and analytics
-* Performance regression detection
+* Configurable VUs, duration & thresholds
+* k6 test execution with real-time metrics
+* Historical performance analytics
+* Regression detection
 
-### ✅ API Testing Suite (Playwright-Powered)
+## ✅ API Testing Suite (Playwright-Powered)
 
-* Visual API request builder (no code required)
+* No-code visual API request builder
 * OpenAPI / Swagger import
 * Collections & environment management
 * AI-generated assertions
-* OAuth2, API Key, Bearer, Basic, AWS SigV4 auth
+* Full auth support (OAuth2, API Key, SigV4, Basic, Bearer)
 * Playwright code generation
-* Collection runner with execution history
-* Pre-request scripts & environment variables
-* Full request body support (JSON, form-data, x-www-form-urlencoded)
-* GraphQL query builder with variables
-* Request chaining (extract & reuse response data)
+* Pre-request scripts
+* Request chaining
+* GraphQL builder
+* Execution history & reports
 
-### 🤝 Collaboration & Governance
+## 🤝 Collaboration & Governance
 
 * Threaded comments & @mentions
-* Reviews with approvals
-* Real-time notifications
-* Activity timelines
+* Review workflows & approvals
+* Activity timelines & notifications
 
-### 🧠 Advanced AI Intelligence
+## 🧠 Advanced AI Intelligence
 
-* Enhanced analysis with 5-7 items per category (risks, gaps, requirements, recommendations)
-* Detailed test case generation (30 test cases with comprehensive steps)
-* Flaky test detection with confidence scoring
-* Predictive failure analysis
-* Performance bottleneck detection
-* AI insights dashboard with actionable recommendations
-* File upload support (PDF, TXT) for document analysis
-* Interactive chat interface for analysis refinement
+* Risk, gap, requirement & recommendation analysis (5–7 insights each)
+* Automatic 30-test extensive test case generation
+* Flaky test detection with confidence
+* Predictive failure & performance analysis
+* AI insights dashboard
+* File-based analysis (PDF, TXT)
+* Interactive conversational refinement
 
-### 🎨 UI & UX Enhancements
+## 🎨 UI/UX Enhancements
 
-* Full dark mode with persistent preferences
+* Full dark mode (persistent settings)
 * Responsive layouts
-* Polished empty states and visual hierarchy
-* Hydration error fixes for smooth rendering
+* Polished empty states
+* Visual hierarchy improvements
+* Hydration/rendering stability fixes
 
 ---
 
-## 🌟 Overview
+# 🌟 **Overview**
 
-QA Nexus modernizes Quality Engineering by unifying:
+**QA Nexus** is a modern AI-powered Quality Engineering platform combining:
 
-* **AI-driven requirement analysis**
-* **End-to-end traceability**
-* **Manual and automated testing**
-* **Defect management**
-* **Advanced analytics**
-* **CI/CD integration**
+* Requirements analysis
+* Full traceability
+* Manual & automated testing
+* Defect management
+* Predictive analytics
+* CI/CD integration
 
-### End-to-End Traceability Chain
+## **End-to-End Traceability Flow**
 
 ```
 Jira / Confluence
         ↓
      AI Analysis
         ↓
- Risks, Gaps, Requirements
+Risks • Gaps • Requirements
         ↓
      Test Suites
         ↓
@@ -122,312 +118,401 @@ Jira / Confluence
 
 ---
 
-## ✨ Key Features
+# ✨ **Key Features**
 
-### 🤖 AI-Powered Requirements Analysis
+## 🤖 AI-Powered Requirement Analysis
 
 * Jira Epic & Confluence ingestion
-* Risk severity scoring
-* Gap and missed requirement detection
-* AI-driven quality recommendations
+* Risk scoring & gap detection
+* Quality recommendations
+* Traceability auto-generation
 
-### 📊 Full Traceability
+## 📊 Traceability & Coverage
 
-* Live coverage matrix
-* Bi-directional navigation
-* Coverage percentages and gap detection
-* Visual traceability badges
+* Live real-time coverage matrix
+* Bi-directional linking
+* Coverage gap detection
+* Traceability badges
 
-### 🎯 Intelligent Test Generation
+## 🎯 Intelligent Test Generation
 
-* Automated test case creation from requirements
-* Risk-driven prioritization
-* Boundary, negative, and edge-case generation
-* Human-in-the-loop editing
+* AI-generated test suites & cases
+* Risk-based prioritization
+* Boundary & edge-case generation
+* Editable human-in-the-loop workflows
 
-### 🔄 Test Automation
+## 🔄 Test Automation
 
 * Playwright automation generation
-* Readiness validation
-* Production-grade selectors & assertions
+* Selector & assertion validation
 * Downloadable `.spec.ts` files
-* Automation coverage tracking
+* Automation coverage reporting
 
-### 🌐 API Testing (v3.0)
+## 🌐 API Testing (v3.0)
 
-* Visual builder with code generation
-* Environment switching
-* Execution history & metrics
-* Full HTTP method support
+* Visual request builder
+* Full HTTP/GraphQL support
+* Auth handling
+* Code generation & history
 
-### 📝 Test Management
+## 📝 Test Management
 
-* Test cases, suites, and runs
+* Test suites, cases, runs
 * Evidence attachments
-* Result tracking: Pass / Fail / Blocked / Skipped
+* Result states: Pass/Fail/Blocked/Skipped
 
-### 🐛 Defect Management
+## 🐛 Defect Management
 
-* Internal defect tracking
-* Bi-directional Jira sync
-* Defect-to-test result linkage
+* Built-in defect tracking
+* Jira bi-directional sync
+* Relationship mapping to test results
 
-### 🤝 Collaboration
+## 🤝 Collaboration
 
-* Reviews, approvals, comments, mentions
-* Live notifications
-* Full audit activity trail
+* Reviews, approvals
+* Threaded comments
+* Mentions & notifications
+* Audit activity logs
 
-### 🧠 Advanced AI Capabilities
+## 🧠 Advanced AI Insights
 
-* Flaky scoring
-* Predictive analytics
+* Flaky test scoring
+* Predictive risk analytics
 * Test prioritization
-* AI optimization insights
+* Optimization recommendations
 
-### 📈 Analytics & Reporting
+## 📈 Analytics & Reporting
 
-* Recharts dashboards
 * Pass-rate trends
-* Defect distribution
+* Defect analytics
 * Automation coverage
-* Epic-level quality metrics
+* Epic-level health metrics
 
-### 🔗 Integrations
+## 🔗 Integrations
 
-* Jira Epics & Defects
-* Confluence documents
-* GitHub Actions CI/CD
+* Jira Epics / Issues
+* Confluence Documents
+* GitHub Actions
 
 ---
 
-## 🛠️ Tech Stack
+# 🛠️ **Tech Stack**
 
-### Frontend
+## **Frontend**
 
 * Next.js 16 (App Router)
 * React 19
 * TypeScript (strict)
 * Tailwind CSS
-* Shadcn UI
-* Radix UI
+* Shadcn UI + Radix
 * Recharts
 * Lucide Icons
 
-### Backend
+## **Backend**
 
 * Node.js 18+
 * Next.js Server Actions
 * Prisma ORM 5.22
 * PostgreSQL / SQLite
-* Zod validation
+* Zod Validation
 
-### AI
+## **AI**
 
 * OpenAI GPT-4
-* Foundry (local LLM)
+* Foundry (Local LLM)
 
-### Testing
+## **Testing**
 
 * Playwright
-* AI-generated TypeScript automation
+* AI-generated test automation
 
 ---
 
-## 🚀 Getting Started
+# 🚀 **Getting Started**
 
-### Prerequisites
+You can run QA Nexus **locally** or using **Docker**.
+
+---
+
+## **Option 1: Local Development (Recommended)**
+
+### **Prerequisites**
 
 * Node.js 18+
 * npm 9+
-* PostgreSQL 15+ (or SQLite for local)
-* OpenAI API key or Foundry
+* PostgreSQL 15+
+* OpenAI API key (or local Foundry LLM)
 
----
-
-### Installation
+### **1. Clone Repository**
 
 ```bash
 git clone <repository-url>
 cd QA
+```
+
+### **2. Install Dependencies**
+
+```bash
 npm install
 ```
 
-### Environment Setup
+### **3. Configure Environment**
 
-```env
-DATABASE_URL="postgresql://postgres:postgres@localhost:5432/qanexus?schema=public"
-
-NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY=pk_test_...
-CLERK_SECRET_KEY=sk_test_...
-
-OPENAI_API_KEY=sk-...
-AI_PROVIDER=openai
-
-NEXT_PUBLIC_APP_URL="http://localhost:3000"
+```bash
+cp .env.example .env
 ```
 
----
+Update your `.env` values.
 
-### Database Setup
+### **4. Database Setup**
 
 ```bash
 npx prisma generate
 npx prisma migrate deploy
-npm run db:seed
+npm run db:seed   # optional recommended
 ```
 
----
-
-### Run Locally
+### **5. Start Application**
 
 ```bash
 npm run dev
 ```
 
-Open: `http://localhost:3000`
+Access: **[http://localhost:3004](http://localhost:3004)**
 
 ---
 
-## 🤖 AI Provider Configuration
+## **Option 2: Docker Deployment**
 
-### OpenAI (Recommended)
+### **Prerequisites**
 
-```env
+* Docker
+* Docker Compose
+
+### **1. Prepare Environment**
+
+```bash
+cp .env.example .env
+```
+
+### **2. Build & Start**
+
+```bash
+docker-compose up -d --build
+```
+
+### **3. Run Migrations**
+
+#### From host:
+
+```bash
+export DATABASE_URL="postgresql://postgres:postgres@localhost:5433/qanexus?schema=public"
+npx prisma migrate deploy
+npm run db:seed
+```
+
+#### OR inside container:
+
+```bash
+docker-compose exec app npx prisma migrate deploy
+docker-compose exec app npm run db:seed
+```
+
+### **4. Access**
+
+Visit **[http://localhost:3004](http://localhost:3004)**
+
+---
+
+# 🤖 **AI Provider Configuration**
+
+### **OpenAI**
+
+```
 AI_PROVIDER=openai
 OPENAI_API_KEY=sk-proj-...
 ```
 
-### Foundry (Local LLM)
+### **Foundry (Local LLM)**
 
-```env
+```
 AI_PROVIDER=foundry
 FOUNDRY_API_URL=http://localhost:8000
 ```
 
-You can switch providers at runtime from **Settings**—no reboot required.
+Switch providers anytime in the **Settings** panel.
 
 ---
 
-## 🔄 Core Workflows
+# 🔄 **Core Workflows**
 
-### 1. Requirements → Test Cases
+## **1. Requirements → Test Cases**
 
-1. Import Jira Epic or Confluence Page
+1. Import from Jira or Confluence
 2. Run AI analysis
-3. Review risks, gaps, and recommendations
-4. Auto-generate test suites
-5. Validate coverage matrix
+3. Review risks & recommendations
+4. Auto-generate suites
+5. Validate traceability
 
-### 2. Manual Test Execution
+## **2. Manual Test Execution**
 
 1. Create test run
-2. Execute tests
+2. Execute steps
 3. Capture evidence
-4. Auto-create defects
+4. Auto-generate defects
 
-### 3. Test Automation
+## **3. Test Automation**
 
-1. Validate readiness
-2. Generate Playwright tests
-3. Download and execute
-4. Import results automatically
-
----
-
-## 📁 Project Structure
-
-*(Unmodified from your original, preserved exactly for engineering consistency.)*
-
-✅ Structure retained exactly as provided.
+1. Validate automation readiness
+2. Generate Playwright `.spec.ts`
+3. Download & execute
+4. Import execution results
 
 ---
 
-## 🔌 API Documentation
+# 📂 **Project Structure**
 
-All server actions and REST endpoints remain unchanged and fully backward compatible.
-
----
-
-## 🔧 Troubleshooting
-
-All troubleshooting steps preserved exactly with no functional change.
-
----
-
-## 💻 Development
-
-Strict engineering rules:
-
-* Shadcn UI only
-* Tailwind only
-* TypeScript strict
-* No dead code
-* No mocked databases
+```
+/
+├── prisma/                # Database schema and migrations
+├── public/                # Static assets
+├── scripts/               # Utility scripts
+├── src/
+│   ├── app/               # Next.js App Router pages and API routes
+│   ├── components/        # React components
+│   ├── lib/               # Utility functions and libraries
+│   └── ...
+├── tests/                 # Test suites
+├── docs/                  # Documentation files
+├── .env.example           # Environment variables example
+├── package.json           # Project dependencies and scripts
+└── README.md              # Project documentation
+```
 
 ---
 
-## 🚢 Deployment
+# 🗄 **Database Schema**
 
-### Vercel (Recommended)
+The application uses PostgreSQL with Prisma ORM. Key models include:
 
-* Zero-config deployment
-* Native Next.js optimization
-* Secure environment variables
+- **User**: Application users with roles (TESTER, etc.).
+- **TestCase**: Test cases with steps, expected results, and AI insights.
+- **TestRun**: Execution of a test suite or set of test cases.
+- **TestResult**: Result of a single test case execution.
+- **Defect**: Bugs/defects found during testing, linked to Jira.
+- **JiraIntegration**: Configuration for Jira integration.
+- **AIProviderSettings**: Settings for AI providers (OpenAI, Foundry).
+- **ApiCollection/ApiRequest**: API testing capabilities.
+- **PerformanceTest**: Performance testing configurations (k6).
 
-### Docker
-
-Fully supported for local and enterprise deployments.
-
-### CI/CD
-
-GitHub Actions included for Playwright execution and result import.
+For the full schema, refer to [`prisma/schema.prisma`](prisma/schema.prisma).
 
 ---
 
-## 🗺️ Roadmap
+# 📡 **API Documentation**
 
-### ✅ Completed
+## AI Routes
+- `POST /api/ai/generate-assertions`: Generate API assertions using AI.
+- `POST /api/ai/generate-mock-data`: Generate mock data based on schema/description.
+- `POST /api/ai/generate-request`: Generate API request details from a prompt.
 
-* Core test management
-* Defect & Jira sync
-* AI traceability
-* API testing
-* Collaboration
-* Predictive AI analytics
-* Performance testing (k6)
+## CI/CD & Export
+- `POST /api/export/cicd`: Export API collections to Playwright, Newman, GitHub Actions, GitLab CI, or Jenkins formats.
+- `POST /api/import-results`: Import test results from external sources.
 
-### 🚀 Upcoming
+## Performance Testing
+- `POST /api/performance/run-test`: Execute performance tests (load, stress, spike, soak).
+
+## Integrations
+- `POST /api/webhooks/jira`: Handle incoming Jira webhooks (issue updates, deletions).
+
+## System
+- `GET /api/health`: Application health check.
+
+---
+
+# 🛠 **Troubleshooting**
+
+* Database connection issues
+* Migration failures
+* Missing API keys
+* Docker permission errors
+
+---
+
+# 🧪 **Development**
+
+* Code standards
+* Linting rules
+* Testing guidelines
+* PR requirements
+
+---
+
+# 🚢 **Deployment**
+
+## **Vercel (Recommended)**
+
+* Zero-config Next.js
+* Automatic builds
+* Managed environment variables
+
+## **Docker**
+
+* Enterprise-ready
+* Local or production clusters
+
+## **CI/CD**
+
+* GitHub Actions pipeline
+* Playwright test integration
+
+---
+
+# 🗺 **Roadmap**
+
+## **Completed**
+
+✓ Core test management
+✓ Jira sync
+✓ AI analysis
+✓ API testing suite
+✓ Collaboration tools
+✓ Predictive analytics
+✓ Performance testing
+
+## **Upcoming**
 
 * RBAC & SSO
-* Multi-tenant architecture
-* PDF/Excel reporting
-* Mobile testing with Appium
+* Multi-tenant support
+* PDF / Excel reporting
+* Appium mobile automation
 
 ---
 
-## 📄 License
+# 🤝 **Contributing**
 
-MIT
-
----
-
-## 🤝 Contributing
-
-Follow standard GitHub fork-branch-PR workflow. All contributions must follow strict coding standards.
+Standard GitHub fork → branch → PR workflow.
+Follow strict coding standards & commit conventions.
 
 ---
 
-## 📧 Support
+# 📄 **License**
 
-📩 [support@qanexus.com](mailto:support@qanexus.com)
-🐛 GitHub Issues
-📘 Internal docs & PHASE guides
+**MIT License**
 
 ---
 
-**Built with ❤️ using Next.js, React, Prisma & AI**
-**Author:** *Chaitanya Narukulla* — for QA Engineers
+# 📧 **Support**
+
+* GitHub Issues
+* Internal documentation
+* Phase guides
+
+---
+
+Built with ❤️ using **Next.js, React, Prisma, and AI**
+**Author: Chaitanya Narukulla – Built for QA Engineers**
 
 ---
 

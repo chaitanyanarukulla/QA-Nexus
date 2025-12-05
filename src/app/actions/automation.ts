@@ -1,7 +1,7 @@
 'use server'
 
 import { prisma } from '@/lib/prisma'
-import { generatePlaywrightTestSuite, suggestAutomationPriority } from '@/lib/ai-automation'
+import { generatePlaywrightTestSuite, suggestAutomationPriority } from '@/lib/ai/ai-automation'
 import { revalidatePath } from 'next/cache'
 
 /**

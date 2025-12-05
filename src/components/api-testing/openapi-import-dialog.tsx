@@ -12,7 +12,7 @@ import { Switch } from '@/components/ui/switch'
 import { Card, CardContent } from '@/components/ui/card'
 import { toast } from 'sonner'
 import { importOpenAPISpec } from '@/app/actions/api-testing'
-import { validateOpenAPIFormat } from '@/lib/openapi-parser'
+import { validateOpenAPIFormat } from '@/lib/automation/openapi-parser'
 
 interface OpenAPIImportDialogProps {
   userId: string;

@@ -1,7 +1,7 @@
 'use server'
 
 import { prisma } from '@/lib/prisma'
-import { analyzeAllTests, detectFlakyTests, predictTestFailures, detectSlowTests, generateAIRecommendations, type InsightType, type InsightSeverity } from '@/lib/ai-insights'
+import { analyzeAllTests, detectFlakyTests, predictTestFailures, detectSlowTests, generateAIRecommendations, type InsightType, type InsightSeverity } from '@/lib/ai/ai-insights'
 
 export async function runInsightsAnalysis(testSuiteId?: string) {
   try {

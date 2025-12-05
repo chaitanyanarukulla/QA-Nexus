@@ -3,7 +3,7 @@
 import { prisma } from '@/lib/prisma'
 import { DefectStatus } from '@/types'
 import { revalidatePath } from 'next/cache'
-import { createDefectSchema, updateDefectStatusSchema, paginationSchema } from '@/lib/validation'
+import { createDefectSchema, updateDefectStatusSchema, paginationSchema } from '@/lib/utils/validation'
 import { z } from 'zod'
 
 export async function getDefects(options?: {

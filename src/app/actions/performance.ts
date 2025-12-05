@@ -1,12 +1,12 @@
 'use server'
 
 import { prisma } from '@/lib/prisma'
-import { generateK6Script } from '@/lib/k6-generator'
+import { generateK6Script } from '@/lib/automation/k6-generator'
 import { readdir, writeFile, readFile, unlink } from 'fs/promises'
 import { join } from 'path'
 import { exec } from 'child_process'
 import { promisify } from 'util'
-import { auth } from '@clerk/nextjs/server'
+import { auth, currentUser } from '@clerk/nextjs/server'
 import { revalidatePath } from 'next/cache'
 
 const execAsync = promisify(exec)
@@ -20,10 +20,32 @@ export async function createPerformanceTest(data: {
     const { userId } = await auth()
     if (!userId) throw new Error('Unauthorized')
 
+    // Ensure user exists in local DB (Lazy Sync)
+    let user = await prisma.user.findUnique({
+        where: { clerkId: userId }
+    })
+
+    if (!user) {
+        const clerkUser = await currentUser()
+        if (!clerkUser) throw new Error('User not found in Clerk')
+
+        const email = clerkUser.emailAddresses[0]?.emailAddress
+        if (!email) throw new Error('User has no email')
+
+        user = await prisma.user.create({
+            data: {
+                clerkId: userId,
+                email: email,
+                name: `${clerkUser.firstName} ${clerkUser.lastName}`.trim() || 'Unknown User',
+                role: 'TESTER'
+            }
+        })
+    }
+
     const test = await prisma.performanceTest.create({
         data: {
             ...data,
-            createdBy: userId
+            createdBy: user.id // Use local DB ID
         }
     })
 
@@ -34,6 +56,28 @@ export async function createPerformanceTest(data: {
 export async function runPerformanceTest(testId: string) {
     const { userId } = await auth()
     if (!userId) throw new Error('Unauthorized')
+
+    // Ensure user exists in local DB (Lazy Sync)
+    let user = await prisma.user.findUnique({
+        where: { clerkId: userId }
+    })
+
+    if (!user) {
+        const clerkUser = await currentUser()
+        if (!clerkUser) throw new Error('User not found in Clerk')
+
+        const email = clerkUser.emailAddresses[0]?.emailAddress
+        if (!email) throw new Error('User has no email')
+
+        user = await prisma.user.create({
+            data: {
+                clerkId: userId,
+                email: email,
+                name: `${clerkUser.firstName} ${clerkUser.lastName}`.trim() || 'Unknown User',
+                role: 'TESTER'
+            }
+        })
+    }
 
     // 1. Fetch test config
     const test = await prisma.performanceTest.findUnique({
@@ -46,7 +90,7 @@ export async function runPerformanceTest(testId: string) {
         data: {
             testId,
             status: 'RUNNING',
-            executedBy: userId
+            executedBy: user.id // Use local DB ID
         }
     })
 
@@ -79,23 +123,32 @@ async function executeK6(executionId: string, scriptContent: string) {
 
         // Run k6
         // Note: k6 must be in PATH
-        await execAsync(`k6 run --out json=${resultsPath} ${scriptPath}`)
+        let status = 'COMPLETED'
+        try {
+            await execAsync(`k6 run --summary-export=${resultsPath} ${scriptPath}`)
+        } catch (err: any) {
+            // If thresholds are crossed, k6 exits with non-zero code but still generates report
+            if (err.message && err.message.includes('thresholds on metrics')) {
+                status = 'FAILED'
+                console.log('k6 thresholds crossed, proceeding to save results.')
+            } else {
+                throw err // Rethrow other errors to be caught by outer block
+            }
+        }
 
         // Read results
-        const resultsData = await readFile(resultsPath, 'utf-8')
         // k6 JSON output is one JSON object per line (streaming), or a single array if configured?
         // Actually --out json produces a file with one JSON object per line for each metric point.
         // This is too large to store. We should use --summary-export for the summary.
 
-        // Let's re-run with --summary-export
-        await execAsync(`k6 run --summary-export=${resultsPath} ${scriptPath}`)
+        // We already ran with --summary-export above
         const summaryData = await readFile(resultsPath, 'utf-8')
         const metrics = JSON.parse(summaryData)
 
         await prisma.performanceExecution.update({
             where: { id: executionId },
             data: {
-                status: 'COMPLETED',
+                status,
                 metrics,
                 completedAt: new Date()
             }

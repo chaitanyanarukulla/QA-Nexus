@@ -2,7 +2,7 @@
 
 import { prisma } from '@/lib/prisma'
 import { getJiraIntegration } from './jira'
-import { createJiraClient } from '@/lib/jira'
+import { createJiraClient } from '@/lib/integrations/jira'
 
 export async function getEpicMetrics(userId: string, suiteId: string, epicKey: string) {
     // 1. Fetch Epic from Jira

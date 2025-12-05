@@ -32,7 +32,7 @@ After installation, you'll need to configure your AI provider and optionally set
 
 #### Configure AI Provider
 
-1. Navigate to [Settings](http://localhost:3000/settings) in the navigation bar
+1. Navigate to [Settings](http://localhost:3004/settings) in the navigation bar
 2. Choose your AI provider:
    - **OpenAI** (recommended): Requires API key from https://platform.openai.com/api-keys
    - **Foundry**: Requires local installation

@@ -1,7 +1,7 @@
 'use server'
 
 import { prisma } from '@/lib/prisma'
-import { createJiraClient } from '@/lib/jira'
+import { createJiraClient } from '@/lib/integrations/jira'
 import { revalidatePath } from 'next/cache'
 
 /**

@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { generateApiRequest } from '@/lib/ai'
+import { generateApiRequest } from '@/lib/ai/ai'
 
 export async function POST(request: NextRequest) {
   try {

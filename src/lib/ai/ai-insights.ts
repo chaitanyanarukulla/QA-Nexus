@@ -1,4 +1,4 @@
-import { prisma } from './prisma'
+import { prisma } from '@/lib/prisma'
 import { chatCompletion } from './ai'
 
 // Define insight types as they're stored as strings in the database

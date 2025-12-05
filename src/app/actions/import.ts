@@ -1,9 +1,9 @@
 'use server'
 
 import { getJiraIntegration } from './jira'
-import { createJiraClient } from '@/lib/jira'
-import { createConfluenceClient } from '@/lib/confluence'
-import { generateTestCases } from '@/lib/ai'
+import { createJiraClient } from '@/lib/integrations/jira'
+import { createConfluenceClient } from '@/lib/integrations/confluence'
+import { generateTestCases } from '@/lib/ai/ai'
 import { prisma } from '@/lib/prisma'
 
 export async function getJiraEpics(userId: string, projectKey: string) {

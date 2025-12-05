@@ -1,6 +1,6 @@
 'use server'
 
-import { answerQuestion } from '@/lib/ai'
+import { answerQuestion } from '@/lib/ai/ai'
 import { prisma } from '@/lib/prisma'
 
 export async function askAI(question: string) {

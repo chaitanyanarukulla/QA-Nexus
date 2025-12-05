@@ -273,6 +273,17 @@ export function generatePlaywrightTest(config: ApiRequestConfig): string {
 
   testCode += `  const responseTime = Date.now() - startTime;\n\n`;
 
+  // Log response for debugging
+  testCode += `\n  // Log response for debugging\n`;
+  testCode += `  console.log('Status:', response.status());\n`;
+  testCode += `  console.log('Response Time:', responseTime + 'ms');\n`;
+  testCode += `  try {\n`;
+  testCode += `    const responseBody = await response.json();\n`;
+  testCode += `    console.log('Response Body:', JSON.stringify(responseBody, null, 2));\n`;
+  testCode += `  } catch (e) {\n`;
+  testCode += `    console.log('Response Body (text):', await response.text());\n`;
+  testCode += `  }\n`;
+
   // Default assertions
   testCode += `  // Assertions\n`;
   testCode += `  expect(response.ok()).toBeTruthy();\n`;
@@ -290,16 +301,7 @@ export function generatePlaywrightTest(config: ApiRequestConfig): string {
     }
   }
 
-  // Log response for debugging
-  testCode += `\n  // Log response for debugging\n`;
-  testCode += `  console.log('Status:', response.status());\n`;
-  testCode += `  console.log('Response Time:', responseTime + 'ms');\n`;
-  testCode += `  try {\n`;
-  testCode += `    const responseBody = await response.json();\n`;
-  testCode += `    console.log('Response Body:', JSON.stringify(responseBody, null, 2));\n`;
-  testCode += `  } catch (e) {\n`;
-  testCode += `    console.log('Response Body (text):', await response.text());\n`;
-  testCode += `  }\n`;
+
 
   testCode += `});\n`;
 

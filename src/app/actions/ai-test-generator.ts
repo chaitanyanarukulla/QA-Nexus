@@ -1,6 +1,6 @@
 'use server'
 
-import { generateTestCases, generateApiAssertions, generateApiRequest } from '@/lib/ai'
+import { generateTestCases, generateApiAssertions, generateApiRequest } from '@/lib/ai/ai'
 import { prisma } from '@/lib/prisma'
 import { revalidatePath } from 'next/cache'
 import { createTestCase } from './test-cases'

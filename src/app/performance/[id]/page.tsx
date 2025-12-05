@@ -8,6 +8,7 @@ import { Activity, Clock, Users, AlertTriangle, CheckCircle, XCircle } from 'luc
 import Link from 'next/link'
 import { Button } from '@/components/ui/button'
 import { ArrowLeft } from 'lucide-react'
+import { PerformanceMetrics } from '@/components/performance/performance-metrics'
 
 export default async function PerformanceTestDetails({ params }: { params: Promise<{ id: string }> }) {
     const { id } = await params
@@ -73,7 +74,7 @@ export default async function PerformanceTestDetails({ params }: { params: Promi
                                 <div className="flex items-center space-x-2">
                                     <Badge variant={
                                         execution.status === 'COMPLETED' ? 'default' :
-                                            execution.status === 'FAILED' ? 'destructive' : 'secondary'
+                                            execution.status === 'FAILED' ? 'danger' : 'secondary'
                                     }>
                                         {execution.status}
                                     </Badge>
@@ -84,9 +85,7 @@ export default async function PerformanceTestDetails({ params }: { params: Promi
                             </CardHeader>
                             <CardContent className="pt-4">
                                 {execution.metrics ? (
-                                    <pre className="bg-muted p-4 rounded-md overflow-auto text-xs max-h-60">
-                                        {JSON.stringify(execution.metrics, null, 2)}
-                                    </pre>
+                                    <PerformanceMetrics metrics={execution.metrics as any} />
                                 ) : (
                                     <div className="text-sm text-muted-foreground italic">
                                         {execution.status === 'RUNNING' ? 'Test is running...' : 'No metrics available'}

@@ -1,5 +1,5 @@
 import OpenAI from 'openai'
-import { prisma } from './prisma'
+import { prisma } from '@/lib/prisma'
 
 export interface GeneratedTestCase {
     title: string

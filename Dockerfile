@@ -35,6 +35,21 @@ ENV NEXT_TELEMETRY_DISABLED 1
 RUN groupadd --system --gid 1001 nodejs
 RUN useradd --system --uid 1001 nextjs
 
+# Set HOME environment variable
+ENV HOME=/home/nextjs
+
+# Create home directory for nextjs user
+RUN mkdir -p /home/nextjs && chown nextjs:nodejs /home/nextjs
+
+# Install k6
+COPY --from=grafana/k6:latest /usr/bin/k6 /usr/bin/k6
+
+# Create tmp directory for k6 scripts
+RUN mkdir -p /app/tmp && chown nextjs:nodejs /app/tmp
+
+# Set npm cache to a writable directory
+ENV npm_config_cache=/tmp/.npm
+
 COPY --from=builder /app/public ./public
 
 # Set the correct permission for prerender cache
@@ -45,12 +60,19 @@ RUN chown nextjs:nodejs .next
 # https://nextjs.org/docs/advanced-features/output-file-tracing
 COPY --from=builder --chown=nextjs:nodejs /app/.next/standalone ./
 COPY --from=builder --chown=nextjs:nodejs /app/.next/static ./.next/static
+COPY --from=builder --chown=nextjs:nodejs /app/prisma ./prisma
+
+# Copy Playwright config
+COPY --from=builder --chown=nextjs:nodejs /app/playwright-api.config.ts ./
+
+# Install Playwright (since it's a dev dependency not included in standalone)
+RUN npm install @playwright/test
 
 USER nextjs
 
-EXPOSE 3000
+EXPOSE 3004
 
-ENV PORT 3000
+ENV PORT 3004
 # set hostname to localhost
 ENV HOSTNAME "0.0.0.0"
 

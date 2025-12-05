@@ -1,7 +1,7 @@
 'use client'
 
 import { useState } from 'react'
-import { runPerformanceTest } from '@/actions/performance'
+import { runPerformanceTest } from '@/app/actions/performance'
 import { Button } from '@/components/ui/button'
 import { Play, Loader2 } from 'lucide-react'
 import { toast } from 'sonner'

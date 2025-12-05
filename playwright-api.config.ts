@@ -1,4 +1,6 @@
 import { defineConfig } from '@playwright/test';
+import path from 'path';
+import os from 'os';
 
 /**
  * Minimal Playwright Configuration for API Testing Feature
@@ -7,7 +9,7 @@ import { defineConfig } from '@playwright/test';
  * It avoids starting a web server since the application is already running.
  */
 export default defineConfig({
-    testDir: './tests/api-generated',
+    testDir: path.join(os.tmpdir(), 'api-generated'),
 
     // Reporter is handled by the executor command line args, but setting default here doesn't hurt
     reporter: 'json',

@@ -1,10 +1,10 @@
 'use server'
 
 import { prisma } from '@/lib/prisma'
-import { analyzeDocument, DocumentAnalysisResult } from '@/lib/ai'
-import { generateTestCasesWithCoverage } from '@/lib/ai-enhanced'
-import { createJiraClient } from '@/lib/jira'
-import { createConfluenceClient } from '@/lib/confluence'
+import { analyzeDocument, DocumentAnalysisResult } from '@/lib/ai/ai'
+import { generateTestCasesWithCoverage } from '@/lib/ai/ai-enhanced'
+import { createJiraClient } from '@/lib/integrations/jira'
+import { createConfluenceClient } from '@/lib/integrations/confluence'
 import { getJiraIntegration } from './jira'
 import { revalidatePath } from 'next/cache'
 
@@ -350,7 +350,7 @@ Keep answers concise and relevant to QA/Testing.`
         // Import chatCompletion dynamically to avoid circular deps if any, or just use the one imported at top
         // We already imported analyzeDocument, let's check if chatCompletion is exported from lib/ai
         // It is exported.
-        const { chatCompletion } = await import('@/lib/ai')
+        const { chatCompletion } = await import('@/lib/ai/ai')
 
         const response = await chatCompletion(messages, { temperature: 0.7 })
 

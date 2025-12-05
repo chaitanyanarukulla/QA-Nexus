@@ -2,7 +2,7 @@
 
 import { prisma } from '@/lib/prisma'
 import { revalidatePath } from 'next/cache'
-import { createTestCaseSchema, updateTestCaseSchema, paginationSchema } from '@/lib/validation'
+import { createTestCaseSchema, updateTestCaseSchema, paginationSchema } from '@/lib/utils/validation'
 import { z } from 'zod'
 
 export async function getTestCases(options?: {

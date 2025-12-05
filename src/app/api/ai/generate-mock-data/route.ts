@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { generateMockData } from '@/lib/ai'
+import { generateMockData } from '@/lib/ai/ai'
 
 export async function POST(request: NextRequest) {
   try {

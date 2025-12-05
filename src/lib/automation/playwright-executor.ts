@@ -7,6 +7,7 @@ import { exec } from 'child_process';
 import { promisify } from 'util';
 import fs from 'fs/promises';
 import path from 'path';
+import os from 'os';
 
 const execAsync = promisify(exec);
 
@@ -33,7 +34,7 @@ export async function executePlaywrightTest(
 ): Promise<ExecutionResult> {
   try {
     // 1. Create test directory if it doesn't exist
-    const testDir = path.join(process.cwd(), 'tests', 'api-generated');
+    const testDir = path.join(os.tmpdir(), 'api-generated');
     await fs.mkdir(testDir, { recursive: true });
 
     // 2. Write test file
@@ -41,7 +42,8 @@ export async function executePlaywrightTest(
     await fs.writeFile(testFile, testCode, 'utf-8');
 
     // 3. Execute Playwright test
-    const resultsFile = path.join(process.cwd(), 'test-results.json');
+    const resultsFile = path.join(os.tmpdir(), `test-results-${testId}.json`);
+    const artifactsDir = path.join(os.tmpdir(), `test-artifacts-${testId}`);
 
     // Delete old results file if exists
     try {
@@ -50,7 +52,7 @@ export async function executePlaywrightTest(
       // File doesn't exist, that's fine
     }
 
-    const command = `npx playwright test ${testFile} --config=playwright-api.config.ts --output=test-artifacts`;
+    const command = `npx playwright test ${testFile} --config=playwright-api.config.ts --output=${artifactsDir}`;
 
     let stdout = '';
     let stderr = '';
@@ -60,7 +62,12 @@ export async function executePlaywrightTest(
       const result = await execAsync(command, {
         timeout: 60000, // 60 second timeout
         maxBuffer: 10 * 1024 * 1024, // 10MB buffer
-        env: { ...process.env, PLAYWRIGHT_JSON_OUTPUT_NAME: 'test-results.json' }
+
+        env: {
+          ...process.env,
+          PLAYWRIGHT_JSON_OUTPUT_NAME: resultsFile,
+          NODE_PATH: path.join(process.cwd(), 'node_modules')
+        }
       });
       stdout = result.stdout;
       stderr = result.stderr;
@@ -82,7 +89,7 @@ export async function executePlaywrightTest(
         responseTime: 0,
         assertionsPassed: 0,
         assertionsFailed: 0,
-        errorMessage: 'Failed to parse test results',
+        errorMessage: `Failed to parse test results. Error: ${(e as any).message}\nStderr: ${stderr}\nStdout: ${stdout}`,
         stackTrace: stderr,
         logs: stdout
       };
@@ -100,7 +107,7 @@ export async function executePlaywrightTest(
         responseTime: 0,
         assertionsPassed: 0,
         assertionsFailed: 0,
-        errorMessage: 'No test results found',
+        errorMessage: `No test results found.\nStderr: ${stderr}\nStdout: ${stdout}`,
         logs: stdout
       };
     }
@@ -150,7 +157,7 @@ export async function executePlaywrightTest(
 
     // Extract error if failed
     if (status === 'FAILED' && errors.length > 0) {
-      result.errorMessage = errors[0].message;
+      result.errorMessage = `${errors[0].message}\n\nLogs:\n${logsText}`;
       result.stackTrace = errors[0].stack;
     }
 

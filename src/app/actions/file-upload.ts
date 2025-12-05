@@ -1,7 +1,7 @@
 'use server'
 
 import { prisma } from '@/lib/prisma'
-import { analyzeDocument } from '@/lib/ai'
+import { analyzeDocument } from '@/lib/ai/ai'
 import { revalidatePath } from 'next/cache'
 // Polyfills for pdf-parse/pdfjs-dist in Node.js environment
 if (typeof Promise.withResolvers === 'undefined') {
